@@ -18,6 +18,7 @@ export function SiteFooter() {
             <Link href="/fuer-geschaefte" className="hover:text-cyan-300">Für Geschäfte</Link>
             <Link href="/preise" className="hover:text-cyan-300">Preise</Link>
             <Link href="/kontakt" className="hover:text-cyan-300">FAQ</Link>
+            <Link href="/login" className="hover:text-cyan-300">Anmelden</Link>
           </div>
         </div>
         <div>

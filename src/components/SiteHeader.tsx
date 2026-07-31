@@ -22,10 +22,10 @@ export function SiteHeader() {
           ))}
         </nav>
         <Link
-          href="/preise"
+          href="/login"
           className="inline-flex h-11 items-center justify-center rounded-2xl bg-cyan-300 px-5 text-sm font-black text-slate-950 shadow-lg shadow-cyan-300/20 transition hover:-translate-y-0.5 hover:bg-cyan-200"
         >
-          Starten
+          Login
         </Link>
       </div>
     </header>
