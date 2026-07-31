@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
+import { SiteFooter } from "@/components/SiteFooter";
+import { SiteHeader } from "@/components/SiteHeader";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "TapRadar",
-  description: "TapRadar website and dashboard",
+  title: "TapRadar | Digitale Stempelkarte für lokale Geschäfte",
+  description:
+    "TapRadar ist die digitale Stempelkarte und Kundenbindungsplattform für lokale Geschäfte in Österreich.",
 };
 
 export default function RootLayout({
@@ -13,7 +16,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="de" className="h-full antialiased">
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full bg-slate-950 font-sans">
+        <SiteHeader />
+        {children}
+        <SiteFooter />
+      </body>
     </html>
   );
 }
