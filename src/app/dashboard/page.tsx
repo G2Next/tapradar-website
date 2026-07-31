@@ -5,8 +5,11 @@ export default async function DashboardPage() {
   let email: string | undefined;
   let business:
     | {
+        id: string;
         name: string;
         city: string | null;
+        address: string | null;
+        category: string;
         plan: string;
       }
     | undefined;
@@ -26,7 +29,7 @@ export default async function DashboardPage() {
     if (data.user) {
       const { data: membership } = await supabase
         .from("business_members")
-        .select("business:businesses(name, city, plan)")
+        .select("business:businesses(id, name, city, address, category, plan)")
         .eq("user_id", data.user.id)
         .eq("is_active", true)
         .maybeSingle();
@@ -74,6 +77,11 @@ export default async function DashboardPage() {
             <p className="mt-3 text-sm leading-6 text-slate-300">
               {business ? `${business.name}${business.city ? `, ${business.city}` : ""}` : "Noch kein Geschäft angelegt."}
             </p>
+            {business ? (
+              <Link href="/dashboard/business" className="mt-5 inline-flex font-black text-cyan-300">
+                Bearbeiten
+              </Link>
+            ) : null}
           </div>
           <div className="rounded-[28px] border border-white/10 bg-white/[0.07] p-6">
             <h2 className="text-xl font-black">Plan</h2>
@@ -88,6 +96,20 @@ export default async function DashboardPage() {
             </p>
           </div>
         </div>
+        {business ? (
+          <div className="mt-8 rounded-[28px] border border-white/10 bg-white/[0.07] p-6">
+            <h2 className="text-xl font-black">Kunden-App Vorschau</h2>
+            <div className="mt-5 rounded-3xl border border-white/10 bg-white/[0.05] p-5">
+              <p className="text-2xl font-black">{business.name}</p>
+              <p className="mt-2 text-slate-300">{business.address || "Adresse fehlt"}</p>
+              <div className="mt-4 flex flex-wrap gap-3 text-sm font-black">
+                <span className="rounded-full bg-emerald-300/15 px-3 py-2 text-emerald-200">Open</span>
+                <span className="rounded-full bg-cyan-300/15 px-3 py-2 text-cyan-200">{business.category}</span>
+                <span className="rounded-full bg-yellow-300/15 px-3 py-2 text-yellow-200 capitalize">{business.plan}</span>
+              </div>
+            </div>
+          </div>
+        ) : null}
         {business && loyaltyCards?.length ? (
           <div className="mt-8 rounded-[28px] border border-white/10 bg-white/[0.07] p-6">
             <h2 className="text-xl font-black">Aktive Treuekarten</h2>
