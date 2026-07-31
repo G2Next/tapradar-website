@@ -37,16 +37,18 @@ export default async function BusinessSettingsPage({
 
   const { data: membership } = await supabase
     .from("business_members")
-    .select(
-      "business:businesses(id, name, category, city, address, phone, website, description, opening_hours, logo_emoji, public_status, plan)",
-    )
+    .select("business_id")
     .eq("user_id", userData.user.id)
     .eq("is_active", true)
     .maybeSingle();
 
-  const business = Array.isArray(membership?.business)
-    ? membership.business[0]
-    : membership?.business;
+  const { data: business } = membership?.business_id
+    ? await supabase
+        .from("businesses")
+        .select("id, name, category, city, address, phone, website, description, opening_hours, logo_emoji, public_status, plan")
+        .eq("id", membership.business_id)
+        .maybeSingle()
+    : { data: null };
 
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top_right,#0b4f63_0%,#061827_35%,#020617_100%)] px-5 py-20 text-white sm:px-8">

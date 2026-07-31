@@ -29,19 +29,26 @@ export default async function DashboardPage() {
     if (data.user) {
       const { data: membership } = await supabase
         .from("business_members")
-        .select("business:businesses(id, name, city, address, category, plan)")
+        .select("business_id")
         .eq("user_id", data.user.id)
         .eq("is_active", true)
         .maybeSingle();
 
-      business = Array.isArray(membership?.business)
-        ? membership.business[0]
-        : membership?.business;
+      if (membership?.business_id) {
+        const { data: businessData } = await supabase
+          .from("businesses")
+          .select("id, name, city, address, category, plan")
+          .eq("id", membership.business_id)
+          .maybeSingle();
+
+        business = businessData ?? undefined;
+      }
 
       if (business) {
         const { data: cards } = await supabase
           .from("loyalty_cards")
           .select("title, reward_title, stamps_required")
+          .eq("business_id", business.id)
           .limit(3);
 
         loyaltyCards = cards ?? [];
