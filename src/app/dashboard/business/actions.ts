@@ -13,6 +13,7 @@ export async function updateBusiness(formData: FormData) {
     category: String(formData.get("category") ?? "").trim(),
     city: String(formData.get("city") ?? "").trim(),
     address: String(formData.get("address") ?? "").trim(),
+    postal_code: String(formData.get("postal_code") ?? "").trim(),
     phone: String(formData.get("phone") ?? "").trim(),
     website: String(formData.get("website") ?? "").trim(),
     description: String(formData.get("description") ?? "").trim(),

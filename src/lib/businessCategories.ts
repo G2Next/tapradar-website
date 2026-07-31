@@ -1,0 +1,152 @@
+export const businessCategories = [
+  {
+    group: "Gastronomie & Lebensmittel",
+    options: [
+      { value: "Restaurant & Gasthaus", icon: "🍽" },
+      { value: "Café", icon: "☕" },
+      { value: "Bäckerei", icon: "🥐" },
+      { value: "Konditorei", icon: "🎂" },
+      { value: "Pizzeria", icon: "🍕" },
+      { value: "Imbiss & Döner", icon: "🥙" },
+      { value: "Eiscafé & Gelateria", icon: "🍦" },
+      { value: "Bar", icon: "🍺" },
+      { value: "Lounge", icon: "🛋" },
+      { value: "Diskothek & Club", icon: "🎵" },
+      { value: "Supermarkt", icon: "🛒" },
+      { value: "Lebensmittelgeschäft", icon: "🥦" },
+      { value: "Kiosk & Tabakwaren", icon: "📰" },
+      { value: "Metzgerei", icon: "🥩" },
+      { value: "Obst & Gemüse", icon: "🍎" },
+      { value: "Feinkostgeschäft", icon: "🧀" },
+    ],
+  },
+  {
+    group: "Einzelhandel",
+    options: [
+      { value: "Bekleidungsgeschäft", icon: "👕" },
+      { value: "Schuhgeschäft", icon: "👟" },
+      { value: "Sportgeschäft", icon: "⚽" },
+      { value: "Buchhandlung", icon: "📚" },
+      { value: "Spielwarengeschäft", icon: "🧸" },
+      { value: "Geschenkartikel", icon: "🎁" },
+      { value: "Zoofachgeschäft", icon: "🐾" },
+      { value: "Juwelier", icon: "💍" },
+      { value: "Parfümerie", icon: "🌸" },
+      { value: "Haushaltsware", icon: "🏠" },
+      { value: "Möbelgeschäft", icon: "🛋" },
+      { value: "Elektronik", icon: "📺" },
+    ],
+  },
+  {
+    group: "Großhandel & Gewerbe",
+    options: [
+      { value: "Großhandel", icon: "🏭" },
+      { value: "Import & Export", icon: "✈️" },
+      { value: "Logistik", icon: "🚚" },
+      { value: "Lager & Distribution", icon: "📦" },
+      { value: "Industriezulieferer", icon: "⚙️" },
+    ],
+  },
+  {
+    group: "Dienstleistungen",
+    options: [
+      { value: "Friseur", icon: "✂️" },
+      { value: "Kosmetikstudio", icon: "💄" },
+      { value: "Nagelstudio", icon: "💅" },
+      { value: "Textilreinigung", icon: "👔" },
+      { value: "Schlüsseldienst", icon: "🔑" },
+      { value: "Schneiderei", icon: "🧵" },
+      { value: "Druckerei", icon: "🖨" },
+      { value: "Reisebüro", icon: "🌍" },
+      { value: "Versicherung", icon: "🛡" },
+      { value: "Immobilien", icon: "🏡" },
+      { value: "Übersetzung", icon: "🌐" },
+    ],
+  },
+  {
+    group: "Handwerk & Reparatur",
+    options: [
+      { value: "Elektriker", icon: "⚡" },
+      { value: "Sanitär & Heizung", icon: "🚿" },
+      { value: "Malerbetrieb", icon: "🖌" },
+      { value: "Tischlerei", icon: "🪵" },
+      { value: "Schlosserei", icon: "🔩" },
+      { value: "Dachdecker", icon: "🏠" },
+      { value: "Bauunternehmen", icon: "🏗" },
+      { value: "Kfz-Werkstatt", icon: "🔧" },
+      { value: "Reifenservice", icon: "🛞" },
+      { value: "Fahrzeugaufbereitung", icon: "🚘" },
+    ],
+  },
+  {
+    group: "Gesundheit & Medizin",
+    options: [
+      { value: "Arztpraxis", icon: "👨‍⚕️" },
+      { value: "Zahnarzt", icon: "🦷" },
+      { value: "Tierarzt", icon: "🐾" },
+      { value: "Apotheke", icon: "💊" },
+      { value: "Optiker", icon: "👓" },
+      { value: "Physiotherapie", icon: "🏃" },
+      { value: "Pflegedienst", icon: "🏥" },
+    ],
+  },
+  {
+    group: "Technologie & IT",
+    options: [
+      { value: "Computerhandel", icon: "💻" },
+      { value: "IT-Dienstleistungen", icon: "🖥" },
+      { value: "Softwareentwicklung", icon: "⌨️" },
+      { value: "Webdesign", icon: "🌐" },
+      { value: "Handyverkauf", icon: "📱" },
+      { value: "Handyreparatur", icon: "🔧" },
+      { value: "Telekommunikation", icon: "📡" },
+    ],
+  },
+  {
+    group: "Freizeit & Unterhaltung",
+    options: [
+      { value: "Verein", icon: "🤝" },
+      { value: "Kulturverein", icon: "🎭" },
+      { value: "Sportverein", icon: "⚽" },
+      { value: "Fitnessstudio", icon: "💪" },
+      { value: "Spielhalle", icon: "🎮" },
+      { value: "Billardcafé", icon: "🎱" },
+      { value: "Shisha-Bar", icon: "💨" },
+      { value: "Eventlocation", icon: "🎪" },
+      { value: "Veranstaltungsservice", icon: "🎉" },
+    ],
+  },
+  {
+    group: "Bildung & Beratung",
+    options: [
+      { value: "Fahrschule", icon: "🚗" },
+      { value: "Sprachschule", icon: "💬" },
+      { value: "Nachhilfe", icon: "✏️" },
+      { value: "Unternehmensberatung", icon: "💼" },
+      { value: "Steuerberatung", icon: "📊" },
+      { value: "Rechtsanwalt", icon: "⚖️" },
+    ],
+  },
+  {
+    group: "Fahrzeuge & Mobilität",
+    options: [
+      { value: "Autohaus", icon: "🚘" },
+      { value: "Motorradhandel", icon: "🏍" },
+      { value: "Fahrradgeschäft", icon: "🚲" },
+      { value: "Autovermietung", icon: "🔑" },
+      { value: "Taxiunternehmen", icon: "🚕" },
+      { value: "Transport", icon: "🚚" },
+    ],
+  },
+] as const;
+
+export const businessCategoryOptions = businessCategories.flatMap((category) =>
+  category.options.map((option) => ({
+    ...option,
+    group: category.group,
+  })),
+);
+
+export const businessIconOptions = Array.from(
+  new Map(businessCategoryOptions.map((option) => [option.icon, option])).values(),
+);

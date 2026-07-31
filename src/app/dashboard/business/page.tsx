@@ -1,17 +1,9 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { businessCategories, businessIconOptions } from "@/lib/businessCategories";
 import { updateBusiness } from "./actions";
 
 type SearchParams = Promise<{ saved?: string; error?: string }>;
-
-const categories = [
-  "Gastronomie",
-  "Einzelhandel",
-  "Beauty",
-  "Fitness",
-  "Dienstleistung",
-  "Andere",
-];
 
 export default async function BusinessSettingsPage({
   searchParams,
@@ -45,7 +37,7 @@ export default async function BusinessSettingsPage({
   const { data: business } = membership?.business_id
     ? await supabase
         .from("businesses")
-        .select("id, name, category, city, address, phone, website, description, opening_hours, logo_emoji, public_status, plan")
+        .select("id, name, category, city, address, postal_code, phone, website, description, opening_hours, logo_emoji, public_status, plan")
         .eq("id", membership.business_id)
         .maybeSingle()
     : { data: null };
@@ -90,18 +82,28 @@ export default async function BusinessSettingsPage({
               <label className="grid gap-2 text-xs font-black uppercase tracking-wide text-slate-300">
                 Kategorie
                 <select name="category" required defaultValue={business.category} className="rounded-2xl border border-white/15 bg-[#102235] px-4 py-3 text-base font-normal normal-case tracking-normal text-white outline-none focus:border-cyan-300">
-                  {categories.map((category) => (
-                    <option key={category}>{category}</option>
+                  {businessCategories.map((category) => (
+                    <optgroup key={category.group} label={category.group}>
+                      {category.options.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.icon} {option.value}
+                        </option>
+                      ))}
+                    </optgroup>
                   ))}
                 </select>
               </label>
               <label className="grid gap-2 text-xs font-black uppercase tracking-wide text-slate-300">
-                Stadt
-                <input name="city" defaultValue={business.city ?? ""} className="rounded-2xl border border-white/15 bg-white/[0.06] px-4 py-3 text-base font-normal normal-case tracking-normal text-white outline-none focus:border-cyan-300" />
+                Straße & Hausnummer
+                <input name="address" defaultValue={business.address ?? ""} placeholder="Stephansplatz 1" className="rounded-2xl border border-white/15 bg-white/[0.06] px-4 py-3 text-base font-normal normal-case tracking-normal text-white outline-none focus:border-cyan-300" />
               </label>
               <label className="grid gap-2 text-xs font-black uppercase tracking-wide text-slate-300">
-                Adresse
-                <input name="address" defaultValue={business.address ?? ""} className="rounded-2xl border border-white/15 bg-white/[0.06] px-4 py-3 text-base font-normal normal-case tracking-normal text-white outline-none focus:border-cyan-300" />
+                PLZ
+                <input name="postal_code" defaultValue={business.postal_code ?? ""} placeholder="1010" className="rounded-2xl border border-white/15 bg-white/[0.06] px-4 py-3 text-base font-normal normal-case tracking-normal text-white outline-none focus:border-cyan-300" />
+              </label>
+              <label className="grid gap-2 text-xs font-black uppercase tracking-wide text-slate-300">
+                Ort
+                <input name="city" defaultValue={business.city ?? ""} placeholder="Wien" className="rounded-2xl border border-white/15 bg-white/[0.06] px-4 py-3 text-base font-normal normal-case tracking-normal text-white outline-none focus:border-cyan-300" />
               </label>
               <label className="grid gap-2 text-xs font-black uppercase tracking-wide text-slate-300">
                 Telefon
@@ -117,7 +119,14 @@ export default async function BusinessSettingsPage({
               </label>
               <label className="grid gap-2 text-xs font-black uppercase tracking-wide text-slate-300">
                 App Symbol
-                <input name="logo_emoji" defaultValue={business.logo_emoji ?? "🏪"} maxLength={4} className="rounded-2xl border border-white/15 bg-white/[0.06] px-4 py-3 text-base font-normal normal-case tracking-normal text-white outline-none focus:border-cyan-300" />
+                <select name="logo_emoji" defaultValue={business.logo_emoji ?? "🏪"} className="rounded-2xl border border-white/15 bg-[#102235] px-4 py-3 text-base font-normal normal-case tracking-normal text-white outline-none focus:border-cyan-300">
+                  {businessIconOptions.map((option) => (
+                    <option key={`${option.icon}-${option.value}`} value={option.icon}>
+                      {option.icon} {option.value}
+                    </option>
+                  ))}
+                  <option value="🏪">🏪 Allgemeines Geschäft</option>
+                </select>
               </label>
               <label className="grid gap-2 text-xs font-black uppercase tracking-wide text-slate-300 md:col-span-2">
                 Beschreibung

@@ -9,6 +9,7 @@ export default async function DashboardPage() {
         name: string;
         city: string | null;
         address: string | null;
+        postal_code: string | null;
         category: string;
         plan: string;
       }
@@ -37,7 +38,7 @@ export default async function DashboardPage() {
       if (membership?.business_id) {
         const { data: businessData } = await supabase
           .from("businesses")
-          .select("id, name, city, address, category, plan")
+          .select("id, name, city, address, postal_code, category, plan")
           .eq("id", membership.business_id)
           .maybeSingle();
 
@@ -108,7 +109,10 @@ export default async function DashboardPage() {
             <h2 className="text-xl font-black">Kunden-App Vorschau</h2>
             <div className="mt-5 rounded-3xl border border-white/10 bg-white/[0.05] p-5">
               <p className="text-2xl font-black">{business.name}</p>
-              <p className="mt-2 text-slate-300">{business.address || "Adresse fehlt"}</p>
+              <p className="mt-2 text-slate-300">
+                {business.address || "Straße fehlt"}
+                {business.postal_code || business.city ? `, ${[business.postal_code, business.city].filter(Boolean).join(" ")}` : ""}
+              </p>
               <div className="mt-4 flex flex-wrap gap-3 text-sm font-black">
                 <span className="rounded-full bg-emerald-300/15 px-3 py-2 text-emerald-200">Open</span>
                 <span className="rounded-full bg-cyan-300/15 px-3 py-2 text-cyan-200">{business.category}</span>

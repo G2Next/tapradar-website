@@ -6,7 +6,7 @@ export async function GET() {
 
   const { data: businesses, error } = await supabase
     .from("businesses")
-    .select("id, name, slug, category, city, address, phone, website, description, opening_hours, logo_emoji, latitude, longitude, plan, rating, rating_count")
+    .select("id, name, slug, category, city, address, postal_code, phone, website, description, opening_hours, logo_emoji, latitude, longitude, plan, rating, rating_count")
     .eq("is_active", true)
     .eq("public_status", "open")
     .order("name");
