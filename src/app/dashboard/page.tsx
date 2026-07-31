@@ -19,8 +19,9 @@ export default async function DashboardPage() {
         title: string;
         reward_title: string;
         stamps_required: number;
-      }[]
+    }[]
     | undefined;
+  let offersCount: number | undefined;
 
   try {
     const supabase = await createClient();
@@ -53,6 +54,14 @@ export default async function DashboardPage() {
           .limit(3);
 
         loyaltyCards = cards ?? [];
+
+        const { count } = await supabase
+          .from("business_offers")
+          .select("id", { count: "exact", head: true })
+          .eq("business_id", business.id)
+          .eq("is_active", true);
+
+        offersCount = count ?? 0;
       }
     }
   } catch {
@@ -109,6 +118,26 @@ export default async function DashboardPage() {
             ) : null}
           </div>
         </div>
+        {business ? (
+          <div className="mt-8 grid gap-5 md:grid-cols-2">
+            <Link
+              href="/dashboard/loyalty-cards"
+              className="rounded-[28px] border border-white/10 bg-white/[0.07] p-6 transition hover:border-cyan-300/40"
+            >
+              <h2 className="text-xl font-black">Treuekarten verwalten</h2>
+              <p className="mt-3 text-sm leading-6 text-slate-300">Stempelanzahl, Kartenname und Belohnung bearbeiten.</p>
+            </Link>
+            <Link
+              href="/dashboard/offers"
+              className="rounded-[28px] border border-white/10 bg-white/[0.07] p-6 transition hover:border-cyan-300/40"
+            >
+              <h2 className="text-xl font-black">Aktionen & Gutscheine</h2>
+              <p className="mt-3 text-sm leading-6 text-slate-300">
+                {offersCount ?? 0} aktive Einträge für Kunden-App und Radar.
+              </p>
+            </Link>
+          </div>
+        ) : null}
         {business ? (
           <div className="mt-8 rounded-[28px] border border-white/10 bg-white/[0.07] p-6">
             <h2 className="text-xl font-black">Kunden-App Vorschau</h2>
