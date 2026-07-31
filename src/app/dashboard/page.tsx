@@ -102,6 +102,11 @@ export default async function DashboardPage() {
             <p className="mt-3 text-sm leading-6 text-slate-300">
               {loyaltyCards ? `${loyaltyCards.length} Karte(n)` : "Noch keine Datenbank verbunden."}
             </p>
+            {business ? (
+              <Link href="/dashboard/loyalty-cards" className="mt-5 inline-flex font-black text-cyan-300">
+                Verwalten
+              </Link>
+            ) : null}
           </div>
         </div>
         {business ? (
@@ -134,6 +139,9 @@ export default async function DashboardPage() {
                 </div>
               ))}
             </div>
+            <Link href="/dashboard/loyalty-cards" className="mt-6 inline-flex font-black text-cyan-300">
+              Treuekarten bearbeiten
+            </Link>
           </div>
         ) : null}
         <Link href="/" className="mt-10 inline-flex font-black text-cyan-300">
