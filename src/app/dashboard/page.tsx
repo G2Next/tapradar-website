@@ -22,8 +22,16 @@ export default async function DashboardPage() {
         <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-300">
           {email
             ? `Angemeldet als ${email}.`
-            : "Supabase ist vorbereitet. Sobald die Projekt-Keys eingetragen sind, funktioniert hier der Login."}
+            : "Du bist noch nicht angemeldet. Bitte nutze den Login-Link aus deiner E-Mail oder sende dir einen neuen Link."}
         </p>
+        {!email ? (
+          <Link
+            href="/login"
+            className="mt-8 inline-flex rounded-2xl bg-cyan-300 px-5 py-3 font-black text-slate-950"
+          >
+            Zum Login
+          </Link>
+        ) : null}
         <div className="mt-10 grid gap-5 md:grid-cols-3">
           {["Geschäfte", "Treuekarten", "Analytics"].map((item) => (
             <div key={item} className="rounded-[28px] border border-white/10 bg-white/[0.07] p-6">

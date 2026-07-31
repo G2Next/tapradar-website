@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { createClient } from "@/lib/supabase/server";
 
 const navItems = [
   { href: "/", label: "Home" },
@@ -7,7 +8,17 @@ const navItems = [
   { href: "/kontakt", label: "Kontakt" },
 ];
 
-export function SiteHeader() {
+export async function SiteHeader() {
+  let isLoggedIn = false;
+
+  try {
+    const supabase = await createClient();
+    const { data } = await supabase.auth.getUser();
+    isLoggedIn = Boolean(data.user);
+  } catch {
+    isLoggedIn = false;
+  }
+
   return (
     <header className="sticky top-0 z-40 border-b border-white/10 bg-[#020617]/85 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-5 py-4 sm:px-8">
@@ -22,10 +33,10 @@ export function SiteHeader() {
           ))}
         </nav>
         <Link
-          href="/login"
+          href={isLoggedIn ? "/dashboard" : "/login"}
           className="inline-flex h-11 items-center justify-center rounded-2xl bg-cyan-300 px-5 text-sm font-black text-slate-950 shadow-lg shadow-cyan-300/20 transition hover:-translate-y-0.5 hover:bg-cyan-200"
         >
-          Login
+          {isLoggedIn ? "Dashboard" : "Login"}
         </Link>
       </div>
     </header>
