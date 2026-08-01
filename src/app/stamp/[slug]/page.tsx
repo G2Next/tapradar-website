@@ -34,52 +34,52 @@ export default async function StampPage({ params }: { params: PageParams }) {
   ].filter(Boolean);
 
   return (
-    <main className="min-h-screen bg-[#f7f8ff] px-5 py-8 text-slate-950 sm:px-8">
+    <main className="min-h-screen bg-[radial-gradient(circle_at_top_right,#0b4f63_0%,#061827_35%,#020617_100%)] px-5 py-10 text-white sm:px-8">
       <section className="mx-auto max-w-xl">
-        <Link href="/" className="inline-flex rounded-2xl border border-slate-200 bg-white px-4 py-3 font-black text-blue-700">
+        <Link href="/" className="inline-flex rounded-2xl border border-white/10 bg-white/[0.07] px-4 py-3 font-black text-cyan-300">
           Zurück
         </Link>
 
         <div className="mt-8 flex items-start gap-4">
-          <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-emerald-50 text-4xl">
+          <div className="flex h-20 w-20 items-center justify-center rounded-3xl border border-white/10 bg-white/[0.08] text-4xl">
             {business.logo_emoji ?? "🏪"}
           </div>
           <div>
             <h1 className="text-4xl font-black tracking-normal">{business.name}</h1>
-            <p className="mt-1 text-lg text-slate-500">{business.category}</p>
+            <p className="mt-1 text-lg text-slate-300">{business.category}</p>
             <div className="mt-3 flex flex-wrap items-center gap-3">
-              <span className="rounded-full bg-emerald-100 px-3 py-1 text-sm font-black text-emerald-700">
+              <span className="rounded-full bg-emerald-300/15 px-3 py-1 text-sm font-black text-emerald-200">
                 {business.public_status === "open" ? "Geöffnet" : "Geschlossen"}
               </span>
               {business.opening_hours ? (
-                <span className="text-slate-500">{business.opening_hours}</span>
+                <span className="text-slate-300">{business.opening_hours}</span>
               ) : null}
             </div>
           </div>
         </div>
 
         <div className="mt-8">
-          <p className="text-sm font-bold text-slate-500">Adresse</p>
-          <p className="mt-2 text-xl">{addressParts.join(", ") || "Adresse folgt"}</p>
+          <p className="text-sm font-bold text-slate-400">Adresse</p>
+          <p className="mt-2 text-xl text-white">{addressParts.join(", ") || "Adresse folgt"}</p>
         </div>
 
-        <div className="mt-8 rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="mt-8 rounded-[28px] border border-white/10 bg-white/[0.07] p-6 shadow-2xl shadow-black/20">
           <div className="flex items-center justify-between gap-4">
             <h2 className="text-2xl font-black">Treuekarte</h2>
-            <span className="text-xl text-slate-500">0 / {card?.stamps_required ?? 10}</span>
+            <span className="text-xl text-slate-300">0 / {card?.stamps_required ?? 10}</span>
           </div>
           <div className="mt-6 grid grid-cols-5 gap-3">
             {Array.from({ length: Math.min(card?.stamps_required ?? 10, 10) }).map((_, index) => (
-              <div key={index} className="aspect-square rounded-full border border-slate-200 bg-slate-50" />
+              <div key={index} className="aspect-square rounded-full border border-white/15 bg-white/[0.05]" />
             ))}
           </div>
-          <button className="mt-6 w-full rounded-2xl bg-emerald-600 px-5 py-4 text-lg font-black text-white">
+          <button className="mt-6 w-full rounded-2xl bg-emerald-500 px-5 py-4 text-lg font-black text-white shadow-lg shadow-emerald-500/20">
             Ersten Stempel holen
           </button>
         </div>
 
-        <div className="mt-6 rounded-3xl border border-amber-200 bg-amber-50 p-5 text-amber-950">
-          <p className="text-sm font-black">Belohnung</p>
+        <div className="mt-6 rounded-3xl border border-amber-300/30 bg-amber-300/10 p-5 text-amber-100">
+          <p className="text-sm font-black text-amber-200">Belohnung</p>
           <p className="mt-2 text-xl">
             {card
               ? `${card.stamps_required} Stempel → ${card.reward_title}`
@@ -87,10 +87,10 @@ export default async function StampPage({ params }: { params: PageParams }) {
           </p>
         </div>
 
-        <div className="mt-6 rounded-[28px] border border-slate-200 bg-white p-6 text-center">
+        <div className="mt-6 rounded-[28px] border border-white/10 bg-white/[0.07] p-6 text-center">
           <p className="text-4xl">✨</p>
           <h2 className="mt-3 text-2xl font-black">Stempelbuchung kommt als nächstes</h2>
-          <p className="mt-3 leading-7 text-slate-500">
+          <p className="mt-3 leading-7 text-slate-300">
             Diese Seite ist die Grundlage für QR und NFC. Im nächsten Schritt speichern wir echte Stempel pro Kunde.
           </p>
         </div>
