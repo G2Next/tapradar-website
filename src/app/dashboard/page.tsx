@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { headers } from "next/headers";
+import { StampQrCard } from "@/components/dashboard/StampQrCard";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function DashboardPage() {
@@ -12,6 +14,7 @@ export default async function DashboardPage() {
         postal_code: string | null;
         category: string;
         plan: string;
+        slug: string;
       }
     | undefined;
   let loyaltyCards:
@@ -22,6 +25,9 @@ export default async function DashboardPage() {
     }[]
     | undefined;
   let offersCount: number | undefined;
+  const headersList = await headers();
+  const host = headersList.get("host") ?? "localhost:3000";
+  const protocol = host.startsWith("localhost") ? "http" : "https";
 
   try {
     const supabase = await createClient();
@@ -39,7 +45,7 @@ export default async function DashboardPage() {
       if (membership?.business_id) {
         const { data: businessData } = await supabase
           .from("businesses")
-          .select("id, name, city, address, postal_code, category, plan")
+          .select("id, name, slug, city, address, postal_code, category, plan")
           .eq("id", membership.business_id)
           .maybeSingle();
 
@@ -136,6 +142,11 @@ export default async function DashboardPage() {
                 {offersCount ?? 0} aktive Einträge für Kunden-App und Radar.
               </p>
             </Link>
+          </div>
+        ) : null}
+        {business ? (
+          <div className="mt-8">
+            <StampQrCard stampUrl={`${protocol}://${host}/stamp/${business.slug}`} />
           </div>
         ) : null}
         {business ? (
