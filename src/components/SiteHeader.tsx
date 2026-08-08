@@ -10,13 +10,23 @@ const navItems = [
 
 export async function SiteHeader() {
   let isLoggedIn = false;
+  let isGlobalAdmin = false;
 
   try {
     const supabase = await createClient();
     const { data } = await supabase.auth.getUser();
     isLoggedIn = Boolean(data.user);
+    if (data.user) {
+      const { data: assignment } = await supabase
+        .from("global_admins")
+        .select("user_id")
+        .eq("user_id", data.user.id)
+        .maybeSingle();
+      isGlobalAdmin = Boolean(assignment);
+    }
   } catch {
     isLoggedIn = false;
+    isGlobalAdmin = false;
   }
 
   return (
@@ -33,10 +43,10 @@ export async function SiteHeader() {
           ))}
         </nav>
         <Link
-          href={isLoggedIn ? "/dashboard" : "/login"}
+          href={isGlobalAdmin ? "/admin" : isLoggedIn ? "/dashboard" : "/login"}
           className="inline-flex h-11 items-center justify-center rounded-2xl bg-cyan-300 px-5 text-sm font-black text-slate-950 shadow-lg shadow-cyan-300/20 transition hover:-translate-y-0.5 hover:bg-cyan-200"
         >
-          {isLoggedIn ? "Dashboard" : "Login"}
+          {isGlobalAdmin ? "Admin" : isLoggedIn ? "Dashboard" : "Login"}
         </Link>
       </div>
     </header>

@@ -54,7 +54,16 @@ export default function LoginPage() {
         return;
       }
 
-      window.location.href = "/dashboard";
+      const { data: authData } = await supabase.auth.getUser();
+      const { data: adminAssignment } = authData.user
+        ? await supabase
+            .from("global_admins")
+            .select("user_id")
+            .eq("user_id", authData.user.id)
+            .maybeSingle()
+        : { data: null };
+
+      window.location.href = adminAssignment ? "/admin" : "/dashboard";
     } catch {
       setMessage("Supabase ist noch nicht verbunden. Bitte trage zuerst die Umgebungsvariablen ein.");
     } finally {
