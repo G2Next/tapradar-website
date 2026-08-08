@@ -2,14 +2,17 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 export default function LoginPage() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [mode, setMode] = useState<"signin" | "signup" | "magic">("signin");
   const [isLoading, setIsLoading] = useState(false);
+  const [legalConfirmed, setLegalConfirmed] = useState(false);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -17,13 +20,19 @@ export default function LoginPage() {
     setMessage("");
 
     try {
+      const requestedNext = new URLSearchParams(window.location.search).get("next");
+      const nextPath = requestedNext?.startsWith("/") && !requestedNext.startsWith("//") ? requestedNext : "/dashboard";
+      if (mode === "signup" && !legalConfirmed) {
+        setMessage("Bitte bestätige die AGB und die Kenntnisnahme der Datenschutzerklärung.");
+        return;
+      }
       const supabase = createClient();
-      const { error } =
+      const { data, error } =
         mode === "magic"
           ? await supabase.auth.signInWithOtp({
               email,
               options: {
-                emailRedirectTo: `${window.location.origin}/auth/callback?next=/dashboard`,
+                emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(nextPath)}`,
               },
             })
           : mode === "signup"
@@ -31,7 +40,7 @@ export default function LoginPage() {
                 email,
                 password,
                 options: {
-                  emailRedirectTo: `${window.location.origin}/auth/callback?next=/dashboard`,
+                  emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(nextPath)}`,
                 },
               })
             : await supabase.auth.signInWithPassword({
@@ -40,7 +49,13 @@ export default function LoginPage() {
               });
 
       if (error) {
-        setMessage(error.message);
+        setMessage(
+          mode === "signup"
+            ? "Konto konnte nicht erstellt werden. Prüfe die Eingaben oder versuche es später erneut."
+            : mode === "magic"
+              ? "Login-Link konnte nicht gesendet werden. Prüfe die Eingabe oder versuche es später erneut."
+              : "Anmeldung nicht möglich. E-Mail oder Passwort ist falsch.",
+        );
         return;
       }
 
@@ -50,11 +65,17 @@ export default function LoginPage() {
       }
 
       if (mode === "signup") {
+        if (data.session) {
+          router.push(`/rechtliches?next=${encodeURIComponent(nextPath)}`);
+          router.refresh();
+          return;
+        }
         setMessage("Konto wurde erstellt. Falls Supabase eine Bestätigung verlangt, prüfe bitte dein E-Mail-Postfach.");
         return;
       }
 
-      window.location.href = "/dashboard";
+      router.push(`/rechtliches?next=${encodeURIComponent(nextPath)}`);
+      router.refresh();
     } catch {
       setMessage("Supabase ist noch nicht verbunden. Bitte trage zuerst die Umgebungsvariablen ein.");
     } finally {
@@ -70,7 +91,7 @@ export default function LoginPage() {
         </Link>
         <h1 className="mt-6 text-4xl font-black tracking-normal">Anmelden</h1>
         <p className="mt-3 leading-7 text-slate-300">
-          Melde dich mit E-Mail und Passwort an. Für Tests kannst du auch ein neues Konto erstellen.
+          Melde dich mit E-Mail und Passwort an oder erstelle ein neues Konto.
         </p>
         <div className="mt-7 grid grid-cols-3 rounded-2xl border border-white/10 bg-white/[0.05] p-1 text-sm font-black">
           {[
@@ -84,6 +105,7 @@ export default function LoginPage() {
               onClick={() => {
                 setMode(value as "signin" | "signup" | "magic");
                 setMessage("");
+                setLegalConfirmed(false);
               }}
               className={`rounded-xl px-3 py-2 transition ${
                 mode === value ? "bg-cyan-300 text-slate-950" : "text-slate-300 hover:text-white"
@@ -111,14 +133,18 @@ export default function LoginPage() {
               <input
                 type="password"
                 required
-                minLength={6}
+                minLength={8}
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
                 className="rounded-2xl border border-white/15 bg-white/[0.06] px-4 py-3 text-base font-normal normal-case tracking-normal text-white outline-none focus:border-cyan-300"
-                placeholder="Mindestens 6 Zeichen"
+                placeholder="Mindestens 8 Zeichen"
               />
             </label>
           ) : null}
+          {mode === "signup" ? <label className="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-sm leading-6 text-slate-300">
+            <input type="checkbox" required checked={legalConfirmed} onChange={(event) => setLegalConfirmed(event.target.checked)} className="mt-1 h-5 w-5 shrink-0 accent-cyan-300"/>
+            <span>Ich akzeptiere die <Link href="/agb" target="_blank" rel="noopener noreferrer" className="font-black text-cyan-300 underline">AGB</Link> und bestätige, die <Link href="/datenschutz" target="_blank" rel="noopener noreferrer" className="font-black text-cyan-300 underline">Datenschutzerklärung</Link> gelesen zu haben.</span>
+          </label> : null}
           <button
             disabled={isLoading}
             className="rounded-2xl bg-gradient-to-r from-cyan-300 to-blue-500 px-5 py-4 font-black text-slate-950 disabled:cursor-not-allowed disabled:opacity-60"

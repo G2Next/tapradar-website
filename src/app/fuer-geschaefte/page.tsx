@@ -1,4 +1,5 @@
 import { PlanCards } from "@/components/PlanCards";
+import { PlanComparisonTable } from "@/components/PlanComparisonTable";
 import { Badge, PrimaryLink, SecondaryLink, SectionTitle } from "@/components/Ui";
 
 const features = [
@@ -22,7 +23,7 @@ export default function BusinessPage() {
             TapRadar ist die digitale Kundenbindungsplattform für lokale Geschäfte in Wien und Österreich. Mit einem NFC-Tag am Kassentisch verwandeln Sie jeden Besuch in Kundenbindung, ohne teure Hardware und ohne komplizierte Software.
           </p>
           <div className="mt-8 flex flex-wrap gap-4">
-            <PrimaryLink href="/preise">Jetzt starten</PrimaryLink>
+            <PrimaryLink href="#tarife">Tarife ansehen</PrimaryLink>
             <SecondaryLink href="#wie-funktioniert">So funktioniert es</SecondaryLink>
           </div>
         </div>
@@ -73,10 +74,14 @@ export default function BusinessPage() {
         </div>
       </section>
 
-      <section className="bg-white/[0.03] px-5 py-20 sm:px-8">
+      <section id="tarife" className="scroll-mt-24 bg-white/[0.03] px-5 py-20 sm:px-8">
         <div className="mx-auto max-w-7xl">
-          <SectionTitle badge="Preise" title="Monatlich kündbar. Schnell startklar." />
-          <PlanCards />
+          <SectionTitle badge="Tarifvergleich" title="Alle Funktionen im Überblick." />
+          <PlanComparisonTable />
+          <div className="mt-20">
+            <SectionTitle badge="Preise" title="Monatlich kündbar. Schnell startklar." />
+            <PlanCards />
+          </div>
         </div>
       </section>
     </main>

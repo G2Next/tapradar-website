@@ -4,9 +4,9 @@ import { SiteHeader } from "@/components/SiteHeader";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "TapRadar | Digitale Stempelkarte für lokale Geschäfte",
+  title: "TapRadar | Kostenlose digitale Stempelkarten-App",
   description:
-    "TapRadar ist die digitale Stempelkarte und Kundenbindungsplattform für lokale Geschäfte in Österreich.",
+    "TapRadar ist die kostenlose App für digitale Stempelkarten, lokale Geschäfte und Belohnungen.",
 };
 
 export default function RootLayout({

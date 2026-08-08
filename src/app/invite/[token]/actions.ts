@@ -1,0 +1,2 @@
+"use server"; import { redirect } from "next/navigation"; import { createClient } from "@/lib/supabase/server";
+export async function acceptInvitation(token: string) { const supabase = await createClient(); const { data: auth } = await supabase.auth.getUser(); if (!auth.user) redirect(`/login?next=${encodeURIComponent(`/invite/${token}`)}`); const { error } = await supabase.rpc("accept_business_invitation", { invitation_token: token }); if (error) redirect(`/invite/${token}?error=invalid`); redirect("/dashboard?invited=1"); }
