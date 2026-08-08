@@ -1,173 +1,39 @@
 import Link from "next/link";
-import { getCurrentBusinessId } from "@/lib/dashboard";
+import { redirect } from "next/navigation";
+import { getDashboardContext } from "@/lib/dashboard";
 import { createOffer, updateOffer } from "./actions";
 
-type SearchParams = Promise<{ saved?: string; error?: string }>;
+type SearchParams=Promise<{saved?:string;error?:string}>;
+type Asset={storage_path:string;mime_type:string;alt_text:string|null};
+type Offer={id:string;title:string;description:string|null;offer_type:string;discount_type:string|null;discount_value:number|null;minimum_purchase_amount:number|null;redemption_code:string|null;conditions:string|null;starts_at:string|null;ends_at:string|null;is_active:boolean;location_id:string|null;organization_assets:Asset|Asset[]|null};
+const offerTypes=[{value:"aktion",label:"Aktion",icon:"🔥"},{value:"gutschein",label:"Gutschein",icon:"🎟️"}];
+const toLocal=(value:string|null)=>value?value.slice(0,16):"";
 
-const offerTypes = [
-  { value: "aktion", label: "Aktion", icon: "🔥" },
-  { value: "gutschein", label: "Gutschein", icon: "🎟️" },
-  { value: "belohnung", label: "Belohnung", icon: "🎁" },
-];
-
-function toDateTimeLocal(value: string | null) {
-  if (!value) return "";
-  return value.slice(0, 16);
+export default async function OffersPage({searchParams}:{searchParams:SearchParams}) {
+  const params=await searchParams;const{supabase,user,organizationId}=await getDashboardContext();
+  if(!user)redirect("/login?next=/dashboard/offers");if(!organizationId)redirect("/dashboard/onboarding");
+  const[{data:offerData},{data:locations}]=await Promise.all([
+    supabase.from("offers").select("id,title,description,offer_type,discount_type,discount_value,minimum_purchase_amount,redemption_code,conditions,starts_at,ends_at,is_active,location_id,organization_assets!offers_media_asset_id_fkey(storage_path,mime_type,alt_text)").eq("organization_id",organizationId).order("created_at",{ascending:false}),
+    supabase.from("locations").select("id,name").eq("organization_id",organizationId).eq("is_active",true).order("is_primary",{ascending:false}),
+  ]);
+  const offers=(offerData??[]) as Offer[];
+  return <main className="min-h-screen bg-[radial-gradient(circle_at_top_right,#0b4f63_0%,#061827_35%,#020617_100%)] px-5 py-16 text-white sm:px-8"><section className="mx-auto max-w-6xl"><Link href="/dashboard" className="font-black text-cyan-300">Zurück zum Dashboard</Link><span className="mt-6 inline-flex rounded-full border border-cyan-300/35 bg-cyan-300/10 px-4 py-2 text-sm font-black text-cyan-300">Kunden-App Inhalte</span><h1 className="mt-5 text-5xl font-black">Aktionen & Gutscheine</h1><p className="mt-4 max-w-3xl text-lg leading-8 text-slate-300">Aktionen informieren. Gutscheine besitzen einen fixen Euro- oder Prozentwert. Verdiente Belohnungen werden separat über Treuekarten verwaltet.</p>
+    {params.saved?<p className="mt-7 rounded-2xl bg-emerald-300/10 p-4 text-emerald-100">Eintrag gespeichert.</p>:null}{params.error?<p className="mt-7 rounded-2xl bg-red-300/10 p-4 text-red-100">Speichern nicht möglich. Pflichtfelder, Gutscheinwert oder Datei prüfen (JPG, PNG, WebP oder PDF; maximal 5 MB).</p>:null}
+    <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_.9fr]"><div className="grid content-start gap-4">{offers.map(offer=>{const type=offerTypes.find(item=>item.value===offer.offer_type);return <details key={offer.id} className="group rounded-[24px] border border-white/10 bg-white/[0.07]"><summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-5"><div><div className="flex items-center gap-3"><span className="rounded-full bg-white/[0.08] px-3 py-2 text-sm font-black text-cyan-200">{type?.icon} {type?.label}</span><span className={offer.is_active?"text-sm font-black text-emerald-200":"text-sm font-black text-slate-400"}>{offer.is_active?"Aktiv":"Inaktiv"}</span></div><h2 className="mt-3 text-xl font-black">{offer.title}</h2>{offer.offer_type==="gutschein"?<p className="mt-1 text-sm text-slate-300">{offer.discount_type==="percentage"?`${offer.discount_value} % Rabatt`:`${offer.discount_value?.toFixed(2).replace(".",",")} € Gutschein`} · Code {offer.redemption_code}</p>:null}</div><span className="text-sm font-black text-cyan-300 group-open:hidden">Bearbeiten ↓</span><span className="hidden text-sm font-black text-cyan-300 group-open:inline">Minimieren ↑</span></summary><form action={updateOffer} className="border-t border-white/10 p-5"><input type="hidden" name="offer_id" value={offer.id}/><OfferFields offer={offer} locations={locations??[]}/><button className="mt-5 rounded-2xl bg-cyan-300 px-5 py-3 font-black text-slate-950">Eintrag speichern</button></form></details>})}{offers.length===0?<div className="rounded-[28px] border border-white/10 bg-white/[0.07] p-8"><h2 className="text-2xl font-black">Noch kein Eintrag</h2><p className="mt-3 text-slate-300">Lege rechts die erste Aktion oder den ersten Gutschein an.</p></div>:null}</div>
+      <form action={createOffer} className="h-fit rounded-[28px] border border-white/10 bg-white/[0.07] p-6"><h2 className="text-2xl font-black">Neuer Eintrag</h2><div className="mt-5"><OfferFields locations={locations??[]}/><button className="mt-5 rounded-2xl bg-gradient-to-r from-cyan-300 to-blue-500 px-5 py-4 font-black text-slate-950">Eintrag anlegen</button></div></form></div>
+  </section></main>;
 }
 
-export default async function OffersPage({
-  searchParams,
-}: {
-  searchParams: SearchParams;
-}) {
-  const params = await searchParams;
-  const { supabase, user, businessId } = await getCurrentBusinessId();
-
-  if (!user) {
-    return (
-      <main className="min-h-screen bg-[radial-gradient(circle_at_top_right,#0b4f63_0%,#061827_35%,#020617_100%)] px-5 py-20 text-white sm:px-8">
-        <section className="mx-auto max-w-xl rounded-[28px] border border-white/10 bg-white/[0.07] p-8">
-          <h1 className="text-3xl font-black">Bitte anmelden</h1>
-          <Link href="/login" className="mt-6 inline-flex rounded-2xl bg-cyan-300 px-5 py-3 font-black text-slate-950">
-            Zum Login
-          </Link>
-        </section>
-      </main>
-    );
-  }
-
-  const { data: offers } = businessId
-    ? await supabase
-        .from("business_offers")
-        .select("id, title, description, offer_type, starts_at, ends_at, is_active")
-        .eq("business_id", businessId)
-        .order("created_at", { ascending: false })
-    : { data: [] };
-
-  return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top_right,#0b4f63_0%,#061827_35%,#020617_100%)] px-5 py-20 text-white sm:px-8">
-      <section className="mx-auto max-w-6xl">
-        <Link href="/dashboard" className="font-black text-cyan-300">
-          Zurück zum Dashboard
-        </Link>
-        <div className="mt-6">
-          <span className="inline-flex rounded-full border border-cyan-300/35 bg-cyan-300/10 px-4 py-2 text-sm font-black text-cyan-300">
-            Kunden-App Angebote
-          </span>
-          <h1 className="mt-5 text-5xl font-black tracking-normal">Aktionen & Gutscheine</h1>
-          <p className="mt-4 max-w-2xl text-lg leading-8 text-slate-300">
-            Diese Inhalte erscheinen später in der Kunden-App auf der Geschäftsseite und im Radar-Filter.
-          </p>
-        </div>
-
-        {params.saved ? (
-          <p className="mt-8 rounded-2xl border border-emerald-300/30 bg-emerald-300/10 p-4 font-bold text-emerald-100">
-            Eintrag gespeichert.
-          </p>
-        ) : null}
-        {params.error ? (
-          <p className="mt-8 rounded-2xl border border-red-300/30 bg-red-300/10 p-4 font-bold text-red-100">
-            Speichern nicht möglich. Bitte prüfe Titel und Geschäft.
-          </p>
-        ) : null}
-
-        <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_0.9fr]">
-          <div className="grid gap-5">
-            {(offers ?? []).map((offer) => {
-              const currentType = offerTypes.find((type) => type.value === offer.offer_type);
-
-              return (
-                <form
-                  key={offer.id}
-                  action={updateOffer}
-                  className="rounded-[28px] border border-white/10 bg-white/[0.07] p-6"
-                >
-                  <input type="hidden" name="offer_id" value={offer.id} />
-                  <div className="mb-5 flex flex-wrap items-center gap-3">
-                    <span className="rounded-full bg-white/[0.08] px-3 py-2 text-sm font-black text-cyan-200">
-                      {currentType?.icon ?? "🔥"} {currentType?.label ?? "Aktion"}
-                    </span>
-                    <span className={offer.is_active ? "text-sm font-black text-emerald-200" : "text-sm font-black text-slate-400"}>
-                      {offer.is_active ? "Aktiv" : "Inaktiv"}
-                    </span>
-                  </div>
-                  <OfferFields offer={offer} />
-                  <button className="mt-5 rounded-2xl bg-cyan-300 px-5 py-3 font-black text-slate-950">
-                    Eintrag speichern
-                  </button>
-                </form>
-              );
-            })}
-
-            {offers?.length === 0 ? (
-              <div className="rounded-[28px] border border-white/10 bg-white/[0.07] p-8">
-                <h2 className="text-2xl font-black">Noch keine Aktion</h2>
-                <p className="mt-3 leading-7 text-slate-300">Lege rechts dein erstes Angebot, Gutschein oder Belohnungs-Highlight an.</p>
-              </div>
-            ) : null}
-          </div>
-
-          <form action={createOffer} className="h-fit rounded-[28px] border border-white/10 bg-white/[0.07] p-6">
-            <h2 className="text-2xl font-black">Neuer Eintrag</h2>
-            <div className="mt-5">
-              <OfferFields />
-              <button className="mt-5 rounded-2xl bg-gradient-to-r from-cyan-300 to-blue-500 px-5 py-4 font-black text-slate-950">
-                Eintrag anlegen
-              </button>
-            </div>
-          </form>
-        </div>
-      </section>
-    </main>
-  );
+function OfferFields({offer,locations}:{offer?:Offer;locations:{id:string;name:string}[]}) {
+  const asset=Array.isArray(offer?.organization_assets)?offer?.organization_assets[0]:offer?.organization_assets;
+  const mediaUrl=asset?`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/business-media/${asset.storage_path}`:null;
+  return <div className="grid gap-4"><label className="grid gap-2 text-xs font-black uppercase text-slate-300">Typ<select name="offer_type" defaultValue={offer?.offer_type??"aktion"} className="rounded-2xl border border-white/15 bg-[#102235] px-4 py-3 text-base font-normal normal-case">{offerTypes.map(type=><option key={type.value} value={type.value}>{type.icon} {type.label}</option>)}</select></label>
+    <Field name="title" label="Titel" value={offer?.title} placeholder="Sommer-Aktion" required/><label className="grid gap-2 text-xs font-black uppercase text-slate-300">Filiale<select name="location_id" defaultValue={offer?.location_id??""} className="rounded-2xl border border-white/15 bg-[#102235] px-4 py-3 text-base font-normal normal-case"><option value="">Alle Filialen</option>{locations.map(location=><option key={location.id} value={location.id}>{location.name}</option>)}</select></label>
+    <label className="grid gap-2 text-xs font-black uppercase text-slate-300">Beschreibung<textarea name="description" required defaultValue={offer?.description??""} placeholder="Was sieht der Kunde in der App?" className="min-h-24 rounded-2xl border border-white/15 bg-white/[0.06] px-4 py-3 text-base font-normal normal-case"/></label>
+    <div className="grid gap-4 md:grid-cols-2"><label className="grid gap-2 text-xs font-black uppercase text-slate-300">Gutscheinart<select name="discount_type" defaultValue={offer?.discount_type??"fixed"} className="rounded-2xl border border-white/15 bg-[#102235] px-4 py-3 text-base font-normal normal-case"><option value="fixed">Fester Betrag (€)</option><option value="percentage">Prozent (%)</option></select></label><Field name="discount_value" label="Gutscheinwert (nur Gutschein)" type="number" step="0.01" min="0.01" max="10000" value={offer?.discount_value?.toString()}/><Field name="minimum_purchase_amount" label="Mindestkauf (€; optional)" type="number" step="0.01" min="0" value={offer?.minimum_purchase_amount?.toString()}/><Field name="redemption_code" label="Kassencode (optional automatisch)" value={offer?.redemption_code}/></div>
+    <label className="grid gap-2 text-xs font-black uppercase text-slate-300">Bedingungen<textarea name="conditions" defaultValue={offer?.conditions??""} placeholder="z. B. einmal pro Person, nicht kombinierbar" className="min-h-20 rounded-2xl border border-white/15 bg-white/[0.06] px-4 py-3 text-base font-normal normal-case"/></label>
+    {mediaUrl?<a href={mediaUrl} target="_blank" rel="noreferrer" className="rounded-xl border border-cyan-300/20 bg-cyan-300/10 p-3 text-sm font-black text-cyan-200">Aktuelles Bild/PDF öffnen</a>:null}<label className="grid gap-2 text-xs font-black uppercase text-slate-300">Bild oder PDF<input name="media" type="file" accept="image/jpeg,image/png,image/webp,application/pdf" className="rounded-2xl border border-white/15 p-3 text-sm font-normal normal-case"/><span className="text-xs font-normal normal-case text-slate-500">Bilder werden automatisch auf das App-Format 1200 × 630 px zugeschnitten und als optimiertes WebP gespeichert. PDF maximal 5 MB.</span></label><Field name="media_alt_text" label="Bildbeschreibung für Barrierefreiheit" value={asset?.alt_text}/>
+    <div className="grid gap-4 md:grid-cols-2"><Field name="starts_at" label="Start" type="datetime-local" value={toLocal(offer?.starts_at??null)}/><Field name="ends_at" label="Ende" type="datetime-local" value={toLocal(offer?.ends_at??null)}/></div><label className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm font-black"><input name="is_active" type="checkbox" defaultChecked={offer?.is_active??true} className="h-5 w-5 accent-cyan-300"/>In Kunden-App aktiv</label>
+  </div>;
 }
-
-function OfferFields({
-  offer,
-}: {
-  offer?: {
-    title: string;
-    description: string | null;
-    offer_type: string;
-    starts_at: string | null;
-    ends_at: string | null;
-    is_active: boolean;
-  };
-}) {
-  return (
-    <div className="grid gap-4">
-      <label className="grid gap-2 text-xs font-black uppercase tracking-wide text-slate-300">
-        Typ
-        <select name="offer_type" defaultValue={offer?.offer_type ?? "aktion"} className="rounded-2xl border border-white/15 bg-[#102235] px-4 py-3 text-base font-normal normal-case tracking-normal text-white outline-none focus:border-cyan-300">
-          {offerTypes.map((type) => (
-            <option key={type.value} value={type.value}>
-              {type.icon} {type.label}
-            </option>
-          ))}
-        </select>
-      </label>
-      <label className="grid gap-2 text-xs font-black uppercase tracking-wide text-slate-300">
-        Titel
-        <input name="title" required defaultValue={offer?.title ?? ""} placeholder="Sommer-Aktion" className="rounded-2xl border border-white/15 bg-white/[0.06] px-4 py-3 text-base font-normal normal-case tracking-normal text-white outline-none focus:border-cyan-300" />
-      </label>
-      <label className="grid gap-2 text-xs font-black uppercase tracking-wide text-slate-300">
-        Beschreibung
-        <textarea name="description" defaultValue={offer?.description ?? ""} placeholder="Was sieht der Kunde in der App?" className="min-h-24 rounded-2xl border border-white/15 bg-white/[0.06] px-4 py-3 text-base font-normal normal-case tracking-normal text-white outline-none focus:border-cyan-300" />
-      </label>
-      <div className="grid gap-4 md:grid-cols-2">
-        <label className="grid gap-2 text-xs font-black uppercase tracking-wide text-slate-300">
-          Start
-          <input name="starts_at" type="datetime-local" defaultValue={toDateTimeLocal(offer?.starts_at ?? null)} className="rounded-2xl border border-white/15 bg-white/[0.06] px-4 py-3 text-base font-normal normal-case tracking-normal text-white outline-none focus:border-cyan-300" />
-        </label>
-        <label className="grid gap-2 text-xs font-black uppercase tracking-wide text-slate-300">
-          Ende
-          <input name="ends_at" type="datetime-local" defaultValue={toDateTimeLocal(offer?.ends_at ?? null)} className="rounded-2xl border border-white/15 bg-white/[0.06] px-4 py-3 text-base font-normal normal-case tracking-normal text-white outline-none focus:border-cyan-300" />
-        </label>
-      </div>
-      <label className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm font-black text-slate-200">
-        <input name="is_active" type="checkbox" defaultChecked={offer?.is_active ?? true} className="h-5 w-5 accent-cyan-300" />
-        In Kunden-App aktiv
-      </label>
-    </div>
-  );
-}
+function Field({name,label,value,type="text",required=false,...props}:{name:string;label:string;value?:string|null;type?:string;required?:boolean;[key:string]:unknown}) { return <label className="grid gap-2 text-xs font-black uppercase text-slate-300">{label}<input name={name} type={type} required={required} defaultValue={value??""} {...props} className="rounded-2xl border border-white/15 bg-white/[0.06] px-4 py-3 text-base font-normal normal-case"/></label>; }

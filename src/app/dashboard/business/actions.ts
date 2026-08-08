@@ -1,38 +1,26 @@
 "use server";
-
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { getDashboardContext } from "@/lib/dashboard";
+import { inferVatTreatment } from "@/lib/tax";
+import { requiredText } from "@/lib/validation";
 
-export async function updateBusiness(formData: FormData) {
-  const supabase = await createClient();
-  const businessId = String(formData.get("business_id") ?? "");
-
-  const payload = {
-    name: String(formData.get("name") ?? "").trim(),
-    category: String(formData.get("category") ?? "").trim(),
-    city: String(formData.get("city") ?? "").trim(),
-    address: String(formData.get("address") ?? "").trim(),
-    postal_code: String(formData.get("postal_code") ?? "").trim(),
-    phone: String(formData.get("phone") ?? "").trim(),
-    website: String(formData.get("website") ?? "").trim(),
-    description: String(formData.get("description") ?? "").trim(),
-    opening_hours: String(formData.get("opening_hours") ?? "").trim(),
-    logo_emoji: String(formData.get("logo_emoji") ?? "🏪").trim() || "🏪",
-    public_status: String(formData.get("public_status") ?? "open"),
+export async function updateBusiness(formData:FormData) {
+  const context=await getDashboardContext();
+  const countryCode=requiredText(formData.get("billing_country_code"),2).toUpperCase();
+  const taxId=requiredText(formData.get("tax_id"),80)||null;
+  const payload={
+    name:requiredText(formData.get("name"),120), legal_name:requiredText(formData.get("legal_name"),160)||null,
+    category:requiredText(formData.get("category"),80), registration_number:requiredText(formData.get("registration_number"),80)||null,
+    tax_id:taxId, billing_email:requiredText(formData.get("billing_email"),200)||null,
+    billing_address:requiredText(formData.get("billing_address"),160), billing_postal_code:requiredText(formData.get("billing_postal_code"),20),
+    billing_city:requiredText(formData.get("billing_city"),100), billing_country_code:countryCode,
+    vat_treatment:inferVatTreatment(countryCode,taxId), vat_verified_at:null,
+    website:requiredText(formData.get("website"),200)||null, description:requiredText(formData.get("description"),1500)||null,
+    logo_emoji:requiredText(formData.get("logo_emoji"),10)||"🏪",
   };
-
-  if (!businessId || !payload.name || !payload.category) {
-    redirect("/dashboard/business?error=missing-fields");
-  }
-
-  const { error } = await supabase.from("businesses").update(payload).eq("id", businessId);
-
-  if (error) {
-    redirect("/dashboard/business?error=save-failed");
-  }
-
-  revalidatePath("/dashboard");
-  revalidatePath("/dashboard/business");
-  redirect("/dashboard/business?saved=1");
+  if(!context.organizationId||!["owner","manager"].includes(context.role??"")||!payload.name||!payload.category||!payload.billing_address||!payload.billing_postal_code||!payload.billing_city||!/^[A-Z]{2}$/.test(countryCode)) redirect("/dashboard/business?error=missing-fields");
+  const{error}=await context.supabase.from("organizations").update(payload).eq("id",context.organizationId);
+  if(error) redirect("/dashboard/business?error=save-failed");
+  revalidatePath("/dashboard"); revalidatePath("/dashboard/business"); revalidatePath("/dashboard/billing"); redirect("/dashboard/business?saved=1");
 }

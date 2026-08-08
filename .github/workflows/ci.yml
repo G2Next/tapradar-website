@@ -1,0 +1,49 @@
+name: TapRadar CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tapradar-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  web:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run lint
+      - run: npm run build
+      - run: npm audit --audit-level=high
+
+  database:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Start local Supabase
+        run: npx --yes supabase@latest start
+      - name: Rebuild and lint database
+        run: |
+          npx --yes supabase@latest db reset --local
+          npx --yes supabase@latest db lint --local
+      - name: Stop local Supabase
+        if: always()
+        run: npx --yes supabase@latest stop --no-backup

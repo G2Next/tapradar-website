@@ -8,7 +8,10 @@ const faqs = [
   ["Für welche Branchen eignet sich TapRadar?", "Cafés, Restaurants, Friseure, Kosmetikstudios, Bäckereien, Einzelhandel, Fitnessstudios und lokale Dienstleister."],
 ];
 
-export default function ContactPage() {
+type SearchParams = Promise<{ sent?: string; error?: string }>;
+
+export default async function ContactPage({ searchParams }: { searchParams: SearchParams }) {
+  const params = await searchParams;
   return (
     <main className="bg-[radial-gradient(circle_at_top_right,#0b4f63_0%,#061827_35%,#020617_100%)] px-5 py-20 text-white sm:px-8">
       <section className="mx-auto max-w-3xl text-center">
@@ -40,31 +43,32 @@ export default function ContactPage() {
         <aside className="rounded-[28px] border border-white/10 bg-white/[0.07] p-8 lg:sticky lg:top-28">
           <h2 className="text-3xl font-black">Nachricht senden</h2>
           <p className="mt-3 leading-7 text-slate-300">Wir antworten in der Regel innerhalb von 24 Stunden.</p>
-          <form className="mt-8 grid gap-5">
+          {params.sent ? <p className="mt-6 rounded-2xl border border-emerald-300/30 bg-emerald-300/10 p-4 text-left font-bold text-emerald-100">Vielen Dank. Ihre Nachricht ist bei uns angekommen.</p> : null}
+          {params.error ? <p className="mt-6 rounded-2xl border border-red-300/30 bg-red-300/10 p-4 text-left font-bold text-red-100">{params.error === "limit" ? "Zu viele Nachrichten. Bitte versuchen Sie es später erneut." : "Bitte prüfen Sie alle Felder und versuchen Sie es erneut."}</p> : null}
+          <form action={submitContactMessage} className="mt-8 grid gap-5">
+            <label className="sr-only" aria-hidden="true">Website<input name="company_website" tabIndex={-1} autoComplete="off" /></label>
             <label className="grid gap-2 text-xs font-black uppercase tracking-wide text-slate-300">
               Name
-              <input className="rounded-2xl border border-white/15 bg-white/[0.06] px-4 py-3 text-base font-normal normal-case tracking-normal text-white outline-none focus:border-cyan-300" placeholder="Ihr Name" />
+              <input name="name" required minLength={2} maxLength={120} className="rounded-2xl border border-white/15 bg-white/[0.06] px-4 py-3 text-base font-normal normal-case tracking-normal text-white outline-none focus:border-cyan-300" placeholder="Ihr Name" />
             </label>
             <label className="grid gap-2 text-xs font-black uppercase tracking-wide text-slate-300">
               E-Mail
-              <input type="email" className="rounded-2xl border border-white/15 bg-white/[0.06] px-4 py-3 text-base font-normal normal-case tracking-normal text-white outline-none focus:border-cyan-300" placeholder="name@firma.at" />
+              <input name="email" required type="email" maxLength={254} className="rounded-2xl border border-white/15 bg-white/[0.06] px-4 py-3 text-base font-normal normal-case tracking-normal text-white outline-none focus:border-cyan-300" placeholder="name@firma.at" />
             </label>
             <label className="grid gap-2 text-xs font-black uppercase tracking-wide text-slate-300">
               Thema
-              <select className="rounded-2xl border border-white/15 bg-[#102235] px-4 py-3 text-base font-normal normal-case tracking-normal text-white outline-none focus:border-cyan-300">
-                <option>Geschäft registrieren</option>
-                <option>Preise & Pakete</option>
-                <option>Support</option>
-                <option>Sonstiges</option>
+              <select name="subject" className="rounded-2xl border border-white/15 bg-[#102235] px-4 py-3 text-base font-normal normal-case tracking-normal text-white outline-none focus:border-cyan-300">
+                <option value="Geschäft registrieren">Geschäft registrieren</option>
+                <option value="Preise & Pakete">Preise & Pakete</option>
+                <option value="Support">Support</option>
+                <option value="Sonstiges">Sonstiges</option>
               </select>
             </label>
             <label className="grid gap-2 text-xs font-black uppercase tracking-wide text-slate-300">
               Nachricht
-              <textarea className="min-h-32 rounded-2xl border border-white/15 bg-white/[0.06] px-4 py-3 text-base font-normal normal-case tracking-normal text-white outline-none focus:border-cyan-300" placeholder="Wie können wir helfen?" />
+              <textarea name="message" required minLength={10} maxLength={5000} className="min-h-32 rounded-2xl border border-white/15 bg-white/[0.06] px-4 py-3 text-base font-normal normal-case tracking-normal text-white outline-none focus:border-cyan-300" placeholder="Wie können wir helfen?" />
             </label>
-            <button className="rounded-2xl bg-gradient-to-r from-cyan-300 to-blue-500 px-5 py-4 font-black text-slate-950" type="button">
-              Nachricht senden
-            </button>
+            <FormSubmitButton label="Nachricht senden" pendingLabel="Nachricht wird gesendet …" className="rounded-2xl bg-gradient-to-r from-cyan-300 to-blue-500 px-5 py-4 font-black text-slate-950" />
           </form>
           <div className="mt-7 border-t border-white/10 pt-6">
             <a href="mailto:support@tapradar.app" className="font-black text-cyan-300">support@tapradar.app</a>
@@ -75,3 +79,5 @@ export default function ContactPage() {
     </main>
   );
 }
+import { FormSubmitButton } from "@/components/FormSubmitButton";
+import { submitContactMessage } from "./actions";

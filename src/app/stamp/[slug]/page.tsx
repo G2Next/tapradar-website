@@ -9,8 +9,8 @@ export default async function StampPage({ params }: { params: PageParams }) {
   const supabase = await createClient();
 
   const { data: business } = await supabase
-    .from("businesses")
-    .select("id, name, slug, category, city, address, postal_code, opening_hours, logo_emoji, public_status")
+    .from("organizations")
+    .select("id, name, slug, category, logo_emoji, public_status")
     .eq("slug", slug)
     .eq("is_active", true)
     .maybeSingle();
@@ -19,18 +19,18 @@ export default async function StampPage({ params }: { params: PageParams }) {
     notFound();
   }
 
-  const { data: loyaltyCards } = await supabase
+  const [{ data: loyaltyCards }, { data: location }] = await Promise.all([supabase
     .from("loyalty_cards")
     .select("id, title, reward_title, stamps_required")
-    .eq("business_id", business.id)
+    .eq("organization_id", business.id)
     .eq("is_active", true)
     .order("created_at", { ascending: true })
-    .limit(1);
+    .limit(1), supabase.from("locations").select("id, name, city, address, postal_code, opening_hours, public_status").eq("organization_id", business.id).eq("is_primary", true).eq("is_active", true).maybeSingle()]);
 
   const card = loyaltyCards?.[0];
   const addressParts = [
-    business.address,
-    [business.postal_code, business.city].filter(Boolean).join(" "),
+    location?.address,
+    [location?.postal_code, location?.city].filter(Boolean).join(" "),
   ].filter(Boolean);
 
   return (
@@ -49,11 +49,9 @@ export default async function StampPage({ params }: { params: PageParams }) {
             <p className="mt-1 text-lg text-slate-300">{business.category}</p>
             <div className="mt-3 flex flex-wrap items-center gap-3">
               <span className="rounded-full bg-emerald-300/15 px-3 py-1 text-sm font-black text-emerald-200">
-                {business.public_status === "open" ? "Geöffnet" : "Geschlossen"}
+                {location?.public_status === "open" ? "Geöffnet" : "Geschlossen"}
               </span>
-              {business.opening_hours ? (
-                <span className="text-slate-300">{business.opening_hours}</span>
-              ) : null}
+              {location ? <span className="text-slate-300">{location.name}</span> : null}
             </div>
           </div>
         </div>
@@ -73,9 +71,7 @@ export default async function StampPage({ params }: { params: PageParams }) {
               <div key={index} className="aspect-square rounded-full border border-white/15 bg-white/[0.05]" />
             ))}
           </div>
-          <button className="mt-6 w-full rounded-2xl bg-emerald-500 px-5 py-4 text-lg font-black text-white shadow-lg shadow-emerald-500/20">
-            Ersten Stempel holen
-          </button>
+          <p className="mt-6 rounded-2xl bg-emerald-500/15 px-5 py-4 text-center font-black text-emerald-100">Stempel werden über den sicheren QR-/NFC-Code der Filiale gebucht.</p>
         </div>
 
         <div className="mt-6 rounded-3xl border border-amber-300/30 bg-amber-300/10 p-5 text-amber-100">
@@ -89,9 +85,9 @@ export default async function StampPage({ params }: { params: PageParams }) {
 
         <div className="mt-6 rounded-[28px] border border-white/10 bg-white/[0.07] p-6 text-center">
           <p className="text-4xl">✨</p>
-          <h2 className="mt-3 text-2xl font-black">Stempelbuchung kommt als nächstes</h2>
+          <h2 className="mt-3 text-2xl font-black">Sicheres Stempeln aktiv</h2>
           <p className="mt-3 leading-7 text-slate-300">
-            Diese Seite ist die Grundlage für QR und NFC. Im nächsten Schritt speichern wir echte Stempel pro Kunde.
+            Jeder Stempel wird unveränderlich protokolliert, gegen Doppelbuchungen geschützt und mit Filiale und Gerät verknüpft.
           </p>
         </div>
       </section>

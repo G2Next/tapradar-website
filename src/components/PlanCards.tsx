@@ -1,66 +1,42 @@
+import { createClient } from "@/lib/supabase/server";
 import { PrimaryLink, SecondaryLink } from "./Ui";
 
-const plans = [
+const fallbackPlans = [
   {
+    id: "bronze",
+    code: "bronze",
     name: "Bronze",
-    price: "9,99€",
     description: "Für den Einstieg in digitale Kundenbindung.",
-    items: ["NFC/QR Stempelung", "Kundenbelohnung", "QR-Schaufenster Download", "Basis-Statistik", "1 Mitarbeiter"],
-    highlight: "border-amber-700/60",
-    cta: "Bronze wählen",
+    gross_amount: 999,
+    currency: "EUR",
+    billing_interval: "month",
+    features: ["NFC/QR Stempelung", "Kundenbelohnung", "QR-Schaufenster Download", "Basis-Statistik heute/Woche", "1 Mitarbeiter", "Mitarbeiter-PIN System", "Mitarbeiter-Aktivitätslog", "Standard-Support"],
   },
   {
+    id: "gold",
+    code: "gold",
     name: "Gold",
-    price: "49,99€",
     description: "Für Geschäfte, die Marketing aktiv nutzen.",
-    items: ["Alles aus Bronze", "5 Mitarbeiter", "2 Werbungen pro Monat", "2 Kampagnen pro Monat", "Wöchentlicher E-Mail-Bericht"],
-    highlight: "border-yellow-300/70 -translate-y-0 md:-translate-y-3",
-    cta: "Gold testen",
-    popular: true,
+    gross_amount: 4999,
+    currency: "EUR",
+    billing_interval: "month",
+    features: ["Alles aus Bronze", "5 Mitarbeiter", "2× Werbung pro Monat", "2× Kampagnen pro Monat", "Wöchentlicher E-Mail-Bericht", "14 Tage kostenlos testen"],
   },
   {
+    id: "platinum",
+    code: "platinum",
     name: "Platinum",
-    price: "99,99€",
     description: "Maximale Reichweite, Werbung und Wachstum.",
-    items: ["Alles aus Gold", "15 Mitarbeiter", "Push-Benachrichtigungen", "GPS-Proximity Werbung", "Erweiterte Analytik"],
-    highlight: "border-slate-200/60",
-    cta: "Platinum wählen",
+    gross_amount: 9999,
+    currency: "EUR",
+    billing_interval: "month",
+    features: ["Alles aus Gold", "15 Mitarbeiter", "4× Werbung pro Monat", "4× Kampagnen pro Monat", "Push-Benachrichtigungen", "GPS-Proximity Werbung", "Retargeting & Countdown Push", "Erweiterte Analytik", "Werbe-Analytik CTR/CVR", "Monatlicher PDF-Bericht", "White-Label QR-Plakat", "Prioritäts-Support 24h", "14 Tage kostenlos testen"],
   },
 ];
 
-export function PlanCards() {
-  return (
-    <div className="grid gap-6 md:grid-cols-3">
-      {plans.map((plan) => (
-        <article
-          key={plan.name}
-          className={`relative rounded-[28px] border bg-white/[0.07] p-8 shadow-2xl shadow-black/10 ${plan.highlight}`}
-        >
-          {plan.popular ? (
-            <span className="absolute right-5 top-5 rounded-full bg-yellow-300 px-3 py-1 text-xs font-black text-yellow-950">
-              Beliebt
-            </span>
-          ) : null}
-          <h3 className="text-3xl font-black text-white">{plan.name}</h3>
-          <div className="mt-4 text-5xl font-black text-white">
-            {plan.price} <span className="text-base font-normal text-slate-300">/Monat</span>
-          </div>
-          <p className="mt-4 min-h-12 text-sm leading-6 text-slate-300">{plan.description}</p>
-          <ul className="my-7 grid gap-3 text-sm text-slate-300">
-            {plan.items.map((item) => (
-              <li key={item} className="flex gap-2 border-b border-white/10 pb-3">
-                <span className="font-black text-cyan-300">✓</span>
-                <span>{item}</span>
-              </li>
-            ))}
-          </ul>
-          {plan.popular ? (
-            <PrimaryLink href="/kontakt">{plan.cta}</PrimaryLink>
-          ) : (
-            <SecondaryLink href="/kontakt">{plan.cta}</SecondaryLink>
-          )}
-        </article>
-      ))}
-    </div>
-  );
+export async function PlanCards() {
+  let plans:Array<{id:string;code:string;name:string;description:string|null;gross_amount:number;currency:string;billing_interval:string;features:unknown}>=[];
+  try{const supabase=await createClient();const{data}=await supabase.from("subscription_products").select("id,code,name,description,gross_amount,currency,billing_interval,features").eq("is_active",true).order("sort_order");plans=data??[];}catch{plans=[];}
+  if(!plans.length)plans=fallbackPlans;
+  return <div className="grid gap-6 md:grid-cols-3">{plans.map((plan,index)=>{const popular=index===1;return <article key={plan.id} className={`relative min-h-[320px] rounded-[28px] border bg-white/[0.07] p-8 shadow-2xl shadow-black/10 ${popular?"border-yellow-300/70 -translate-y-0 md:-translate-y-3":"border-white/20"}`}>{popular?<span className="absolute right-5 top-5 rounded-full bg-yellow-300 px-3 py-1 text-xs font-black text-yellow-950">Beliebt</span>:null}<h3 className="text-3xl font-black text-white">{plan.name}</h3><div className="mt-4 text-5xl font-black text-white">{new Intl.NumberFormat("de-AT",{style:"currency",currency:plan.currency.toUpperCase()}).format(plan.gross_amount/100)} <span className="text-base font-normal text-slate-300">/{plan.billing_interval==="year"?"Jahr":"Monat"}</span></div><p className="mt-5 min-h-14 text-sm leading-6 text-slate-300">{plan.description}</p><div className="mt-8">{popular?<PrimaryLink href="/login">{plan.name} testen</PrimaryLink>:<SecondaryLink href="/login">{plan.name} wählen</SecondaryLink>}</div></article>})}</div>;
 }

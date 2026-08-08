@@ -4,17 +4,24 @@ import { createClient } from "@/lib/supabase/server";
 const navItems = [
   { href: "/", label: "Home" },
   { href: "/fuer-geschaefte", label: "Für Geschäfte" },
-  { href: "/preise", label: "Preise" },
-  { href: "/kontakt", label: "Kontakt" },
+  { href: "/kontakt", label: "Kontakte" },
 ];
 
 export async function SiteHeader() {
   let isLoggedIn = false;
+  let isPlatformAdmin = false;
+  let hasBusiness = false;
 
   try {
     const supabase = await createClient();
     const { data } = await supabase.auth.getUser();
     isLoggedIn = Boolean(data.user);
+    if (data.user) {
+      const { data: admin } = await supabase.from("platform_admins").select("user_id").eq("user_id", data.user.id).eq("is_active", true).maybeSingle();
+      isPlatformAdmin = Boolean(admin);
+      const { data: membership } = await supabase.from("organization_members").select("id").eq("user_id", data.user.id).eq("is_active", true).limit(1).maybeSingle();
+      hasBusiness = Boolean(membership);
+    }
   } catch {
     isLoggedIn = false;
   }
@@ -33,10 +40,10 @@ export async function SiteHeader() {
           ))}
         </nav>
         <Link
-          href={isLoggedIn ? "/dashboard" : "/login"}
+          href={isPlatformAdmin ? "/admin" : isLoggedIn ? hasBusiness ? "/dashboard" : "/app" : "/login"}
           className="inline-flex h-11 items-center justify-center rounded-2xl bg-cyan-300 px-5 text-sm font-black text-slate-950 shadow-lg shadow-cyan-300/20 transition hover:-translate-y-0.5 hover:bg-cyan-200"
         >
-          {isLoggedIn ? "Dashboard" : "Login"}
+          {isPlatformAdmin ? "Administration" : isLoggedIn ? hasBusiness ? "Dashboard" : "Meine App" : "Anmelden"}
         </Link>
       </div>
     </header>

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getCurrentBusinessId } from "@/lib/dashboard";
+import { getDashboardContext } from "@/lib/dashboard";
 import { createLoyaltyCard, updateLoyaltyCard } from "./actions";
 
 type SearchParams = Promise<{ saved?: string; error?: string }>;
@@ -10,7 +10,7 @@ export default async function LoyaltyCardsPage({
   searchParams: SearchParams;
 }) {
   const params = await searchParams;
-  const { supabase, user, businessId } = await getCurrentBusinessId();
+  const { supabase, user, organizationId } = await getDashboardContext();
 
   if (!user) {
     return (
@@ -25,12 +25,15 @@ export default async function LoyaltyCardsPage({
     );
   }
 
-  const { data: cards } = businessId
+  const { data: cards } = organizationId
     ? await supabase
         .from("loyalty_cards")
-        .select("id, title, reward_title, stamps_required, is_active")
-        .eq("business_id", businessId)
+        .select("id, title, reward_title, earning_rule, verification_instructions, stamps_required, is_active, location_id")
+        .eq("organization_id", organizationId)
         .order("created_at", { ascending: true })
+    : { data: [] };
+  const { data: locations } = organizationId
+    ? await supabase.from("locations").select("id, name").eq("organization_id", organizationId).eq("is_active", true).order("is_primary", { ascending: false })
     : { data: [] };
 
   return (
@@ -78,9 +81,18 @@ export default async function LoyaltyCardsPage({
                     Belohnung
                     <input name="reward_title" required defaultValue={card.reward_title} className="rounded-2xl border border-white/15 bg-white/[0.06] px-4 py-3 text-base font-normal normal-case tracking-normal text-white outline-none focus:border-cyan-300" />
                   </label>
+                  <label className="grid gap-2 text-xs font-black uppercase tracking-wide text-slate-300 md:col-span-2">Voraussetzung pro Stempel<input name="earning_rule" required defaultValue={card.earning_rule ?? "1 teilnahmeberechtigtes Produkt kaufen"} placeholder="z. B. 1 Pizza kaufen = 1 Stempel" className="rounded-2xl border border-white/15 bg-white/[0.06] px-4 py-3 text-base font-normal normal-case tracking-normal text-white" /></label>
+                  <label className="grid gap-2 text-xs font-black uppercase tracking-wide text-slate-300 md:col-span-2">Prüfung im Geschäft<textarea name="verification_instructions" required defaultValue={card.verification_instructions ?? "Mitarbeiter prüft den Kaufbeleg und vergibt den Stempel über das TapRadar-Gerät."} placeholder="Wie prüft das Personal den Kauf?" className="min-h-20 rounded-2xl border border-white/15 bg-white/[0.06] px-4 py-3 text-base font-normal normal-case tracking-normal text-white" /></label>
                   <label className="grid gap-2 text-xs font-black uppercase tracking-wide text-slate-300">
                     Stempelanzahl
                     <input name="stamps_required" type="number" min="1" max="50" required defaultValue={card.stamps_required} className="rounded-2xl border border-white/15 bg-white/[0.06] px-4 py-3 text-base font-normal normal-case tracking-normal text-white outline-none focus:border-cyan-300" />
+                  </label>
+                  <label className="grid gap-2 text-xs font-black uppercase tracking-wide text-slate-300">
+                    Filiale
+                    <select name="location_id" defaultValue={card.location_id ?? ""} className="rounded-2xl border border-white/15 bg-[#102235] px-4 py-3 text-base font-normal normal-case text-white">
+                      <option value="">Alle Filialen</option>
+                      {(locations ?? []).map((location) => <option key={location.id} value={location.id}>{location.name}</option>)}
+                    </select>
                   </label>
                   <label className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm font-black text-slate-200">
                     <input name="is_active" type="checkbox" defaultChecked={card.is_active} className="h-5 w-5 accent-cyan-300" />
@@ -112,9 +124,18 @@ export default async function LoyaltyCardsPage({
                 Belohnung
                 <input name="reward_title" required placeholder="Gratis Kaffee" className="rounded-2xl border border-white/15 bg-white/[0.06] px-4 py-3 text-base font-normal normal-case tracking-normal text-white outline-none focus:border-cyan-300" />
               </label>
+              <label className="grid gap-2 text-xs font-black uppercase tracking-wide text-slate-300">Voraussetzung pro Stempel<input name="earning_rule" required placeholder="1 Pizza kaufen = 1 Stempel" className="rounded-2xl border border-white/15 bg-white/[0.06] px-4 py-3 text-base font-normal normal-case tracking-normal text-white" /></label>
+              <label className="grid gap-2 text-xs font-black uppercase tracking-wide text-slate-300">Prüfung im Geschäft<textarea name="verification_instructions" required defaultValue="Mitarbeiter prüft den Kaufbeleg und vergibt den Stempel über das TapRadar-Gerät." className="min-h-20 rounded-2xl border border-white/15 bg-white/[0.06] px-4 py-3 text-base font-normal normal-case tracking-normal text-white" /></label>
               <label className="grid gap-2 text-xs font-black uppercase tracking-wide text-slate-300">
                 Stempelanzahl
                 <input name="stamps_required" type="number" min="1" max="50" required defaultValue={10} className="rounded-2xl border border-white/15 bg-white/[0.06] px-4 py-3 text-base font-normal normal-case tracking-normal text-white outline-none focus:border-cyan-300" />
+              </label>
+              <label className="grid gap-2 text-xs font-black uppercase tracking-wide text-slate-300">
+                Filiale
+                <select name="location_id" className="rounded-2xl border border-white/15 bg-[#102235] px-4 py-3 text-base font-normal normal-case text-white">
+                  <option value="">Alle Filialen</option>
+                  {(locations ?? []).map((location) => <option key={location.id} value={location.id}>{location.name}</option>)}
+                </select>
               </label>
               <label className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm font-black text-slate-200">
                 <input name="is_active" type="checkbox" defaultChecked className="h-5 w-5 accent-cyan-300" />

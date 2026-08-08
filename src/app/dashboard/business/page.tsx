@@ -1,157 +1,29 @@
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
 import { businessCategories, businessIconOptions } from "@/lib/businessCategories";
+import { getDashboardContext } from "@/lib/dashboard";
+import { countryOptions, vatLabel, type VatTreatment } from "@/lib/tax";
 import { updateBusiness } from "./actions";
 
-type SearchParams = Promise<{ saved?: string; error?: string }>;
-
-export default async function BusinessSettingsPage({
-  searchParams,
-}: {
-  searchParams: SearchParams;
-}) {
-  const params = await searchParams;
-  const supabase = await createClient();
-  const { data: userData } = await supabase.auth.getUser();
-
-  if (!userData.user) {
-    return (
-      <main className="min-h-screen bg-[radial-gradient(circle_at_top_right,#0b4f63_0%,#061827_35%,#020617_100%)] px-5 py-20 text-white sm:px-8">
-        <section className="mx-auto max-w-xl rounded-[28px] border border-white/10 bg-white/[0.07] p-8">
-          <h1 className="text-3xl font-black">Bitte anmelden</h1>
-          <Link href="/login" className="mt-6 inline-flex rounded-2xl bg-cyan-300 px-5 py-3 font-black text-slate-950">
-            Zum Login
-          </Link>
-        </section>
-      </main>
-    );
-  }
-
-  const { data: membership } = await supabase
-    .from("business_members")
-    .select("business_id")
-    .eq("user_id", userData.user.id)
-    .eq("is_active", true)
-    .maybeSingle();
-
-  const { data: business } = membership?.business_id
-    ? await supabase
-        .from("businesses")
-        .select("id, name, category, city, address, postal_code, phone, website, description, opening_hours, logo_emoji, public_status, plan")
-        .eq("id", membership.business_id)
-        .maybeSingle()
-    : { data: null };
-
-  return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top_right,#0b4f63_0%,#061827_35%,#020617_100%)] px-5 py-20 text-white sm:px-8">
-      <section className="mx-auto max-w-5xl">
-        <Link href="/dashboard" className="font-black text-cyan-300">
-          Zurück zum Dashboard
-        </Link>
-        <div className="mt-6 flex flex-wrap items-end justify-between gap-5">
-          <div>
-            <span className="inline-flex rounded-full border border-cyan-300/35 bg-cyan-300/10 px-4 py-2 text-sm font-black text-cyan-300">
-              Kunden-App Daten
-            </span>
-            <h1 className="mt-5 text-5xl font-black tracking-normal">Geschäft bearbeiten</h1>
-            <p className="mt-4 max-w-2xl text-lg leading-8 text-slate-300">
-              Diese Daten sieht der Kunde später in der TapRadar App: Radar, Karte, Detailseite, Aktionen und Treuekarte.
-            </p>
-          </div>
-        </div>
-
-        {params.saved ? (
-          <p className="mt-8 rounded-2xl border border-emerald-300/30 bg-emerald-300/10 p-4 font-bold text-emerald-100">
-            Geschäft gespeichert.
-          </p>
-        ) : null}
-        {params.error ? (
-          <p className="mt-8 rounded-2xl border border-red-300/30 bg-red-300/10 p-4 font-bold text-red-100">
-            Speichern nicht möglich. Bitte prüfe die Pflichtfelder.
-          </p>
-        ) : null}
-
-        {business ? (
-          <form action={updateBusiness} className="mt-8 grid gap-6 rounded-[28px] border border-white/10 bg-white/[0.07] p-6 sm:p-8">
-            <input type="hidden" name="business_id" value={business.id} />
-            <div className="grid gap-5 md:grid-cols-2">
-              <label className="grid gap-2 text-xs font-black uppercase tracking-wide text-slate-300">
-                Geschäftsname
-                <input name="name" required defaultValue={business.name} className="rounded-2xl border border-white/15 bg-white/[0.06] px-4 py-3 text-base font-normal normal-case tracking-normal text-white outline-none focus:border-cyan-300" />
-              </label>
-              <label className="grid gap-2 text-xs font-black uppercase tracking-wide text-slate-300">
-                Kategorie
-                <select name="category" required defaultValue={business.category} className="rounded-2xl border border-white/15 bg-[#102235] px-4 py-3 text-base font-normal normal-case tracking-normal text-white outline-none focus:border-cyan-300">
-                  {businessCategories.map((category) => (
-                    <optgroup key={category.group} label={category.group}>
-                      {category.options.map((option) => (
-                        <option key={option.value} value={option.value}>
-                          {option.icon} {option.value}
-                        </option>
-                      ))}
-                    </optgroup>
-                  ))}
-                </select>
-              </label>
-              <label className="grid gap-2 text-xs font-black uppercase tracking-wide text-slate-300">
-                Straße & Hausnummer
-                <input name="address" defaultValue={business.address ?? ""} placeholder="Stephansplatz 1" className="rounded-2xl border border-white/15 bg-white/[0.06] px-4 py-3 text-base font-normal normal-case tracking-normal text-white outline-none focus:border-cyan-300" />
-              </label>
-              <label className="grid gap-2 text-xs font-black uppercase tracking-wide text-slate-300">
-                PLZ
-                <input name="postal_code" defaultValue={business.postal_code ?? ""} placeholder="1010" className="rounded-2xl border border-white/15 bg-white/[0.06] px-4 py-3 text-base font-normal normal-case tracking-normal text-white outline-none focus:border-cyan-300" />
-              </label>
-              <label className="grid gap-2 text-xs font-black uppercase tracking-wide text-slate-300">
-                Ort
-                <input name="city" defaultValue={business.city ?? ""} placeholder="Wien" className="rounded-2xl border border-white/15 bg-white/[0.06] px-4 py-3 text-base font-normal normal-case tracking-normal text-white outline-none focus:border-cyan-300" />
-              </label>
-              <label className="grid gap-2 text-xs font-black uppercase tracking-wide text-slate-300">
-                Telefon
-                <input name="phone" defaultValue={business.phone ?? ""} className="rounded-2xl border border-white/15 bg-white/[0.06] px-4 py-3 text-base font-normal normal-case tracking-normal text-white outline-none focus:border-cyan-300" />
-              </label>
-              <label className="grid gap-2 text-xs font-black uppercase tracking-wide text-slate-300">
-                Website
-                <input name="website" defaultValue={business.website ?? ""} className="rounded-2xl border border-white/15 bg-white/[0.06] px-4 py-3 text-base font-normal normal-case tracking-normal text-white outline-none focus:border-cyan-300" />
-              </label>
-              <label className="grid gap-2 text-xs font-black uppercase tracking-wide text-slate-300">
-                Öffnungszeiten
-                <input name="opening_hours" defaultValue={business.opening_hours ?? ""} placeholder="08:00 - 20:00" className="rounded-2xl border border-white/15 bg-white/[0.06] px-4 py-3 text-base font-normal normal-case tracking-normal text-white outline-none focus:border-cyan-300" />
-              </label>
-              <label className="grid gap-2 text-xs font-black uppercase tracking-wide text-slate-300">
-                App Symbol
-                <select name="logo_emoji" defaultValue={business.logo_emoji ?? "🏪"} className="rounded-2xl border border-white/15 bg-[#102235] px-4 py-3 text-base font-normal normal-case tracking-normal text-white outline-none focus:border-cyan-300">
-                  {businessIconOptions.map((option) => (
-                    <option key={`${option.icon}-${option.value}`} value={option.icon}>
-                      {option.icon} {option.value}
-                    </option>
-                  ))}
-                  <option value="🏪">🏪 Allgemeines Geschäft</option>
-                </select>
-              </label>
-              <label className="grid gap-2 text-xs font-black uppercase tracking-wide text-slate-300 md:col-span-2">
-                Beschreibung
-                <textarea name="description" defaultValue={business.description ?? ""} className="min-h-28 rounded-2xl border border-white/15 bg-white/[0.06] px-4 py-3 text-base font-normal normal-case tracking-normal text-white outline-none focus:border-cyan-300" />
-              </label>
-              <label className="grid gap-2 text-xs font-black uppercase tracking-wide text-slate-300">
-                Sichtbarkeit in App
-                <select name="public_status" defaultValue={business.public_status} className="rounded-2xl border border-white/15 bg-[#102235] px-4 py-3 text-base font-normal normal-case tracking-normal text-white outline-none focus:border-cyan-300">
-                  <option value="open">Open</option>
-                  <option value="closed">Geschlossen anzeigen</option>
-                  <option value="hidden">Verstecken</option>
-                </select>
-              </label>
-            </div>
-            <button className="rounded-2xl bg-gradient-to-r from-cyan-300 to-blue-500 px-5 py-4 font-black text-slate-950">
-              Geschäft speichern
-            </button>
-          </form>
-        ) : (
-          <div className="mt-8 rounded-[28px] border border-white/10 bg-white/[0.07] p-8">
-            <h2 className="text-2xl font-black">Noch kein Geschäft verbunden</h2>
-            <p className="mt-3 leading-7 text-slate-300">Lege zuerst ein Geschäft in Supabase an oder verbinde deinen Account als Besitzer.</p>
-          </div>
-        )}
-      </section>
-    </main>
-  );
+type SearchParams = Promise<{ saved?:string; error?:string }>;
+export default async function OrganizationSettingsPage({searchParams}:{searchParams:SearchParams}) {
+  const params=await searchParams; const context=await getDashboardContext();
+  if(!context.user) redirect("/login?next=/dashboard/business"); if(!context.organizationId) redirect("/dashboard/onboarding");
+  const {data:organization}=await context.supabase.from("organizations").select("id,name,legal_name,category,registration_number,tax_id,billing_email,billing_address,billing_postal_code,billing_city,billing_country_code,vat_treatment,website,description,logo_emoji,public_status,onboarding_status,plan").eq("id",context.organizationId).single();
+  const canManage=["owner","manager"].includes(context.role??"");
+  return <main className="min-h-screen bg-slate-950 px-5 py-14 text-white"><section className="mx-auto max-w-5xl"><Link href="/dashboard" className="font-black text-cyan-300">Zurück</Link><h1 className="mt-6 text-5xl font-black">Unternehmensdaten</h1><p className="mt-3 text-slate-300">Vertragspartner, Rechnungsanschrift und Marke. Filialadressen werden separat gepflegt.</p>
+    {params.saved?<p className="mt-6 rounded-2xl bg-emerald-300/10 p-4 text-emerald-100">Unternehmen gespeichert.</p>:null}{params.error?<p className="mt-6 rounded-2xl bg-red-300/10 p-4 text-red-100">Speichern nicht möglich.</p>:null}
+    {organization?<form action={updateBusiness} className="mt-8 grid gap-5 rounded-3xl border border-white/10 bg-white/[0.06] p-6 md:grid-cols-2">
+      <Field label="Markenname" name="name" value={organization.name} required/><Field label="Rechtlicher Firmenname" name="legal_name" value={organization.legal_name}/>
+      <label className="grid gap-2 text-xs font-black uppercase text-slate-300">Kategorie<select name="category" defaultValue={organization.category} className="rounded-2xl bg-[#102235] px-4 py-3 text-base font-normal normal-case">{businessCategories.map(group=><optgroup key={group.group} label={group.group}>{group.options.map(option=><option key={option.value} value={option.value}>{option.icon} {option.value}</option>)}</optgroup>)}</select></label>
+      <Field label="Rechnungs-E-Mail" name="billing_email" value={organization.billing_email} type="email"/><Field label="Firmenadresse" name="billing_address" value={organization.billing_address} required/><Field label="PLZ" name="billing_postal_code" value={organization.billing_postal_code} required/><Field label="Ort" name="billing_city" value={organization.billing_city} required/>
+      <label className="grid gap-2 text-xs font-black uppercase text-slate-300">Land<select name="billing_country_code" defaultValue={organization.billing_country_code??"AT"} className="rounded-2xl bg-[#102235] px-4 py-3 text-base font-normal normal-case">{countryOptions.map(([code,name])=><option key={code} value={code}>{name}</option>)}</select></label>
+      <Field label="Registernummer" name="registration_number" value={organization.registration_number}/><Field label="UID-/Steuernummer" name="tax_id" value={organization.tax_id}/><Field label="Website" name="website" value={organization.website}/>
+      <label className="grid gap-2 text-xs font-black uppercase text-slate-300">Symbol<select name="logo_emoji" defaultValue={organization.logo_emoji??"🏪"} className="rounded-2xl bg-[#102235] px-4 py-3 text-base font-normal normal-case">{businessIconOptions.map(option=><option key={option.icon} value={option.icon}>{option.icon} {option.value}</option>)}</select></label>
+      <label className="grid gap-2 text-xs font-black uppercase text-slate-300 md:col-span-2">Beschreibung<textarea name="description" defaultValue={organization.description??""} className="min-h-28 rounded-2xl bg-white/[0.06] px-4 py-3 text-base font-normal normal-case"/></label>
+      <div className="rounded-2xl bg-white/[0.04] p-4 text-sm md:col-span-2"><p>Steuerbehandlung: <strong>{vatLabel((organization.vat_treatment ?? "domestic") as VatTreatment)}</strong></p><p className="mt-2 text-slate-400">Stripe prüft die Rechnungsadresse und UID beim Kauf abschließend.</p><p className="mt-3">Tarif: <strong>{organization.plan}</strong> · Onboarding: <strong>{organization.onboarding_status}</strong> · Sichtbarkeit: <strong>{organization.public_status}</strong></p></div>
+      {canManage?<button className="rounded-2xl bg-cyan-300 px-5 py-4 font-black text-slate-950 md:col-span-2">Unternehmen speichern</button>:null}
+    </form>:null}
+  </section></main>;
 }
+function Field({label,name,value,type="text",required=false}:{label:string;name:string;value?:string|null;type?:string;required?:boolean}) { return <label className="grid gap-2 text-xs font-black uppercase text-slate-300">{label}<input name={name} defaultValue={value??""} type={type} required={required} className="rounded-2xl bg-white/[0.06] px-4 py-3 text-base font-normal normal-case"/></label>; }

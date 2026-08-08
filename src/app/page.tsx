@@ -1,112 +1,54 @@
-import { PlanCards } from "@/components/PlanCards";
+import type { Metadata } from "next";
+import Link from "next/link";
 import { Badge, PrimaryLink, SecondaryLink, SectionTitle } from "@/components/Ui";
 
-const benefits = [
-  ["📱", "Digital statt Papier", "Treuekarten direkt in der TapRadar App, immer dabei und nie vergessen."],
-  ["⚡", "Schnell sammeln", "QR-Code scannen oder NFC nutzen und Stempel sofort erhalten."],
-  ["🎁", "Belohnungen erhalten", "Stempel sammeln und Rewards direkt in der App einlösen."],
+export const metadata: Metadata = {
+  title: "TapRadar | Alle Stempelkarten und Belohnungen in einer App",
+  description: "TapRadar ist die kostenlose digitale Stempelkarten-App für Kunden: lokale Geschäfte entdecken, Stempel sammeln und Belohnungen erhalten.",
+};
+
+const appAreas = [
+  { icon: "📡", eyebrow: "Radar", title: "In deiner Nähe entdecken", text: "Finde lokale TapRadar-Partner, Aktionen, Gutscheine und Belohnungen auf einer übersichtlichen Karte.", items: ["Entfernung & Öffnungszeiten", "Kategorien und Filter", "Aktionen & Belohnungen"], status: "In der App", tone: "cyan" },
+  { icon: "✦", eyebrow: "Stempel", title: "Antippen. Sammeln. Freuen.", text: "Halte dein Smartphone an den NFC-Punkt oder scanne den QR-Code. Dein Fortschritt wird sofort gespeichert.", items: ["NFC in Sekunden", "QR-Code als Alternative", "Fortschritt immer sichtbar"], status: "Kernfunktion", tone: "emerald" },
+  { icon: "🏠", eyebrow: "Home", title: "Ziele, Punkte und Level", text: "Wochenziele, Streaks und Achievements machen Kundenbindung spielerisch und motivierend.", items: ["20 Level bis Champion", "Punkte & Wochenziele", "Freunde & Rangliste"], status: "In der App", tone: "violet" },
+  { icon: "customer-card", eyebrow: "Karten", title: "Deine digitale Brieftasche", text: "Speichere bestehende Kundenkarten mit Barcode oder QR-Code und zeige sie direkt an der Kasse.", items: ["Weniger Plastikkarten", "Barcode & QR griffbereit", "Alles in einer App"], status: "In der App", tone: "amber" },
 ];
 
-const steps = [
-  ["01", "Geschäft besuchen", "Besuche ein teilnehmendes lokales Geschäft in deiner Nähe."],
-  ["02", "Stempel sammeln", "Scanne den QR-Code oder nutze NFC direkt an der Kasse."],
-  ["03", "Belohnung sichern", "Erreiche dein Ziel und erhalte deine Prämie sofort."],
+const benefits = [
+  ["🆓", "100 % kostenlos", "Für Kunden bleibt TapRadar kostenlos."],
+  ["📱", "Alles in einer App", "Stempelkarten, Belohnungen und Kundenkarten."],
+  ["⚡", "In Sekunden", "NFC antippen oder QR-Code scannen."],
+  ["🎮", "Mehr Spaß", "Level, Punkte, Ziele und Achievements."],
+  ["🔒", "Kontodaten geschützt", "Deine persönlichen Daten werden nicht öffentlich angezeigt."],
+  ["🌍", "Mehrsprachig geplant", "TapRadar wird Schritt für Schritt in zehn Sprachen verfügbar."],
+  ["📍", "Lokal entdecken", "Unterstütze Geschäfte in deiner Nachbarschaft."],
+  ["🎁", "Mehr bekommen", "Gratis-Produkte, Rabatte und Gutscheine sammeln."],
 ];
 
 export default function Home() {
-  return (
-    <main className="bg-[radial-gradient(circle_at_top_right,#0b4f63_0%,#061827_35%,#020617_100%)] text-white">
-      <section className="mx-auto grid min-h-[calc(100vh-73px)] max-w-7xl items-center gap-14 px-5 py-16 sm:px-8 lg:grid-cols-[1.1fr_0.9fr]">
-        <div>
-          <Badge>Digitale Treuekarten-App</Badge>
-          <h1 className="mt-6 max-w-3xl text-5xl font-black leading-none tracking-normal sm:text-7xl lg:text-8xl">
-            Sammeln. Belohnen. Entdecken.
-          </h1>
-          <p className="mt-7 max-w-xl text-lg leading-8 text-slate-300 sm:text-xl">
-            Mit TapRadar sammelst du digitale Stempel bei lokalen Geschäften und erhältst exklusive Belohnungen, einfach per QR-Code oder NFC.
-          </p>
-          <div className="mt-8 flex flex-wrap gap-4">
-            <SecondaryLink href="/kontakt">App Store bald verfügbar</SecondaryLink>
-            <SecondaryLink href="/kontakt">Google Play bald verfügbar</SecondaryLink>
-          </div>
-          <p className="mt-5 text-sm text-slate-500">Download bald verfügbar.</p>
-        </div>
+  return <main className="overflow-hidden bg-[radial-gradient(circle_at_top_right,#0b4f63_0%,#061827_35%,#020617_100%)] text-white">
+    <section className="relative mx-auto grid min-h-[calc(100vh-73px)] max-w-7xl items-center gap-14 px-5 py-16 sm:px-8 lg:grid-cols-[1.04fr_0.96fr]">
+      <div className="absolute left-1/2 top-24 h-72 w-72 rounded-full bg-cyan-300/10 blur-3xl"/>
+      <div className="relative z-10"><Badge>Kostenlose App für Kunden</Badge><h1 className="mt-6 max-w-4xl text-5xl font-black leading-[0.98] tracking-tight sm:text-7xl lg:text-[5.2rem]">Alle Stempelkarten. Alle Belohnungen. <span className="text-cyan-300">Eine App.</span></h1><p className="mt-7 max-w-2xl text-lg leading-8 text-slate-300 sm:text-xl">Entdecke lokale Geschäfte, sammle digitale Stempel per NFC oder QR-Code und habe deine Belohnungen immer dabei. Keine Papierkarten mehr, kein Vergessen, kein Suchen.</p><div className="mt-8 flex flex-wrap gap-4"><PrimaryLink href="#app">App entdecken</PrimaryLink><SecondaryLink href="/kontakt">Download bald verfügbar</SecondaryLink></div><div className="mt-7 flex flex-wrap gap-x-6 gap-y-3 text-sm font-bold text-slate-300"><span>✓ Kostenlos für Kunden</span><span>✓ NFC & QR</span><span>✓ Lokal & einfach</span></div></div>
+      <AppPreview/>
+    </section>
 
-        <div className="relative flex min-h-[520px] items-center justify-center">
-          <div className="absolute h-80 w-80 rounded-full bg-cyan-300/30 blur-3xl" />
-          <div className="relative w-[285px] rotate-3 rounded-[44px] border-[10px] border-slate-950 bg-gradient-to-b from-slate-50 to-blue-100 p-6 text-slate-900 shadow-2xl shadow-black/50">
-            <div className="mx-auto mb-9 h-2 w-20 rounded-full bg-slate-900" />
-            <h2 className="text-xl font-black">Meine Stempelkarte</h2>
-            <p className="mt-1 text-sm text-slate-500">Kaffee & Genuss</p>
-            <div className="my-6 grid grid-cols-3 gap-3">
-              {Array.from({ length: 9 }).map((_, index) => (
-                <div
-                  key={index}
-                  className="flex aspect-square items-center justify-center rounded-full border-2 border-dashed border-cyan-500 text-lg font-black text-cyan-600"
-                >
-                  {index < 5 ? "✓" : ""}
-                </div>
-              ))}
-            </div>
-            <div className="rounded-[22px] bg-slate-900 p-5 text-white">
-              <p className="text-xs text-cyan-100/70">Deine Belohnung</p>
-              <strong className="mt-2 block text-xl">Gratis Kaffee</strong>
-            </div>
-          </div>
-        </div>
-      </section>
+    <section className="border-y border-white/10 bg-white/[0.035] px-5 py-7 sm:px-8"><div className="mx-auto grid max-w-7xl gap-4 text-center sm:grid-cols-3"><Trust value="0 €" label="für Endkunden"/><Trust value="1 App" label="für Karten & Belohnungen"/><Trust value="1 Sekunde" label="NFC antippen - fertig"/></div></section>
 
-      <section className="mx-auto max-w-7xl px-5 py-20 sm:px-8">
-        <SectionTitle badge="Warum TapRadar?" title="Alle Treuekarten in einer App.">
-          Keine Papierkarten mehr. Keine verlorenen Stempel. Alles digital und einfach.
-        </SectionTitle>
-        <div className="grid gap-6 md:grid-cols-3">
-          {benefits.map(([icon, title, text]) => (
-            <article key={title} className="rounded-[28px] border border-white/10 bg-white/[0.07] p-8">
-              <span className="text-4xl">{icon}</span>
-              <h3 className="mt-5 text-2xl font-black">{title}</h3>
-              <p className="mt-3 leading-7 text-slate-300">{text}</p>
-            </article>
-          ))}
-        </div>
-      </section>
+    <section id="app" className="mx-auto max-w-7xl px-5 py-24 sm:px-8"><SectionTitle badge="Die TapRadar App" title="Vier Bereiche. Ein einfaches Erlebnis.">Vom Entdecken bis zur Belohnung bleibt alles übersichtlich an einem Ort.</SectionTitle><div className="grid gap-6 md:grid-cols-2">{appAreas.map(area=><article key={area.eyebrow} className="group rounded-[30px] border border-white/10 bg-white/[0.06] p-7 transition hover:-translate-y-1 hover:border-cyan-300/30 sm:p-9"><div className="flex items-start justify-between gap-4"><span className="flex min-h-10 items-center text-4xl">{area.icon === "customer-card" ? <CustomerCardIcon/> : area.icon}</span><Status tone={area.tone}>{area.status}</Status></div><p className="mt-6 text-sm font-black uppercase tracking-[.2em] text-cyan-300">{area.eyebrow}</p><h2 className="mt-3 text-3xl font-black">{area.title}</h2><p className="mt-4 max-w-xl leading-7 text-slate-300">{area.text}</p><ul className="mt-6 grid gap-3 text-sm text-slate-300">{area.items.map(item=><li key={item} className="flex gap-3"><span className="font-black text-cyan-300">✓</span>{item}</li>)}</ul></article>)}</div></section>
 
-      <section className="bg-white/[0.03] px-5 py-20 sm:px-8">
-        <div className="mx-auto max-w-7xl">
-          <SectionTitle badge="So funktioniert's" title="In 3 Schritten zur Belohnung." />
-          <div className="grid gap-6 md:grid-cols-3">
-            {steps.map(([number, title, text]) => (
-              <article key={number} className="rounded-[28px] border border-white/10 bg-white/[0.07] p-8">
-                <strong className="text-4xl font-black text-cyan-300">{number}</strong>
-                <h3 className="mt-6 text-2xl font-black">{title}</h3>
-                <p className="mt-3 leading-7 text-slate-300">{text}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
+    <section id="so-funktionierts" className="bg-white/[0.03] px-5 py-24 sm:px-8"><div className="mx-auto max-w-7xl"><SectionTitle badge="So funktioniert's" title="Vom Besuch zur Belohnung.">Einfach für dich und schnell an der Kasse.</SectionTitle><div className="grid gap-5 md:grid-cols-4">{[["01","Geschäft entdecken","Finde einen TapRadar-Partner in deiner Nähe."],["02","NFC oder QR nutzen","Tippe den NFC-Punkt an oder scanne den QR-Code."],["03","Stempel sammeln","Sieh deinen Fortschritt, zum Beispiel 7 von 10 Stempeln."],["04","Belohnung einlösen","Zeige deinen Einlösecode und genieße deine Belohnung."]].map(([number,title,text])=><article key={number} className="rounded-[26px] border border-white/10 bg-slate-950/45 p-6"><strong className="text-4xl font-black text-cyan-300">{number}</strong><h3 className="mt-6 text-xl font-black">{title}</h3><p className="mt-3 text-sm leading-6 text-slate-300">{text}</p></article>)}</div></div></section>
 
-      <section className="mx-auto max-w-7xl px-5 py-20 sm:px-8">
-        <SectionTitle badge="Für lokale Geschäfte" title="Mehr Stammkunden. Weniger Aufwand.">
-          Digitale Treuekarten, Kampagnen und Kundenbindung für Betriebe in Österreich.
-        </SectionTitle>
-        <PlanCards />
-      </section>
+    <section className="mx-auto max-w-7xl px-5 py-24 sm:px-8"><SectionTitle badge="Deine Vorteile" title="Mehr Ordnung. Mehr Freude. Mehr Belohnungen."/><div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{benefits.map(([icon,title,text])=><article key={title} className="rounded-[24px] border border-white/10 bg-white/[0.055] p-6"><span className="text-3xl">{icon}</span><h3 className="mt-4 text-lg font-black">{title}</h3><p className="mt-2 text-sm leading-6 text-slate-400">{text}</p></article>)}</div></section>
 
-      <section className="mx-auto max-w-7xl px-5 pb-20 sm:px-8">
-        <div className="rounded-[32px] border border-white/15 bg-gradient-to-r from-cyan-300/15 to-blue-500/15 p-8 sm:p-12 md:flex md:items-center md:justify-between md:gap-10">
-          <div>
-            <Badge>Für Geschäfte</Badge>
-            <h2 className="mt-5 text-4xl font-black tracking-normal text-white sm:text-5xl">Betreibst du ein Geschäft?</h2>
-            <p className="mt-4 max-w-2xl text-lg leading-8 text-slate-300">
-              Mit TapRadar erreichst du mehr Stammkunden durch digitale Treuekarten, Kampagnen und Kundenbindung.
-            </p>
-          </div>
-          <div className="mt-8 md:mt-0">
-            <PrimaryLink href="/fuer-geschaefte">Für Geschäfte ansehen</PrimaryLink>
-          </div>
-        </div>
-      </section>
-    </main>
-  );
+    <section className="px-5 pb-24 sm:px-8"><div className="mx-auto grid max-w-7xl overflow-hidden rounded-[36px] border border-amber-300/15 bg-gradient-to-br from-amber-300/[0.1] to-purple-400/[0.08] lg:grid-cols-[0.9fr_1.1fr]"><div className="p-8 sm:p-12"><Status tone="amber">In der App</Status><h2 className="mt-6 text-4xl font-black sm:text-5xl">Keine Plastikkarten mehr.</h2><p className="mt-5 text-lg leading-8 text-slate-300">Deine vorhandenen Kundenkarten finden ebenfalls in TapRadar Platz. Barcode oder QR-Code speichern, an der Kasse öffnen und direkt vorzeigen.</p><div className="mt-7 flex flex-wrap gap-2">{["Billa","dm","SPAR","Hofer","H&M"].map(brand=><span key={brand} className="rounded-xl bg-white/10 px-4 py-2 text-sm font-black">{brand}</span>)}</div><p className="mt-6 text-xs leading-5 text-slate-500">Die genannten Marken dienen nur als Beispiele für vom Nutzer selbst gespeicherte Karten. TapRadar ist nicht mit diesen Unternehmen verbunden.</p></div><div className="flex items-center justify-center bg-slate-950/35 p-8"><WalletPreview/></div></div></section>
+
+    <section className="mx-auto max-w-7xl px-5 pb-24 sm:px-8"><div className="rounded-[32px] border border-white/10 bg-white/[0.055] p-8 sm:flex sm:items-center sm:justify-between sm:gap-10 sm:p-12"><div><p className="text-sm font-black uppercase tracking-[.2em] text-slate-400">Für Unternehmen</p><h2 className="mt-4 text-3xl font-black">Du betreibst ein Geschäft?</h2><p className="mt-3 max-w-2xl leading-7 text-slate-300">Informationen, Tarife und das Geschäfts-Dashboard findest du getrennt auf unserer Seite für Unternehmen.</p></div><Link href="/fuer-geschaefte" className="mt-7 inline-flex shrink-0 rounded-2xl border border-white/15 px-6 py-4 font-black text-cyan-300 transition hover:border-cyan-300/50 sm:mt-0">TapRadar für Geschäfte →</Link></div></section>
+  </main>;
 }
+
+function AppPreview(){return <div className="relative z-10 flex min-h-[560px] items-center justify-center"><div className="absolute h-96 w-96 rounded-full bg-cyan-300/20 blur-3xl"/><div className="absolute left-1/2 top-16 w-64 -translate-x-[82%] -rotate-6 rounded-[34px] border border-white/15 bg-[#0b1f33] p-5 opacity-70 shadow-2xl"><p className="text-xs font-black text-cyan-300">RADAR</p><div className="mt-4 h-44 rounded-2xl bg-[radial-gradient(circle_at_35%_35%,#22d3ee_0_4px,transparent_5px),radial-gradient(circle_at_70%_60%,#f59e0b_0_4px,transparent_5px),linear-gradient(135deg,#17334a,#081727)]"/><p className="mt-4 font-black">12 Geschäfte in deiner Nähe</p></div><div className="relative ml-20 w-[292px] rounded-[46px] border-[9px] border-[#07101e] bg-gradient-to-b from-slate-50 to-blue-50 p-5 text-slate-900 shadow-2xl shadow-black/60"><div className="mx-auto mb-7 h-2 w-20 rounded-full bg-slate-900"/><div className="flex items-center justify-between"><div><p className="text-xs font-bold text-cyan-700">DEINE KARTE</p><h2 className="mt-1 text-xl font-black">Kaffee & Genuss</h2></div><span className="rounded-full bg-cyan-100 px-3 py-2 text-xs font-black text-cyan-800">7 / 10</span></div><div className="my-7 grid grid-cols-5 gap-2">{Array.from({length:10}).map((_,index)=><div key={index} className={`flex aspect-square items-center justify-center rounded-full border-2 ${index<7?"border-cyan-500 bg-cyan-500 text-white":"border-dashed border-slate-300"}`}>{index<7?"✓":""}</div>)}</div><div className="rounded-[22px] bg-[#071827] p-5 text-white"><p className="text-xs text-cyan-200">Noch 3 Stempel</p><strong className="mt-2 block text-lg">Dann: 1 Kaffee gratis</strong><div className="mt-4 h-2 overflow-hidden rounded-full bg-white/15"><div className="h-full w-[70%] rounded-full bg-cyan-300"/></div></div><div className="mt-5 grid grid-cols-4 text-center text-[10px] font-bold text-slate-500"><span>Radar</span><span className="text-cyan-700">Stempel</span><span>Home</span><span>Karten</span></div></div></div>}
+function WalletPreview(){return <div className="w-full max-w-sm space-y-3">{[["B","Einkaufskarte","#16a34a"],["dm","Vorteilskarte","#2563eb"],["S","Bonuskarte","#dc2626"]].map(([logo,title,color],index)=><div key={title} className={`rounded-[22px] bg-white p-5 text-slate-900 shadow-xl ${index===1?"ml-7":"mr-7"}`}><div className="flex items-center justify-between"><span className="flex h-10 w-10 items-center justify-center rounded-xl font-black text-white" style={{backgroundColor:color}}>{logo}</span><div className="text-right"><p className="text-xs text-slate-500">KUNDENKARTE</p><p className="font-black">{title}</p></div></div><div className="mt-4 flex h-10 items-end justify-center gap-[3px]">{Array.from({length:28}).map((_,bar)=><span key={bar} className="bg-slate-900" style={{width:bar%3===0?3:1,height:bar%4===0?34:28}}/>)}</div></div>)}</div>}
+function CustomerCardIcon(){return <span aria-hidden="true" className="relative block h-9 w-14 overflow-hidden rounded-lg border-2 border-amber-200 bg-gradient-to-br from-amber-200 to-amber-400 shadow-lg shadow-amber-400/10"><span className="absolute inset-x-0 top-2 h-1.5 bg-slate-900/75"/><span className="absolute bottom-2 left-2 h-2 w-2 rounded-sm bg-white/85"/><span className="absolute bottom-2 right-2 h-1 w-5 rounded-full bg-slate-900/40"/></span>}
+function Trust({value,label}:{value:string;label:string}){return <div><strong className="text-2xl font-black text-white">{value}</strong><span className="ml-2 text-sm text-slate-400">{label}</span></div>}
+function Status({children,tone}:{children:React.ReactNode;tone:string}){const style=tone==="emerald"?"bg-emerald-300/15 text-emerald-100":tone==="violet"?"bg-purple-300/15 text-purple-100":tone==="amber"?"bg-amber-300/15 text-amber-100":"bg-cyan-300/15 text-cyan-100";return <span className={`rounded-full px-3 py-1.5 text-xs font-black ${style}`}>{children}</span>}

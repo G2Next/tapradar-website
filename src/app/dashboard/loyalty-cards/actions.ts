@@ -1,60 +1,11 @@
 "use server";
-
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { getCurrentBusinessId } from "@/lib/dashboard";
+import { getDashboardContext } from "@/lib/dashboard";
+import { isUuid, requiredText } from "@/lib/validation";
 
-function getCardPayload(formData: FormData) {
-  return {
-    title: String(formData.get("title") ?? "").trim(),
-    reward_title: String(formData.get("reward_title") ?? "").trim(),
-    stamps_required: Number(formData.get("stamps_required") ?? 10),
-    is_active: formData.get("is_active") === "on",
-  };
-}
-
-export async function createLoyaltyCard(formData: FormData) {
-  const { supabase, businessId } = await getCurrentBusinessId();
-  const payload = getCardPayload(formData);
-
-  if (!businessId || !payload.title || !payload.reward_title || payload.stamps_required < 1) {
-    redirect("/dashboard/loyalty-cards?error=missing-fields");
-  }
-
-  const { error } = await supabase.from("loyalty_cards").insert({
-    ...payload,
-    business_id: businessId,
-  });
-
-  if (error) {
-    redirect("/dashboard/loyalty-cards?error=save-failed");
-  }
-
-  revalidatePath("/dashboard");
-  revalidatePath("/dashboard/loyalty-cards");
-  redirect("/dashboard/loyalty-cards?saved=1");
-}
-
-export async function updateLoyaltyCard(formData: FormData) {
-  const { supabase, businessId } = await getCurrentBusinessId();
-  const cardId = String(formData.get("card_id") ?? "");
-  const payload = getCardPayload(formData);
-
-  if (!businessId || !cardId || !payload.title || !payload.reward_title || payload.stamps_required < 1) {
-    redirect("/dashboard/loyalty-cards?error=missing-fields");
-  }
-
-  const { error } = await supabase
-    .from("loyalty_cards")
-    .update(payload)
-    .eq("id", cardId)
-    .eq("business_id", businessId);
-
-  if (error) {
-    redirect("/dashboard/loyalty-cards?error=save-failed");
-  }
-
-  revalidatePath("/dashboard");
-  revalidatePath("/dashboard/loyalty-cards");
-  redirect("/dashboard/loyalty-cards?saved=1");
-}
+function payload(formData: FormData) { return { title: requiredText(formData.get("title"),120), reward_title: requiredText(formData.get("reward_title"),160), earning_rule: requiredText(formData.get("earning_rule"),300), verification_instructions: requiredText(formData.get("verification_instructions"),500), stamps_required: Number(formData.get("stamps_required") ?? 10), is_active: formData.get("is_active") === "on", location_id: requiredText(formData.get("location_id"),40) || null }; }
+async function validLocation(context: Awaited<ReturnType<typeof getDashboardContext>>, locationId: string | null) { if (!locationId) return true; const {data} = await context.supabase.from("locations").select("id").eq("id",locationId).eq("organization_id",context.organizationId!).eq("is_active",true).maybeSingle(); return Boolean(data); }
+function invalid(value: ReturnType<typeof payload>) { return !value.title || !value.reward_title || !value.earning_rule || !value.verification_instructions || !Number.isInteger(value.stamps_required) || value.stamps_required < 1 || value.stamps_required > 50; }
+export async function createLoyaltyCard(formData: FormData) { const context=await getDashboardContext(); const value=payload(formData); if(!context.organizationId || !["owner","manager"].includes(context.role ?? "") || invalid(value) || !(await validLocation(context,value.location_id))) redirect("/dashboard/loyalty-cards?error=missing-fields"); const {error}=await context.supabase.from("loyalty_cards").insert({...value,organization_id:context.organizationId}); if(error) redirect("/dashboard/loyalty-cards?error=save-failed"); revalidatePath("/dashboard"); revalidatePath("/dashboard/loyalty-cards"); redirect("/dashboard/loyalty-cards?saved=1"); }
+export async function updateLoyaltyCard(formData: FormData) { const context=await getDashboardContext(); const cardId=requiredText(formData.get("card_id"),40); const value=payload(formData); if(!context.organizationId || !["owner","manager"].includes(context.role ?? "") || !isUuid(cardId) || invalid(value) || !(await validLocation(context,value.location_id))) redirect("/dashboard/loyalty-cards?error=missing-fields"); const {error}=await context.supabase.from("loyalty_cards").update(value).eq("id",cardId).eq("organization_id",context.organizationId); if(error) redirect("/dashboard/loyalty-cards?error=save-failed"); revalidatePath("/dashboard"); revalidatePath("/dashboard/loyalty-cards"); redirect("/dashboard/loyalty-cards?saved=1"); }

@@ -9,14 +9,15 @@ export function SiteFooter() {
             Tap<span className="text-cyan-300">Radar</span>
           </div>
           <p className="max-w-sm text-sm leading-6">
-            Digitale Stempelkarte und Kundenbindung für lokale Geschäfte in Wien und Österreich.
+            Die kostenlose App für digitale Stempelkarten, lokale Entdeckungen und Belohnungen.
           </p>
         </div>
         <div>
-          <h3 className="mb-4 text-sm font-black uppercase tracking-wide text-white">Produkt</h3>
+          <h3 className="mb-4 text-sm font-black uppercase tracking-wide text-white">Für Kunden</h3>
           <div className="grid gap-3 text-sm">
+            <Link href="/#app" className="hover:text-cyan-300">App entdecken</Link>
+            <Link href="/#so-funktionierts" className="hover:text-cyan-300">So funktioniert&apos;s</Link>
             <Link href="/fuer-geschaefte" className="hover:text-cyan-300">Für Geschäfte</Link>
-            <Link href="/preise" className="hover:text-cyan-300">Preise</Link>
             <Link href="/kontakt" className="hover:text-cyan-300">FAQ</Link>
             <Link href="/login" className="hover:text-cyan-300">Anmelden</Link>
           </div>
