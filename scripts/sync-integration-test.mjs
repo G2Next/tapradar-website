@@ -32,6 +32,10 @@ const response = await fetch(`${siteUrl}/api/v1/sync?limit=1`, { headers: { Auth
 assert.equal(response.status, 200);
 const body = await response.json();
 assert.equal(body.schema_version, 4);
+assert.equal(response.headers.get("x-tapradar-schema-version"), "4");
+assert.equal(body.identity?.source, "website");
+assert.equal(body.identity?.authenticated, true);
+assert.equal(body.identity?.website_account_linked, true);
 assert.ok(Array.isArray(body.data.organizations));
 assert.ok(Array.isArray(body.data.locations));
 assert.ok(Array.isArray(body.data.tombstones));

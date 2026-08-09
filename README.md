@@ -96,7 +96,9 @@ Automated local checkout tests may point `STRIPE_TEST_API_BASE` to a local Strip
 
 ## Mobile application synchronization
 
-The mobile app should use `GET /api/v1/sync` and send its Supabase access token as `Authorization: Bearer <token>`. Browser sessions may use their secure auth cookies. Schema version 4 returns server time, public organizations and locations, richer loyalty earning rules, coupon values and conditions, offer media references, public media metadata, and—when authenticated—the current customer's wallet and earned rewards.
+The mobile apps should use `GET /api/v1/sync`. Public organizations, locations, loyalty cards, offers, and media need no token. A token issued by the separate mobile-app Supabase project may be sent as `Authorization: Bearer <token>` once `MOBILE_APP_SUPABASE_URL` and `MOBILE_APP_SUPABASE_ANON_KEY` are configured. The endpoint verifies that token against its actual issuer and still serves the public website catalog without treating it as a website account. Browser sessions and website-issued bearer tokens continue to receive website wallet and membership data after legal acceptance.
+
+Never embed a platform API key or either service-role key in a mobile binary. See `docs/MOBILE_APP_INTEGRATION.md` for the two-project trust boundary and the rollout sequence.
 
 Schema version 4 clients should persist `next_since`, all non-null `pagination.next_offsets`, and `data.tombstones`. Send offsets back as `offset_organizations`, `offset_locations`, `offset_loyalty_cards`, `offset_offers`, and `offset_assets`; after every page is consumed, persist `next_since` for incremental synchronization. Requests are limited to 250 records per resource per call.
 
