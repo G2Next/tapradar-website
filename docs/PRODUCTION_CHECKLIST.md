@@ -50,6 +50,8 @@
 - Aktuelle Dokumente über `GET /api/v1/legal/consent` laden und die getrennte AGB-/Datenschutzbestätigung über `POST /api/v1/legal/consent` speichern.
 - `next_offsets`, `next_since` und `tombstones` dauerhaft speichern und verarbeiten.
 - Offline-Wiederholung, Token-Ablauf und vollständige Neusynchronisierung testen.
+- Mobile-App-Token gegen `MOBILE_APP_SUPABASE_URL` prüfen; ein ungültiger Fremdtoken muss `401 invalid_access_token` liefern.
+- Öffentlichen Sync ohne Token testen; dabei dürfen nur freigegebene Organisationen, Filialen, Loyalty-Karten, Angebote und Medien erscheinen.
 
 ## 7. Freigabe
 

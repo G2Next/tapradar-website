@@ -1,22 +1,27 @@
 import { createHash } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { createRequestClient } from "@/lib/supabase/request";
 import { LEGAL_VERSIONS, hasCurrentLegalAcceptance } from "@/lib/legal-consent";
 import { consumeRequestLimit, rateLimitHeaders } from "@/lib/rate-limit";
+import { resolveSyncIdentity } from "@/lib/sync-identity";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
   const suppliedKey = request.headers.get("x-api-key") || (request.headers.get("authorization")?.startsWith("Bearer tr_") ? request.headers.get("authorization")?.slice(7) : null);
-  if (suppliedKey) { const admin = createAdminClient(); const keyHash = createHash("sha256").update(suppliedKey).digest("hex"); const { data: apiKey } = await admin.from("platform_api_keys").select("id,scopes,is_active,expires_at").eq("key_hash", keyHash).maybeSingle(); if (!apiKey?.is_active || !apiKey.scopes.includes("sync:read") || (apiKey.expires_at && new Date(apiKey.expires_at).getTime() < Date.now())) return NextResponse.json({ error: "invalid_api_key" }, { status: 401 }); await admin.from("platform_api_keys").update({ last_used_at: new Date().toISOString() }).eq("id", apiKey.id); }
+  let platformApiKeyAuthenticated = false;
+  if (suppliedKey) { const admin = createAdminClient(); const keyHash = createHash("sha256").update(suppliedKey).digest("hex"); const { data: apiKey } = await admin.from("platform_api_keys").select("id,scopes,is_active,expires_at").eq("key_hash", keyHash).maybeSingle(); if (!apiKey?.is_active || !apiKey.scopes.includes("sync:read") || (apiKey.expires_at && new Date(apiKey.expires_at).getTime() < Date.now())) return NextResponse.json({ error: "invalid_api_key" }, { status: 401 }); await admin.from("platform_api_keys").update({ last_used_at: new Date().toISOString() }).eq("id", apiKey.id); platformApiKeyAuthenticated = true; }
   let rateLimit;
   try { rateLimit = await consumeRequestLimit(request, "mobile-sync", 120); }
   catch { return NextResponse.json({ error: "rate_limiter_unavailable" }, { status: 503 }); }
   if (!rateLimit.allowed) return NextResponse.json({ error: "rate_limit_exceeded" }, { status: 429, headers: rateLimitHeaders(rateLimit) });
-  let supabase;
-  try { supabase = await createRequestClient(request); }
-  catch { return NextResponse.json({ error: "service_not_configured" }, { status: 503 }); }
+  let identity;
+  try { identity = await resolveSyncIdentity(request, platformApiKeyAuthenticated); }
+  catch (error) {
+    const invalidToken = error instanceof Error && error.message.includes("access token");
+    return NextResponse.json({ error: invalidToken ? "invalid_access_token" : "identity_provider_unavailable" }, { status: invalidToken ? 401 : 503 });
+  }
+  const supabase = identity.client;
   const sinceValue = request.nextUrl.searchParams.get("since");
   const since = sinceValue && !Number.isNaN(Date.parse(sinceValue)) ? new Date(sinceValue).toISOString() : null;
   const limit = Math.min(Math.max(Number(request.nextUrl.searchParams.get("limit")) || 100, 1), 250);
@@ -38,8 +43,8 @@ export async function GET(request: NextRequest) {
   const tombstonesQuery = since
     ? supabase.from("sync_tombstones").select("resource_type, resource_id, organization_id, deleted_at").gt("deleted_at", since).order("deleted_at").limit(1000)
     : Promise.resolve({ data: [], error: null });
-  const [organizations, locations, cards, offers, assets, tombstones, auth] = await Promise.all([
-    organizationsQuery, locationsQuery, cardsQuery, offersQuery, assetsQuery, tombstonesQuery, supabase.auth.getUser(),
+  const [organizations, locations, cards, offers, assets, tombstones] = await Promise.all([
+    organizationsQuery, locationsQuery, cardsQuery, offersQuery, assetsQuery, tombstonesQuery,
   ]);
   const firstError = [organizations.error, locations.error, cards.error, offers.error, assets.error, tombstones.error].find(Boolean);
   if (firstError) {
@@ -47,13 +52,13 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "sync_unavailable" }, { status: 503 });
   }
 
-  const legalAccepted = auth.data.user ? await hasCurrentLegalAcceptance(auth.data.user.id, "account") : false;
+  const legalAccepted = identity.websiteUserId ? await hasCurrentLegalAcceptance(identity.websiteUserId, "account") : false;
   let customer = null; let business = null;
-  if (auth.data.user && legalAccepted) {
+  if (identity.websiteUserId && legalAccepted) {
     const [wallet, rewards, memberships] = await Promise.all([
-      supabase.from("customer_loyalty_cards").select("id, loyalty_card_id, stamps_balance, lifetime_stamps, updated_at").eq("user_id", auth.data.user.id),
-      supabase.from("reward_entitlements").select("id, organization_id, location_id, loyalty_card_id, reward_title, redemption_code, status, expires_at, updated_at").eq("user_id", auth.data.user.id),
-      supabase.from("organization_members").select("organization_id,role,is_active,organizations(name,plan,public_status,subscriptions(plan,status,product_id,current_period_end,cancel_at_period_end,updated_at))").eq("user_id",auth.data.user.id).eq("is_active",true),
+      supabase.from("customer_loyalty_cards").select("id, loyalty_card_id, stamps_balance, lifetime_stamps, updated_at").eq("user_id", identity.websiteUserId),
+      supabase.from("reward_entitlements").select("id, organization_id, location_id, loyalty_card_id, reward_title, redemption_code, status, expires_at, updated_at").eq("user_id", identity.websiteUserId),
+      supabase.from("organization_members").select("organization_id,role,is_active,organizations(name,plan,public_status,subscriptions(plan,status,product_id,current_period_end,cancel_at_period_end,updated_at))").eq("user_id",identity.websiteUserId).eq("is_active",true),
     ]);
     customer = { wallet: wallet.data ?? [], rewards: rewards.data ?? [] };
     business = { memberships: memberships.data ?? [] };
@@ -64,7 +69,13 @@ export async function GET(request: NextRequest) {
     schema_version: 4,
     server_time: serverTime,
     next_since: serverTime,
-    legal: { required: Boolean(auth.data.user && !legalAccepted), accepted: legalAccepted, versions: LEGAL_VERSIONS, consent_endpoint: "/api/v1/legal/consent" },
+    identity: {
+      source: identity.source,
+      authenticated: identity.source === "website" || identity.source === "mobile_app",
+      external_user_id: identity.externalUserId,
+      website_account_linked: Boolean(identity.websiteUserId),
+    },
+    legal: { required: Boolean(identity.websiteUserId && !legalAccepted), accepted: legalAccepted, versions: LEGAL_VERSIONS, consent_endpoint: "/api/v1/legal/consent" },
     data: {
       organizations: organizations.data ?? [], locations: locations.data ?? [],
       loyalty_cards: cards.data ?? [], offers: offers.data ?? [],
@@ -81,5 +92,5 @@ export async function GET(request: NextRequest) {
         assets: (assets.data?.length ?? 0) === limit ? offset("assets") + limit : null,
       },
     },
-  }, { headers: { "Cache-Control": auth.data.user ? "private, no-store" : "public, max-age=30, stale-while-revalidate=120", ...rateLimitHeaders(rateLimit) } });
+  }, { headers: { "Cache-Control": identity.source === "anonymous" || identity.source === "platform_api_key" ? "public, max-age=30, stale-while-revalidate=120" : "private, no-store", "X-TapRadar-Schema-Version": "4", ...rateLimitHeaders(rateLimit) } });
 }
