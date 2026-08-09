@@ -1,6 +1,8 @@
 import { PlanCards } from "@/components/PlanCards";
 import { PlanComparisonTable } from "@/components/PlanComparisonTable";
 import { Badge, PrimaryLink, SecondaryLink, SectionTitle } from "@/components/Ui";
+import { getLocale } from "@/i18n/server";
+import { translateTree } from "@/i18n/translate";
 
 const features = [
   ["🏷️", "Digitale Stempelkarte", "Ersetzen Sie Papierkarten durch ein modernes, fälschungssicheres System."],
@@ -11,8 +13,9 @@ const features = [
   ["👥", "Mitarbeiter-System", "Bis zu 15 Mitarbeiter mit eigenem PIN, sicher und nachvollziehbar."],
 ];
 
-export default function BusinessPage() {
-  return (
+export default async function BusinessPage() {
+  const locale = await getLocale();
+  return translateTree(
     <main className="bg-[radial-gradient(circle_at_top_right,#0b4f63_0%,#061827_35%,#020617_100%)] text-white">
       <section className="mx-auto grid max-w-7xl gap-12 px-5 py-20 sm:px-8 lg:grid-cols-[1.2fr_0.8fr]">
         <div>
@@ -77,13 +80,14 @@ export default function BusinessPage() {
       <section id="tarife" className="scroll-mt-24 bg-white/[0.03] px-5 py-20 sm:px-8">
         <div className="mx-auto max-w-7xl">
           <SectionTitle badge="Tarifvergleich" title="Alle Funktionen im Überblick." />
-          <PlanComparisonTable />
+          <PlanComparisonTable locale={locale} />
           <div className="mt-20">
             <SectionTitle badge="Preise" title="Monatlich kündbar. Schnell startklar." />
-            <PlanCards />
+            <PlanCards locale={locale} />
           </div>
         </div>
       </section>
-    </main>
+    </main>,
+    locale,
   );
 }

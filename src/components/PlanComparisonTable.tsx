@@ -1,5 +1,7 @@
 import { Fragment } from "react";
 import Link from "next/link";
+import type { Locale } from "@/i18n/config";
+import { translateText, translateTree } from "@/i18n/translate";
 
 const comparisonSections = [
   { title: "Grundfunktionen", rows: [["NFC/QR Stempelung", "✓", "✓", "✓"], ["Kundenbelohnung vergeben", "✓", "✓", "✓"], ["QR-Schaufenster Download", "✓", "✓", "✓"], ["Basis-Statistik heute/Woche", "✓", "✓", "✓"]] },
@@ -10,14 +12,14 @@ const comparisonSections = [
   { title: "Support", rows: [["Standard-Support", "✓", "✓", "✓"], ["White-Label QR-Plakat", "✗", "✗", "✓"], ["Prioritäts-Support 24h", "✗", "✗", "✓"]] },
 ];
 
-function ComparisonValue({ value }: { value: string }) {
-  if (value === "✓") return <span className="font-black text-cyan-300" aria-label="Enthalten">✓</span>;
-  if (value === "✗") return <span className="text-slate-500" aria-label="Nicht enthalten">✗</span>;
-  return value;
+function ComparisonValue({ value, locale }: { value: string; locale: Locale }) {
+  if (value === "✓") return <span className="font-black text-cyan-300" aria-label={translateText(locale,"Enthalten")}>✓</span>;
+  if (value === "✗") return <span className="text-slate-500" aria-label={translateText(locale,"Nicht enthalten")}>✗</span>;
+  return translateText(locale,value);
 }
 
-export function PlanComparisonTable({ showPrices = false }: { showPrices?: boolean }) {
-  return (
+export function PlanComparisonTable({ showPrices = false, locale = "de" }: { showPrices?: boolean; locale?: Locale }) {
+  return translateTree(
     <div className="overflow-x-auto rounded-3xl border border-white/15 shadow-2xl shadow-black/10">
       <table className="w-full min-w-[760px] border-collapse bg-white/[0.05] text-sm">
         <caption className="sr-only">Vergleich der Bronze-, Gold- und Platinum-Pakete</caption>
@@ -39,7 +41,7 @@ export function PlanComparisonTable({ showPrices = false }: { showPrices?: boole
             <tr className="border-t border-white/15 bg-cyan-300/[0.09]"><th colSpan={4} scope="colgroup" className="px-5 py-3 text-left text-xs font-black uppercase tracking-[0.18em] text-cyan-200">{section.title}</th></tr>
             {section.rows.map(([feature, bronze, gold, platinum]) => <tr key={feature} className="border-t border-white/10 transition-colors hover:bg-white/[0.04]">
               <th scope="row" className="px-5 py-4 text-left font-bold text-white">{feature}</th>
-              {[bronze, gold, platinum].map((value, index) => <td key={`${feature}-${index}`} className="px-5 py-4"><ComparisonValue value={value} /></td>)}
+              {[bronze, gold, platinum].map((value, index) => <td key={`${feature}-${index}`} className="px-5 py-4"><ComparisonValue value={value} locale={locale} /></td>)}
             </tr>)}
           </Fragment>)}
         </tbody>
@@ -54,6 +56,7 @@ export function PlanComparisonTable({ showPrices = false }: { showPrices?: boole
           </tr>
         </tfoot> : null}
       </table>
-    </div>
+    </div>,
+    locale,
   );
 }
