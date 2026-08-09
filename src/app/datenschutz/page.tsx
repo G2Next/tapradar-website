@@ -1,9 +1,12 @@
 import { LegalPage } from "@/components/LegalPage";
 import { LEGAL_VERSIONS } from "@/lib/legal-consent";
+import { getLocale } from "@/i18n/server";
+import { translateText, translateTree } from "@/i18n/translate";
 
-export default function DatenschutzPage() {
-  return (
-    <LegalPage title="Datenschutzerklärung" date={`Stand: 8. August 2026 · Version ${LEGAL_VERSIONS.privacy}`}>
+export default async function DatenschutzPage() {
+  const locale = await getLocale();
+  return translateTree(
+    <LegalPage title="Datenschutzerklärung" date={`${translateText(locale, "Stand: 8. August 2026")} · Version ${LEGAL_VERSIONS.privacy}`} locale={locale} germanHref="/de/datenschutz">
       <h2>1. Verantwortlicher</h2>
       <p>TOY GmbH, Dr. Adolf-Schärf-Straße 1/2/24, 2353 Guntramsdorf, Österreich. E-Mail: <a href="mailto:support@tapradar.app">support@tapradar.app</a></p>
       <h2>2. Erhebung und Verarbeitung personenbezogener Daten</h2>
@@ -21,6 +24,5 @@ export default function DatenschutzPage() {
       <p>Sie haben Rechte auf Auskunft, Berichtigung, Löschung, Einschränkung, Datenübertragbarkeit und Widerspruch nach DSGVO.</p>
       <h2>8. Kontakt und Beschwerde</h2>
       <p>Datenschutzanfragen können an <a href="mailto:support@tapradar.app">support@tapradar.app</a> gesendet werden. Daneben besteht ein Beschwerderecht bei der zuständigen Datenschutzaufsichtsbehörde.</p>
-    </LegalPage>
-  );
+    </LegalPage>, locale);
 }

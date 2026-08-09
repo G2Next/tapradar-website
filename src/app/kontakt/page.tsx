@@ -1,3 +1,8 @@
+import { FormSubmitButton } from "@/components/FormSubmitButton";
+import { getLocale } from "@/i18n/server";
+import { translateTree } from "@/i18n/translate";
+import { submitContactMessage } from "./actions";
+
 const faqs = [
   ["Was ist TapRadar?", "TapRadar ist eine digitale Kundenbindungs- und Marketingplattform für lokale Geschäfte."],
   ["Wie funktioniert die digitale Stempelkarte?", "Kunden sammeln digitale Stempel über NFC oder QR-Code und erhalten nach dem Ziel automatisch eine Belohnung."],
@@ -11,8 +16,9 @@ const faqs = [
 type SearchParams = Promise<{ sent?: string; error?: string }>;
 
 export default async function ContactPage({ searchParams }: { searchParams: SearchParams }) {
+  const locale = await getLocale();
   const params = await searchParams;
-  return (
+  return translateTree(
     <main className="bg-[radial-gradient(circle_at_top_right,#0b4f63_0%,#061827_35%,#020617_100%)] px-5 py-20 text-white sm:px-8">
       <section className="mx-auto max-w-3xl text-center">
         <span className="inline-flex rounded-full border border-cyan-300/35 bg-cyan-300/10 px-4 py-2 text-sm font-black text-cyan-300">
@@ -46,6 +52,7 @@ export default async function ContactPage({ searchParams }: { searchParams: Sear
           {params.sent ? <p className="mt-6 rounded-2xl border border-emerald-300/30 bg-emerald-300/10 p-4 text-left font-bold text-emerald-100">Vielen Dank. Ihre Nachricht ist bei uns angekommen.</p> : null}
           {params.error ? <p className="mt-6 rounded-2xl border border-red-300/30 bg-red-300/10 p-4 text-left font-bold text-red-100">{params.error === "limit" ? "Zu viele Nachrichten. Bitte versuchen Sie es später erneut." : "Bitte prüfen Sie alle Felder und versuchen Sie es erneut."}</p> : null}
           <form action={submitContactMessage} className="mt-8 grid gap-5">
+            <input type="hidden" name="locale" value={locale} />
             <label className="sr-only" aria-hidden="true">Website<input name="company_website" tabIndex={-1} autoComplete="off" /></label>
             <label className="grid gap-2 text-xs font-black uppercase tracking-wide text-slate-300">
               Name
@@ -76,8 +83,7 @@ export default async function ContactPage({ searchParams }: { searchParams: Sear
           </div>
         </aside>
       </section>
-    </main>
+    </main>,
+    locale,
   );
 }
-import { FormSubmitButton } from "@/components/FormSubmitButton";
-import { submitContactMessage } from "./actions";

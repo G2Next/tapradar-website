@@ -1,5 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { PrimaryLink, SecondaryLink } from "./Ui";
+import { getHtmlLang, type Locale } from "@/i18n/config";
+import { translateText } from "@/i18n/translate";
 
 const fallbackPlans = [
   {
@@ -34,9 +36,9 @@ const fallbackPlans = [
   },
 ];
 
-export async function PlanCards() {
+export async function PlanCards({ locale = "de" }: { locale?: Locale }) {
   let plans:Array<{id:string;code:string;name:string;description:string|null;gross_amount:number;currency:string;billing_interval:string;features:unknown}>=[];
   try{const supabase=await createClient();const{data}=await supabase.from("subscription_products").select("id,code,name,description,gross_amount,currency,billing_interval,features").eq("is_active",true).order("sort_order");plans=data??[];}catch{plans=[];}
   if(!plans.length)plans=fallbackPlans;
-  return <div className="grid gap-6 md:grid-cols-3">{plans.map((plan,index)=>{const popular=index===1;return <article key={plan.id} className={`relative min-h-[320px] rounded-[28px] border bg-white/[0.07] p-8 shadow-2xl shadow-black/10 ${popular?"border-yellow-300/70 -translate-y-0 md:-translate-y-3":"border-white/20"}`}>{popular?<span className="absolute right-5 top-5 rounded-full bg-yellow-300 px-3 py-1 text-xs font-black text-yellow-950">Beliebt</span>:null}<h3 className="text-3xl font-black text-white">{plan.name}</h3><div className="mt-4 text-5xl font-black text-white">{new Intl.NumberFormat("de-AT",{style:"currency",currency:plan.currency.toUpperCase()}).format(plan.gross_amount/100)} <span className="text-base font-normal text-slate-300">/{plan.billing_interval==="year"?"Jahr":"Monat"}</span></div><p className="mt-5 min-h-14 text-sm leading-6 text-slate-300">{plan.description}</p><div className="mt-8">{popular?<PrimaryLink href="/login">{plan.name} testen</PrimaryLink>:<SecondaryLink href="/login">{plan.name} wählen</SecondaryLink>}</div></article>})}</div>;
+  return <div className="grid gap-6 md:grid-cols-3">{plans.map((plan,index)=>{const popular=index===1;return <article key={plan.id} className={`relative min-h-[320px] rounded-[28px] border bg-white/[0.07] p-8 shadow-2xl shadow-black/10 ${popular?"border-yellow-300/70 -translate-y-0 md:-translate-y-3":"border-white/20"}`}>{popular?<span className="absolute right-5 top-5 rounded-full bg-yellow-300 px-3 py-1 text-xs font-black text-yellow-950">{translateText(locale,"Beliebt")}</span>:null}<h3 className="text-3xl font-black text-white">{plan.name}</h3><div className="mt-4 text-5xl font-black text-white">{new Intl.NumberFormat(getHtmlLang(locale),{style:"currency",currency:plan.currency.toUpperCase()}).format(plan.gross_amount/100)} <span className="text-base font-normal text-slate-300">/{translateText(locale,plan.billing_interval==="year"?"Jahr":"Monat")}</span></div><p className="mt-5 min-h-14 text-sm leading-6 text-slate-300">{plan.description ? translateText(locale,plan.description) : null}</p><div className="mt-8">{popular?<PrimaryLink href="/login">{plan.name} {translateText(locale,"testen")}</PrimaryLink>:<SecondaryLink href="/login">{plan.name} {translateText(locale,"wählen")}</SecondaryLink>}</div></article>})}</div>;
 }

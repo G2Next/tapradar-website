@@ -1,9 +1,12 @@
 import { LegalPage } from "@/components/LegalPage";
 import { LEGAL_VERSIONS } from "@/lib/legal-consent";
+import { getLocale } from "@/i18n/server";
+import { translateText, translateTree } from "@/i18n/translate";
 
-export default function AgbPage() {
-  return (
-    <LegalPage title="Allgemeine Geschäftsbedingungen" date={`Stand: 8. August 2026 · Version ${LEGAL_VERSIONS.terms}`}>
+export default async function AgbPage() {
+  const locale = await getLocale();
+  return translateTree(
+    <LegalPage title="Allgemeine Geschäftsbedingungen" date={`${translateText(locale, "Stand: 8. August 2026")} · Version ${LEGAL_VERSIONS.terms}`} locale={locale} germanHref="/de/agb">
       <h2>1. Geltungsbereich</h2>
       <p>Diese AGB gelten für die Nutzung der TapRadar-Plattform durch Geschäftskunden und registrierte Nutzer. Für Geschäftstarife handelt der Besteller im Rahmen seiner unternehmerischen Tätigkeit.</p>
       <h2>2. Leistungen</h2>
@@ -18,6 +21,5 @@ export default function AgbPage() {
       <p>Soweit ein Nutzer Verbraucher ist und ein gesetzliches Widerrufsrecht besteht, gelten die Informationen der Widerrufsbelehrung. Gesetzliche Verbraucherrechte werden durch diese AGB nicht eingeschränkt.</p>
       <h2>7. Kontakt</h2>
       <p>Bei Fragen erreichen Sie uns unter <a href="mailto:support@tapradar.app">support@tapradar.app</a>.</p>
-    </LegalPage>
-  );
+    </LegalPage>, locale);
 }
