@@ -15,6 +15,10 @@ export async function GET(request: Request) {
     }
   }
 
+  if (next === "/passwort-zuruecksetzen") {
+    return NextResponse.redirect(new URL(next, requestUrl.origin));
+  }
+
   const consentUrl = new URL("/rechtliches", requestUrl.origin);
   consentUrl.searchParams.set("next", next);
   return NextResponse.redirect(consentUrl);
