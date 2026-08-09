@@ -1,16 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import { use, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
-export default function LoginPage() {
+type LoginSearchParams = Promise<{ mode?: string | string[]; password?: string | string[] }>;
+
+export default function LoginPage({ searchParams }: { searchParams: LoginSearchParams }) {
+  const params = use(searchParams);
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
-  const [mode, setMode] = useState<"signin" | "signup" | "magic">("signin");
+  const [message, setMessage] = useState(params.password === "updated" ? "Dein Passwort wurde geändert. Du kannst dich jetzt anmelden." : "");
+  const [mode, setMode] = useState<"signin" | "signup" | "magic">(
+    params.mode === "signup" || params.mode === "magic" ? params.mode : "signin",
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [legalConfirmed, setLegalConfirmed] = useState(false);
 
@@ -157,6 +162,11 @@ export default function LoginPage() {
                   ? "Konto erstellen"
                   : "Anmelden"}
           </button>
+          {mode === "signin" ? (
+            <Link href="/passwort-vergessen" className="text-center text-sm font-black text-cyan-300">
+              Passwort vergessen?
+            </Link>
+          ) : null}
         </form>
         {message ? <p className="mt-5 rounded-2xl border border-white/10 bg-white/[0.06] p-4 text-sm leading-6 text-slate-200">{message}</p> : null}
       </section>
