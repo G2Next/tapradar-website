@@ -10,6 +10,7 @@ import { isUuid, requiredText } from "@/lib/validation";
 const offerTypes=["aktion","gutschein"];
 const allowedFiles:Record<string,string>={"image/jpeg":"jpg","image/png":"png","image/webp":"webp","application/pdf":"pdf"};
 type Context=Awaited<ReturnType<typeof getDashboardContext>>;
+export type OfferActionState={error?:string};
 
 function payload(formData:FormData) {
   const type=requiredText(formData.get("offer_type"),20);
@@ -43,22 +44,26 @@ async function uploadOfferMedia(context:Context,formData:FormData) {
 
 async function cleanupAsset(context:Context,asset:{id:string;storage_path:string}|null){if(!asset)return;await context.supabase.storage.from("business-media").remove([asset.storage_path]);await context.supabase.from("organization_assets").delete().eq("id",asset.id).eq("organization_id",context.organizationId!);}
 
-export async function createOffer(formData:FormData){
+export async function createOffer(_:OfferActionState,formData:FormData):Promise<OfferActionState>{
   const context=await getDashboardContext();const value=payload(formData);
-  if(!context.organizationId||!["owner","manager"].includes(context.role??"")||invalid(value)||!(await validLocation(context,value.location_id)))redirect("/dashboard/offers?error=missing-fields");
-  let media=null;try{media=await uploadOfferMedia(context,formData);}catch{redirect("/dashboard/offers?error=media");}
+  if(!context.organizationId||!["owner","manager"].includes(context.role??""))return{error:"Du hast keine Berechtigung, diesen Eintrag anzulegen."};
+  if(invalid(value))return{error:"Bitte prüfe die Pflichtfelder, den Gutscheinwert und den Zeitraum."};
+  if(!(await validLocation(context,value.location_id)))return{error:"Die ausgewählte Filiale ist nicht mehr verfügbar."};
+  let media=null;try{media=await uploadOfferMedia(context,formData);}catch{return{error:"Die Datei ist ungültig oder konnte nicht hochgeladen werden. Erlaubt sind JPG, PNG, WebP oder PDF bis 5 MB."};}
   const{error}=await context.supabase.from("offers").insert({...value,media_asset_id:media?.id??null,organization_id:context.organizationId});
-  if(error){await cleanupAsset(context,media);redirect("/dashboard/offers?error=save-failed");}
+  if(error){await cleanupAsset(context,media);return{error:"Der Eintrag konnte nicht gespeichert werden. Deine Eingaben bleiben erhalten."};}
   revalidatePath("/dashboard");revalidatePath("/dashboard/offers");redirect("/dashboard/offers?saved=1");
 }
 
-export async function updateOffer(formData:FormData){
+export async function updateOffer(_:OfferActionState,formData:FormData):Promise<OfferActionState>{
   const context=await getDashboardContext();const offerId=requiredText(formData.get("offer_id"),40);const value=payload(formData);
-  if(!context.organizationId||!["owner","manager"].includes(context.role??"")||!isUuid(offerId)||invalid(value)||!(await validLocation(context,value.location_id)))redirect("/dashboard/offers?error=missing-fields");
+  if(!context.organizationId||!["owner","manager"].includes(context.role??"")||!isUuid(offerId))return{error:"Du hast keine Berechtigung, diesen Eintrag zu bearbeiten."};
+  if(invalid(value))return{error:"Bitte prüfe die Pflichtfelder, den Gutscheinwert und den Zeitraum."};
+  if(!(await validLocation(context,value.location_id)))return{error:"Die ausgewählte Filiale ist nicht mehr verfügbar."};
   const{data:existing}=await context.supabase.from("offers").select("media_asset_id,organization_assets!offers_media_asset_id_fkey(id,storage_path)").eq("id",offerId).eq("organization_id",context.organizationId).maybeSingle();
-  let media=null;try{media=await uploadOfferMedia(context,formData);}catch{redirect("/dashboard/offers?error=media");}
+  let media=null;try{media=await uploadOfferMedia(context,formData);}catch{return{error:"Die Datei ist ungültig oder konnte nicht hochgeladen werden. Erlaubt sind JPG, PNG, WebP oder PDF bis 5 MB."};}
   const{error}=await context.supabase.from("offers").update({...value,...(media?{media_asset_id:media.id}:{})}).eq("id",offerId).eq("organization_id",context.organizationId);
-  if(error){await cleanupAsset(context,media);redirect("/dashboard/offers?error=save-failed");}
+  if(error){await cleanupAsset(context,media);return{error:"Der Eintrag konnte nicht gespeichert werden. Deine Eingaben bleiben erhalten."};}
   const oldAsset=Array.isArray(existing?.organization_assets)?existing.organization_assets[0]:existing?.organization_assets;
   if(media&&oldAsset)await cleanupAsset(context,oldAsset);
   revalidatePath("/dashboard");revalidatePath("/dashboard/offers");redirect("/dashboard/offers?saved=1");
