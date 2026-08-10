@@ -16,7 +16,6 @@ const adminItems: Item[] = [
   { href: "/admin/api-keys", label: "API-Schlüssel", icon: "⌘" },
   { href: "/admin/operations", label: "Betrieb & Datenschutz", icon: "⚙" },
   { href: "/", label: "Website öffnen", icon: "↗" },
-  { href: "/logout", label: "Abmelden", icon: "⇥" },
 ];
 
 const dashboardItems: Item[] = [
@@ -32,7 +31,6 @@ const dashboardItems: Item[] = [
   { href: "/dashboard/media", label: "Medien & Dateien", icon: "▧" },
   { href: "/dashboard/billing", label: "Tarif & Rechnungen", icon: "€" },
   { href: "/dashboard/privacy", label: "Datenschutz & Konto", icon: "◈" },
-  { href: "/logout", label: "Abmelden", icon: "⇥" },
 ];
 
 export function PortalSidebar({
@@ -54,12 +52,19 @@ export function PortalSidebar({
     <p className="mb-2 text-xs font-black uppercase tracking-[0.18em] text-slate-500">{languageLabel}</p>
     <LanguageSwitcher locale={locale} label={languageChoose} fullWidth />
   </div>;
-  const links = <nav className="grid gap-1.5">{items.map((item) => {
-    const active = item.exact ? pathname === item.href : pathname.startsWith(item.href);
-    return <Link key={item.href} href={item.href} className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-bold transition ${active ? tone : "text-slate-300 hover:bg-white/[0.07] hover:text-white"}`}>
-      <span className="w-5 text-center text-base" aria-hidden>{item.icon}</span><span>{item.label}</span>
-    </Link>;
-  })}</nav>;
+  const links = <nav className="grid gap-1.5">
+    {items.map((item) => {
+      const active = item.exact ? pathname === item.href : pathname.startsWith(item.href);
+      return <Link key={item.href} href={item.href} className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-bold transition ${active ? tone : "text-slate-300 hover:bg-white/[0.07] hover:text-white"}`}>
+        <span className="w-5 text-center text-base" aria-hidden>{item.icon}</span><span>{item.label}</span>
+      </Link>;
+    })}
+    <form action="/logout" method="post">
+      <button type="submit" className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-bold text-slate-300 transition hover:bg-white/[0.07] hover:text-white">
+        <span className="w-5 text-center text-base" aria-hidden>⇥</span><span>Abmelden</span>
+      </button>
+    </form>
+  </nav>;
   return <>
     <aside className="sticky top-[73px] hidden h-[calc(100vh-73px)] w-64 shrink-0 overflow-y-auto border-r border-white/10 bg-[#07111f] p-5 lg:block">
       <p className="mb-5 px-3 text-xs font-black uppercase tracking-[0.18em] text-slate-500">{title}</p>{languageControl}{links}
