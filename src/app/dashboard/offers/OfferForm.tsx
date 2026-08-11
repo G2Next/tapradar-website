@@ -75,6 +75,7 @@ export function OfferForm({
   mediaUrl,
   fixedType,
   showVoucherPreview = false,
+  previewBusinessName = "Firmenname",
   className = "",
 }: {
   offer?: EditableOffer;
@@ -82,6 +83,7 @@ export function OfferForm({
   mediaUrl?: string | null;
   fixedType?: OfferType;
   showVoucherPreview?: boolean;
+  previewBusinessName?: string;
   className?: string;
 }) {
   const action = offer ? updateOffer : createOffer;
@@ -150,19 +152,39 @@ export function OfferForm({
 
   return <form action={formAction} onSubmit={validate} className={className}>
     {offer ? <input type="hidden" name="offer_id" value={offer.id} /> : null}
-    {showVoucherPreview && isVoucher ? <div className="grid items-start gap-7 xl:grid-cols-[minmax(0,.9fr)_minmax(420px,1.1fr)]"><VoucherPreview values={values} locations={locations} mediaPreview={mediaPreview} />{editor}</div> : editor}
+    {showVoucherPreview && isVoucher ? <div className="grid items-start gap-7 xl:grid-cols-[minmax(520px,1.25fr)_minmax(380px,.75fr)]"><VoucherPreview values={values} businessName={previewBusinessName} mediaPreview={mediaPreview} />{editor}</div> : editor}
   </form>;
 }
 
-function VoucherPreview({ values, locations, mediaPreview }: { values: Values; locations: Location[]; mediaPreview: MediaPreview }) {
-  const location = locations.find(item => item.id === values.location_id)?.name ?? "Alle Filialen";
+function formatPreviewDate(value: string, fallback: string) {
+  if (!value) return fallback;
+  const [date] = value.split("T");
+  const [year, month, day] = date.split("-");
+  return year && month && day ? `${day}.${month}.${year}` : fallback;
+}
+
+function VoucherPreview({ values, businessName, mediaPreview }: { values: Values; businessName: string; mediaPreview: MediaPreview }) {
   const numericValue = Number(values.discount_value);
-  const amount = Number.isFinite(numericValue) && numericValue > 0 ? values.discount_type === "percentage" ? `${numericValue.toLocaleString("de-AT")} %` : `${numericValue.toLocaleString("de-AT", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €` : "Gutschein";
+  const amount = Number.isFinite(numericValue) && numericValue > 0 ? values.discount_type === "percentage" ? `${numericValue.toLocaleString("de-AT")} %` : `${numericValue.toLocaleString("de-AT", { maximumFractionDigits: 2 })} €` : "10 €";
   const hasImage = Boolean(mediaPreview && mediaPreview.type !== "application/pdf");
-  return <aside className="xl:sticky xl:top-8"><p className="mb-3 text-xs font-black uppercase tracking-[0.22em] text-cyan-200">Live-Vorschau in der Kunden-App</p><div className="overflow-hidden rounded-[32px] border border-cyan-300/25 bg-[#0b1d31] shadow-2xl shadow-cyan-950/40">
-    <div className="relative flex min-h-64 items-end bg-gradient-to-br from-cyan-500 via-blue-600 to-violet-700 p-6" style={hasImage ? { backgroundImage: `linear-gradient(to top, rgba(2,6,23,.92), rgba(2,6,23,.12)), url(${mediaPreview?.url})`, backgroundPosition: "center", backgroundSize: "cover" } : undefined}><span className="absolute left-5 top-5 rounded-full border border-white/25 bg-slate-950/55 px-3 py-2 text-xs font-black uppercase tracking-widest text-white backdrop-blur">Gutschein</span>{mediaPreview?.type === "application/pdf" ? <span className="absolute right-5 top-5 rounded-full bg-white/15 px-3 py-2 text-xs font-black text-white">PDF</span> : null}<div><p className="text-sm font-bold text-cyan-100">{location}</p><p className="mt-2 text-5xl font-black text-white">{amount}</p></div></div>
-    <div className="p-6"><h2 className="text-2xl font-black text-white">{values.title.trim() || "Dein Gutschein-Titel"}</h2><p className="mt-3 min-h-12 text-sm leading-6 text-slate-300">{values.description.trim() || "Die Beschreibung des Gutscheins erscheint hier für deine Kundinnen und Kunden."}</p>{values.minimum_purchase_amount ? <p className="mt-4 text-xs font-bold text-amber-200">Mindestkauf: {Number(values.minimum_purchase_amount).toLocaleString("de-AT", { minimumFractionDigits: 2 })} €</p> : null}<div className="mt-5 rounded-2xl border border-dashed border-cyan-300/35 bg-cyan-300/[0.07] p-4 text-center"><p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Kassencode</p><p className="mt-2 font-mono text-xl font-black tracking-wider text-cyan-200">{values.redemption_code.trim().toUpperCase() || "WIRD AUTOMATISCH ERSTELLT"}</p></div>{values.conditions.trim() ? <p className="mt-4 text-xs leading-5 text-slate-400">{values.conditions}</p> : null}</div>
-  </div><p className="mt-3 text-xs leading-5 text-slate-500">Die Vorschau zeigt Inhalt und Wirkung. Das endgültige App-Layout kann je nach Smartphone leicht abweichen.</p></aside>;
+  const safeBusinessName = businessName.trim() || "Firmenname";
+  const initial = safeBusinessName.slice(0, 1).toUpperCase();
+  const imageLayer = hasImage ? `linear-gradient(115deg,rgba(255,244,210,.82),rgba(240,185,45,.78)),url(${mediaPreview?.url})` : undefined;
+  return <aside className="xl:sticky xl:top-8"><p className="mb-3 text-xs font-black uppercase tracking-[0.22em] text-cyan-200">Live-Vorschau in der Kunden-App</p>
+    <div className="overflow-hidden rounded-[32px] bg-[#071321] p-[clamp(14px,3vw,32px)] shadow-2xl shadow-black/40">
+      <div className="relative isolate min-h-[620px] overflow-hidden rounded-[28px] border border-[#fff3c7] bg-gradient-to-br from-[#fff2ca] via-[#f2c653] to-[#f7d978] text-[#082139] md:aspect-[1.55/1] md:min-h-[440px]" style={imageLayer ? { backgroundImage: imageLayer, backgroundPosition: "center", backgroundSize: "cover" } : undefined}>
+        <div className="absolute inset-0 -z-10 opacity-[.11]" style={{ backgroundImage: "repeating-linear-gradient(120deg,transparent 0,transparent 10px,#8c6a18 11px,#8c6a18 12px)" }} />
+        <div className="absolute -right-[10%] -top-[20%] -z-10 aspect-square w-[52%] rounded-full border border-[#967622]/20 shadow-[0_0_0_28px_rgba(150,118,34,.07),0_0_0_56px_rgba(150,118,34,.06),0_0_0_84px_rgba(150,118,34,.05)]" />
+        <div className="absolute right-[18%] top-[-20%] -z-10 h-[150%] w-1 rotate-[25deg] bg-white/30 shadow-[0_0_16px_rgba(255,255,255,.45)]" />
+        <div className="grid h-full grid-rows-[auto_1fr_auto] gap-[clamp(18px,4vw,42px)] p-[clamp(24px,5vw,54px)]">
+          <header className="flex flex-col items-start justify-between gap-4 md:flex-row"><p className="text-[clamp(32px,4vw,58px)] font-light leading-none tracking-[-.07em]">GUT<span className="text-[#087a99]">SCHEIN</span></p><div className="flex min-w-0 items-center gap-3 pt-1"><span className="grid size-12 shrink-0 place-items-center rounded-xl bg-[#0b2d48] text-xl text-[#f3c84d]">{initial}</span><span className="max-w-40 truncate text-xs font-black uppercase tracking-[.22em] sm:text-sm">{safeBusinessName}</span></div></header>
+          <div className="grid items-center gap-6 md:grid-cols-[minmax(260px,1.2fr)_minmax(120px,.55fr)]"><div className="rounded-2xl border border-[#8b9aa0]/40 bg-[#fff3d2]/80 p-5 backdrop-blur-sm"><div aria-hidden className="h-16 w-full" style={{ backgroundImage: "repeating-linear-gradient(90deg,#082139 0,#082139 3px,transparent 3px,transparent 7px,#082139 7px,#082139 9px,transparent 9px,transparent 13px)" }} /><div className="mt-3 flex items-center justify-between gap-3"><span className="text-[10px] font-bold uppercase tracking-[.22em] text-[#647078] sm:text-xs">Gutscheincode</span><span className="font-mono text-sm font-bold tracking-[.15em]">{values.redemption_code.trim().toUpperCase() || "TR-8F2A9C"}</span></div></div><p className="text-center font-serif text-[clamp(58px,11vw,106px)] leading-none tracking-[-.06em]">{amount}</p></div>
+          <footer className="grid gap-4 border-t border-[#8b792f]/30 pt-5 md:grid-cols-[.8fr_1.2fr] md:items-end"><div><h2 className="text-[clamp(21px,3vw,34px)] font-bold tracking-[-.03em]">{values.title.trim() || "Gutschein-Titel"}</h2><p className="mt-3 text-[10px] font-bold uppercase tracking-[.18em] text-[#52616c] sm:text-xs">Start: {formatPreviewDate(values.starts_at, "01.09.2026")} <span className="px-2">—</span> Ende: {formatPreviewDate(values.ends_at, "31.12.2026")}</p></div><div className="md:text-right"><p className="text-sm leading-6 text-[#314759] sm:text-base">{values.description.trim() || "Beschreibung des Gutscheins – kurz, klar und hochwertig präsentiert."}</p>{values.minimum_purchase_amount ? <p className="mt-2 text-xs font-bold text-[#6e5211]">Mindestkauf: {Number(values.minimum_purchase_amount).toLocaleString("de-AT", { minimumFractionDigits: 2 })} €</p> : null}</div></footer>
+        </div>
+      </div>
+    </div>
+    <p className="mt-3 text-xs leading-5 text-slate-500">Die Vorschau reagiert direkt auf Titel, Wert, Kassencode, Laufzeit, Beschreibung und Firmenname.</p>
+  </aside>;
 }
 
 function Field({ name, label, value, onChange, type = "text", required = false, ...props }: { name: string; label: string; value: string; onChange: (value: string) => void; type?: string; required?: boolean; [key: string]: unknown }) {
