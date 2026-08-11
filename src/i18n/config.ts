@@ -1,4 +1,4 @@
-export const locales = ["de", "en", "tr", "sr-Latn", "bs", "hr", "hu", "ro", "pl", "bg"] as const;
+export const locales = ["de", "en", "tr", "fr", "it", "es", "pl", "cs", "hu", "sk", "sr-Latn", "bs", "hr", "ro", "bg"] as const;
 
 export type Locale = (typeof locales)[number];
 
@@ -13,12 +13,17 @@ export const languageOptions: ReadonlyArray<{
   { locale: "de", label: "Deutsch", flag: "🇩🇪", htmlLang: "de-AT" },
   { locale: "en", label: "English", flag: "🇬🇧", htmlLang: "en" },
   { locale: "tr", label: "Türkçe", flag: "🇹🇷", htmlLang: "tr" },
+  { locale: "fr", label: "Français", flag: "🇫🇷", htmlLang: "fr" },
+  { locale: "it", label: "Italiano", flag: "🇮🇹", htmlLang: "it" },
+  { locale: "es", label: "Español", flag: "🇪🇸", htmlLang: "es" },
+  { locale: "pl", label: "Polski", flag: "🇵🇱", htmlLang: "pl" },
+  { locale: "cs", label: "Čeština", flag: "🇨🇿", htmlLang: "cs" },
+  { locale: "hu", label: "Magyar", flag: "🇭🇺", htmlLang: "hu" },
+  { locale: "sk", label: "Slovenčina", flag: "🇸🇰", htmlLang: "sk" },
   { locale: "sr-Latn", label: "Srpski", flag: "🇷🇸", htmlLang: "sr-Latn" },
   { locale: "bs", label: "Bosanski", flag: "🇧🇦", htmlLang: "bs" },
   { locale: "hr", label: "Hrvatski", flag: "🇭🇷", htmlLang: "hr" },
-  { locale: "hu", label: "Magyar", flag: "🇭🇺", htmlLang: "hu" },
   { locale: "ro", label: "Română", flag: "🇷🇴", htmlLang: "ro" },
-  { locale: "pl", label: "Polski", flag: "🇵🇱", htmlLang: "pl" },
   { locale: "bg", label: "Български", flag: "🇧🇬", htmlLang: "bg" },
 ];
 
@@ -46,7 +51,7 @@ export function localizedPath(locale: Locale, href: string) {
   return `${locale === defaultLocale ? "" : `/${locale}`}${base || "/"}${suffix}`;
 }
 
-const translatedPaths = new Set(["/", "/fuer-geschaefte", "/kontakt", "/impressum", "/datenschutz", "/agb", "/widerrufsbelehrung"]);
+const translatedPaths = new Set(["/", "/fuer-geschaefte", "/kontakt", "/impressum", "/datenschutz", "/agb", "/agb-geschaeftskunden", "/agb-verbraucher", "/widerrufsbelehrung"]);
 
 export function stripLocalePrefix(pathname: string) {
   const segments = pathname.split("/").filter(Boolean);

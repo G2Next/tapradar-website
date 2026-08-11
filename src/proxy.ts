@@ -9,6 +9,8 @@ const PUBLIC_PATHS = new Set([
   "/impressum",
   "/datenschutz",
   "/agb",
+  "/agb-geschaeftskunden",
+  "/agb-verbraucher",
   "/widerrufsbelehrung",
 ]);
 

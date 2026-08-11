@@ -46,7 +46,7 @@ export async function startCheckout(formData: FormData) {
       allow_promotion_codes: true, client_reference_id: organizationId,
       automatic_tax: { enabled: true }, tax_id_collection: { enabled: true }, billing_address_collection: "required",
       customer_update: { address: "auto", name: "auto" },
-      metadata: { organization_id: organizationId, plan, product_id: product.id, terms_version: LEGAL_VERSIONS.terms, privacy_version: LEGAL_VERSIONS.privacy, withdrawal_version: LEGAL_VERSIONS.withdrawal }, subscription_data: { metadata: { organization_id: organizationId, plan, product_id: product.id, terms_version: LEGAL_VERSIONS.terms } },
+      metadata: { organization_id: organizationId, plan, product_id: product.id, terms_version: LEGAL_VERSIONS.businessTerms, privacy_version: LEGAL_VERSIONS.privacy, withdrawal_version: LEGAL_VERSIONS.withdrawal }, subscription_data: { metadata: { organization_id: organizationId, plan, product_id: product.id, terms_version: LEGAL_VERSIONS.businessTerms } },
     });
     if (!session.url) throw new Error("Checkout URL missing");
     redirect(session.url);

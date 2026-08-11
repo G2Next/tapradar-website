@@ -148,7 +148,7 @@ export default function LoginPage({ searchParams }: { searchParams: LoginSearchP
           ) : null}
           {mode === "signup" ? <label className="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-sm leading-6 text-slate-300">
             <input type="checkbox" required checked={legalConfirmed} onChange={(event) => setLegalConfirmed(event.target.checked)} className="mt-1 h-5 w-5 shrink-0 accent-cyan-300"/>
-            <span>Ich akzeptiere die <Link href="/agb" target="_blank" rel="noopener noreferrer" className="font-black text-cyan-300 underline">AGB</Link> und bestätige, die <Link href="/datenschutz" target="_blank" rel="noopener noreferrer" className="font-black text-cyan-300 underline">Datenschutzerklärung</Link> gelesen zu haben.</span>
+            <span>Ich akzeptiere die <Link href="/agb-verbraucher" target="_blank" rel="noopener noreferrer" className="font-black text-cyan-300 underline">Verbraucher-AGB</Link> und bestätige, die <Link href="/datenschutz" target="_blank" rel="noopener noreferrer" className="font-black text-cyan-300 underline">Datenschutzerklärung</Link> gelesen zu haben.</span>
           </label> : null}
           <button
             disabled={isLoading}

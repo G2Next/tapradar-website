@@ -11,7 +11,7 @@ type HomeMessages = {
   business: { badge: string; title: string; text: string; cta: string };
 };
 
-export const homeMessages: Record<Locale, HomeMessages> = {
+export const homeMessages: { de: HomeMessages } & Partial<Record<Locale, HomeMessages>> = {
   de: {
     metaTitle: "Digitale Stempelkarte für Kunden & lokale Geschäfte",
     metaDescription: "Mit TapRadar digitale Stempel sammeln, lokale Geschäfte entdecken und Belohnungen direkt in der App erhalten.",
