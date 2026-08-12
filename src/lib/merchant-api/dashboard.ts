@@ -9,6 +9,11 @@ export type DashboardActivity = {
   created_at: string;
 };
 
+export function canAccessDashboardLocation(role: string | null, allowedLocationIds: string[] | null, requestedLocationId: string | null) {
+  if (!requestedLocationId || role !== "staff") return true;
+  return allowedLocationIds?.includes(requestedLocationId) === true;
+}
+
 type StampActivityRow = {
   id: string;
   user_id: string;

@@ -1,4 +1,4 @@
-import { dashboardWindows, mergeDashboardActivity, percentageChange } from "@/lib/merchant-api/dashboard";
+import { canAccessDashboardLocation, dashboardWindows, mergeDashboardActivity, percentageChange } from "@/lib/merchant-api/dashboard";
 import { databaseError, MerchantApiError, requireLocation, runMerchantRoute } from "@/lib/merchant-api/core";
 import { isUuid } from "@/lib/validation";
 
@@ -11,6 +11,9 @@ export async function GET(request: Request) {
     const requestedLocationId = request.headers.get("x-location-id")?.trim() || null;
     if (requestedLocationId && !isUuid(requestedLocationId)) {
       throw new MerchantApiError(400, "invalid_location", "X-Location-Id must be a UUID.");
+    }
+    if (!canAccessDashboardLocation(context.role, context.allowedLocationIds, requestedLocationId)) {
+      throw new MerchantApiError(403, "organization_access_denied", "The selected location is not assigned to this staff member.");
     }
     await requireLocation(context, requestedLocationId);
 

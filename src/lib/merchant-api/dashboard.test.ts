@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { anonymizedCustomerLabel, dashboardWindows, mergeDashboardActivity, percentageChange } from "./dashboard";
+import { anonymizedCustomerLabel, canAccessDashboardLocation, dashboardWindows, mergeDashboardActivity, percentageChange } from "./dashboard";
 
 describe("merchant dashboard helpers", () => {
   it("uses the selected location timezone for calendar-day windows", () => {
@@ -26,5 +26,12 @@ describe("merchant dashboard helpers", () => {
     expect(percentageChange(15, 10)).toBe(50);
     expect(percentageChange(1, 0)).toBeNull();
     expect(percentageChange(0, 0)).toBe(0);
+  });
+
+  it("rejects a staff-selected location outside the server-verified assignments", () => {
+    expect(canAccessDashboardLocation("staff", ["assigned-location"], "assigned-location")).toBe(true);
+    expect(canAccessDashboardLocation("staff", ["assigned-location"], "foreign-location")).toBe(false);
+    expect(canAccessDashboardLocation("staff", [], "foreign-location")).toBe(false);
+    expect(canAccessDashboardLocation("manager", [], "organization-location")).toBe(true);
   });
 });
