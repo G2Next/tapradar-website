@@ -5,7 +5,7 @@ type PlanCopy = {
   plans: Array<{ description: string; items: string[]; cta: string }>;
 };
 
-export const planMessages: Record<Locale, PlanCopy> = {
+export const planMessages: { de: PlanCopy } & Partial<Record<Locale, PlanCopy>> = {
   de: { perMonth: "/Monat", intro: "Einführungspreis", permanent: "Dauerhaft günstig starten", later: "später", popular: "Beliebt", plans: [
     { description: "Für den einfachen Einstieg in digitale Kundenbindung.", items: ["NFC- & QR-Stempelung", "Digitale Belohnungen", "Basis-Statistik", "1 Mitarbeiter"], cta: "Mit Bronze starten" },
     { description: "Für Geschäfte, die Kunden aktiv zurückholen möchten.", items: ["Alles aus Bronze", "5 Mitarbeiter", "2 Medien-Uploads / Monat", "1 Kampagne / Monat", "Push & Retargeting", "Wöchentlicher Bericht"], cta: "Mit Gold starten" },

@@ -7,7 +7,7 @@ import { getLocale } from "@/i18n/server";
 
 export async function SiteHeader() {
   const locale = await getLocale();
-  const messages = chromeMessages[locale];
+  const messages = chromeMessages[locale] ?? chromeMessages.de;
   const navItems = [
     { href: "/", label: messages.nav.home },
     { href: "/fuer-geschaefte", label: messages.nav.business },

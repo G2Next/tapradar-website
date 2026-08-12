@@ -25,7 +25,7 @@ export default async function LegalConsentPage({ searchParams }: { searchParams:
         <input type="hidden" name="next" value={next}/>
         <label className="flex items-start gap-3 rounded-2xl border border-white/10 bg-slate-950/30 p-4 leading-6">
           <input name="terms_accepted" type="checkbox" required className="mt-1 h-5 w-5 shrink-0 accent-cyan-300"/>
-          <span>Ich akzeptiere die <Link href="/agb" target="_blank" rel="noopener noreferrer" className="font-black text-cyan-300 underline">Allgemeinen Geschäftsbedingungen</Link> (Version {LEGAL_VERSIONS.terms}).</span>
+          <span>Ich akzeptiere die <Link href="/agb-verbraucher" target="_blank" rel="noopener noreferrer" className="font-black text-cyan-300 underline">Verbraucher-AGB</Link> (Version {LEGAL_VERSIONS.terms}).</span>
         </label>
         <label className="flex items-start gap-3 rounded-2xl border border-white/10 bg-slate-950/30 p-4 leading-6">
           <input name="privacy_acknowledged" type="checkbox" required className="mt-1 h-5 w-5 shrink-0 accent-cyan-300"/>

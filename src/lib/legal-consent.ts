@@ -3,12 +3,17 @@ import { headers } from "next/headers";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 export const LEGAL_VERSIONS = {
-  terms: "2026-08-08.1",
-  privacy: "2026-08-08.1",
-  withdrawal: "2026-08-08.1",
+  terms: "2026-08-09.2", // Verbraucher-AGB — Feldname bleibt "terms" für Abwärtskompatibilität mit der Mobile-App-API
+  businessTerms: "2026-08-09.2", // Geschäftskunden-AGB — nur im Web-Dashboard verwendet
+  privacy: "2026-08-09.2",
+  withdrawal: "2026-08-09.2",
 } as const;
 
 export type LegalContext = "account" | "subscription";
+
+function termsVersionForContext(context: LegalContext) {
+  return context === "subscription" ? LEGAL_VERSIONS.businessTerms : LEGAL_VERSIONS.terms;
+}
 
 export async function hasCurrentLegalAcceptance(userId: string, context: LegalContext, organizationId?: string | null) {
   const admin = createAdminClient();
@@ -17,7 +22,7 @@ export async function hasCurrentLegalAcceptance(userId: string, context: LegalCo
     .select("id")
     .eq("user_id", userId)
     .eq("context", context)
-    .eq("terms_version", LEGAL_VERSIONS.terms)
+    .eq("terms_version", termsVersionForContext(context))
     .eq("privacy_version", LEGAL_VERSIONS.privacy)
     .eq("terms_accepted", true)
     .eq("privacy_acknowledged", true)
@@ -70,7 +75,7 @@ export async function recordLegalAcceptance({
     user_id: userId,
     organization_id: organizationId,
     context,
-    terms_version: LEGAL_VERSIONS.terms,
+    terms_version: termsVersionForContext(context),
     privacy_version: LEGAL_VERSIONS.privacy,
     withdrawal_version: context === "subscription" ? LEGAL_VERSIONS.withdrawal : null,
     terms_accepted: true,

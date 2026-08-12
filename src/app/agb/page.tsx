@@ -1,25 +1,23 @@
+import Link from "next/link";
 import { LegalPage } from "@/components/LegalPage";
-import { LEGAL_VERSIONS } from "@/lib/legal-consent";
+import { localizedPath } from "@/i18n/config";
 import { getLocale } from "@/i18n/server";
-import { translateText, translateTree } from "@/i18n/translate";
+import { translateTree } from "@/i18n/translate";
 
 export default async function AgbPage() {
   const locale = await getLocale();
   return translateTree(
-    <LegalPage title="Allgemeine Geschäftsbedingungen" date={`${translateText(locale, "Stand: 8. August 2026")} · Version ${LEGAL_VERSIONS.terms}`} locale={locale} germanHref="/de/agb">
-      <h2>1. Geltungsbereich</h2>
-      <p>Diese AGB gelten für die Nutzung der TapRadar-Plattform durch Geschäftskunden und registrierte Nutzer. Für Geschäftstarife handelt der Besteller im Rahmen seiner unternehmerischen Tätigkeit.</p>
-      <h2>2. Leistungen</h2>
-      <p>TapRadar stellt digitale Stempelkarten, Kundenbindungsfunktionen, Bewertungen, Statistiken und Marketingfunktionen bereit.</p>
-      <h2>3. Mitgliedschaften</h2>
-      <p>Tarif, Gesamtpreis, Umsatzsteuer, Abrechnungsintervall und wesentliche Leistungen werden vor der zahlungspflichtigen Bestellung zusammengefasst. Die Zahlungsabwicklung kann über Stripe erfolgen.</p>
-      <h2>4. Laufzeit und Kündigung</h2>
-      <p>Abonnements verlängern sich entsprechend dem vor der Bestellung angezeigten Abrechnungsintervall. Monatliche Tarife sind monatlich kündbar, sofern in der Bestellübersicht nichts Abweichendes vereinbart wird.</p>
-      <h2>5. Nutzerpflichten</h2>
-      <p>Zugangsdaten, Geräte-Tokens und Einlösecodes sind vor unbefugtem Zugriff zu schützen. Manipulationen von Stempeln, Belohnungen oder technischen Schutzmaßnahmen sind unzulässig.</p>
-      <h2>6. Verbraucherinformationen</h2>
-      <p>Soweit ein Nutzer Verbraucher ist und ein gesetzliches Widerrufsrecht besteht, gelten die Informationen der Widerrufsbelehrung. Gesetzliche Verbraucherrechte werden durch diese AGB nicht eingeschränkt.</p>
-      <h2>7. Kontakt</h2>
-      <p>Bei Fragen erreichen Sie uns unter <a href="mailto:support@tapradar.app">support@tapradar.app</a>.</p>
+    <LegalPage title="Allgemeine Geschäftsbedingungen" locale={locale}>
+      <p>TapRadar hat zwei getrennte AGB-Dokumente, je nachdem, ob Sie die App als Endkundin bzw. Endkunde nutzen oder als Unternehmen einen kostenpflichtigen Tarif abonniert haben:</p>
+      <div className="mt-6 grid gap-4 sm:grid-cols-2">
+        <Link href={localizedPath(locale, "/agb-verbraucher")} className="rounded-2xl border border-white/10 bg-white/5 p-6 transition hover:border-cyan-300/40 hover:bg-white/10">
+          <span className="block text-lg font-black text-white">Verbraucher-AGB</span>
+          <span className="mt-2 block text-sm text-slate-400">Für die kostenlose TapRadar-App (Endkundinnen und Endkunden).</span>
+        </Link>
+        <Link href={localizedPath(locale, "/agb-geschaeftskunden")} className="rounded-2xl border border-white/10 bg-white/5 p-6 transition hover:border-cyan-300/40 hover:bg-white/10">
+          <span className="block text-lg font-black text-white">Geschäftskunden-AGB</span>
+          <span className="mt-2 block text-sm text-slate-400">Für das kostenpflichtige TapRadar-Dashboard (Bronze, Gold, Platinum).</span>
+        </Link>
+      </div>
     </LegalPage>, locale);
 }

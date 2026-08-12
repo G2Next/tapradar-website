@@ -20,7 +20,7 @@ export type ChromeMessages = {
   };
 };
 
-export const chromeMessages: Record<Locale, ChromeMessages> = {
+export const chromeMessages: { de: ChromeMessages } & Partial<Record<Locale, ChromeMessages>> = {
   de: {
     nav: { home: "Home", business: "Für Geschäfte", pricing: "Preise", contact: "Kontakt" },
     account: { admin: "Administration", dashboard: "Dashboard", app: "Meine App", login: "Anmelden" },

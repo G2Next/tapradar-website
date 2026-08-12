@@ -3,7 +3,7 @@ import { localeAlternates, locales, localizedPath } from "@/i18n/config";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://tapradar.app";
-  const routes = ["/", "/fuer-geschaefte", "/kontakt", "/impressum", "/datenschutz", "/agb", "/widerrufsbelehrung"];
+  const routes = ["/", "/fuer-geschaefte", "/kontakt", "/impressum", "/datenschutz", "/agb", "/agb-geschaeftskunden", "/agb-verbraucher", "/widerrufsbelehrung"];
   return routes.flatMap((route) => locales.map((locale) => ({
     url: `${baseUrl}${localizedPath(locale, route)}`,
     lastModified: new Date(),

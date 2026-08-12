@@ -7,12 +7,12 @@ import { dashboardMessages } from "./dashboard";
 import { legalManualOverrides } from "./legal";
 import type { Locale } from "./config";
 
-const catalog = generatedCatalog as Record<Locale, Record<string, string>>;
-const appCatalog = appCatalogJson as Record<Locale, Record<string, string>>;
+const catalog = generatedCatalog as Partial<Record<Locale, Record<string, string>>>;
+const appCatalog = appCatalogJson as Partial<Record<Locale, Record<string, string>>>;
 const legalCatalog = legalCatalogJson as Partial<Record<Locale, Record<string, string>>>;
-const currentCatalog = currentCatalogJson as Record<Locale, Record<string, string>>;
+const currentCatalog = currentCatalogJson as Partial<Record<Locale, Record<string, string>>>;
 
-const supplements: Record<Locale, Record<string, string>> = {
+const supplements: { de: Record<string, string> } & Partial<Record<Locale, Record<string, string>>> = {
   de: { Funktionen: "Funktionen", "Warum TapRadar": "Warum TapRadar", "So starten Sie": "So starten Sie", "Was Sie bekommen": "Was Sie bekommen", Pakete: "Pakete", Name: "Name", Support: "Support" },
   en: { Funktionen: "Features", "Warum TapRadar": "Why TapRadar", "So starten Sie": "How to get started", "Was Sie bekommen": "What you get", Pakete: "Plans", Name: "Name", Support: "Support" },
   tr: { Funktionen: "Özellikler", "Warum TapRadar": "Neden TapRadar?", "So starten Sie": "Nasıl başlanır?", "Was Sie bekommen": "Neler elde edersiniz?", Pakete: "Paketler", Name: "Ad Soyad", Support: "Destek" },
@@ -30,11 +30,11 @@ export function translateText(locale: Locale, value: string) {
   const key = value.trim();
   if (!key) return value;
   const commonOverride = metadataOverrides[locale]?.[key] ?? (key === "Bitte anmelden"
-    ? dashboardMessages[locale].loginTitle
+    ? (dashboardMessages[locale] ?? dashboardMessages.de).loginTitle
     : key === "Zum Login"
-      ? dashboardMessages[locale].loginCta
+      ? (dashboardMessages[locale] ?? dashboardMessages.de).loginCta
       : businessOverrides[locale]?.[key]);
-  let translated = commonOverride ?? supplements[locale][key] ?? legalManualOverrides[locale]?.[key] ?? legalCatalog[locale]?.[key] ?? currentCatalog[locale]?.[key] ?? appCatalog[locale]?.[key] ?? catalog[locale]?.[key];
+  let translated = commonOverride ?? supplements[locale]?.[key] ?? legalManualOverrides[locale]?.[key] ?? legalCatalog[locale]?.[key] ?? currentCatalog[locale]?.[key] ?? appCatalog[locale]?.[key] ?? catalog[locale]?.[key];
   if (!translated) return value;
   if (locale === "sr-Latn") translated = transliterateSerbian(translated);
   const leading = value.match(/^\s*/u)?.[0] ?? "";
@@ -42,7 +42,7 @@ export function translateText(locale: Locale, value: string) {
   return `${leading}${translated}${trailing}`;
 }
 
-const businessOverrides: Record<Locale, Record<string, string>> = {
+const businessOverrides: { de: Record<string, string> } & Partial<Record<Locale, Record<string, string>>> = {
   de: { Geschäft: "Geschäft", "Geschäft speichern": "Geschäft speichern" },
   en: { Geschäft: "Business", "Geschäft speichern": "Save business" },
   tr: { Geschäft: "İşletme", "Geschäft speichern": "İşletmeyi kaydet" },
@@ -137,7 +137,7 @@ export function translateTree(node: ReactNode, locale: Locale): ReactNode {
 
 const translatableProps = new Set(["alt", "aria-label", "placeholder", "title"]);
 
-const codeLabels: Record<Locale, Record<string, string>> = {
+const codeLabels: { de: Record<string, string> } & Partial<Record<Locale, Record<string, string>>> = {
   de: { owner: "Inhaber", manager: "Manager", staff: "Mitarbeiter", active: "Aktiv", pending: "In Prüfung", inactive: "Inaktiv", draft: "Entwurf", paused: "Pausiert", completed: "Abgeschlossen", expired: "Abgelaufen" },
   en: { owner: "Owner", manager: "Manager", staff: "Employee", active: "Active", pending: "Pending", inactive: "Inactive", draft: "Draft", paused: "Paused", completed: "Completed", expired: "Expired" },
   tr: { owner: "İşletme sahibi", manager: "Yönetici", staff: "Çalışan", active: "Aktif", pending: "İncelemede", inactive: "Pasif", draft: "Taslak", paused: "Duraklatıldı", completed: "Tamamlandı", expired: "Süresi doldu" },
@@ -151,5 +151,5 @@ const codeLabels: Record<Locale, Record<string, string>> = {
 };
 
 export function translateCode(locale: Locale, value: string) {
-  return codeLabels[locale][value.toLowerCase()] ?? value;
+  return (codeLabels[locale] ?? codeLabels.de)[value.toLowerCase()] ?? value;
 }

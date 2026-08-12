@@ -35,7 +35,7 @@ export default async function CheckoutConfirmationPage({ searchParams }: { searc
         <form action={startCheckout} className="mt-7 grid gap-4">
           <input type="hidden" name="plan" value={product.code}/>
           <input type="hidden" name="onboarding" value={params.onboarding === "1" ? "true" : "false"}/>
-          <Consent name="terms_accepted">Ich akzeptiere die <LegalLink href="/agb">AGB</LegalLink> (Version {LEGAL_VERSIONS.terms}).</Consent>
+          <Consent name="terms_accepted">Ich akzeptiere die <LegalLink href="/agb-geschaeftskunden">Geschäftskunden-AGB</LegalLink> (Version {LEGAL_VERSIONS.businessTerms}).</Consent>
           <Consent name="privacy_acknowledged">Ich habe die <LegalLink href="/datenschutz">Datenschutzerklärung</LegalLink> (Version {LEGAL_VERSIONS.privacy}) gelesen.</Consent>
           <Consent name="withdrawal_acknowledged">Ich habe die <LegalLink href="/widerrufsbelehrung">Widerrufsbelehrung</LegalLink> (Version {LEGAL_VERSIONS.withdrawal}) gelesen. Mir ist bekannt, dass gesetzliche Verbraucherrechte nur bei Vorliegen der gesetzlichen Voraussetzungen gelten.</Consent>
           <Consent name="immediate_service_requested">Ich verlange ausdrücklich, dass TapRadar nach erfolgreicher Zahlung bereits vor Ablauf einer möglichen Widerrufsfrist mit der Leistung beginnt.</Consent>

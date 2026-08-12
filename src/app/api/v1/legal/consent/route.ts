@@ -24,7 +24,7 @@ export async function GET(request: Request) {
   return NextResponse.json({
     accepted,
     versions: LEGAL_VERSIONS,
-    documents: { terms: "/agb", privacy: "/datenschutz", withdrawal: "/widerrufsbelehrung" },
+    documents: { terms: "/agb-verbraucher", privacy: "/datenschutz", withdrawal: "/widerrufsbelehrung" },
   }, { headers: { "Cache-Control": "private, no-store" } });
 }
 
