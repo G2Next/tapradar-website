@@ -11,18 +11,27 @@ export const LEGAL_VERSIONS = {
 
 export type LegalContext = "account" | "subscription";
 
-function termsVersionForContext(context: LegalContext) {
-  return context === "subscription" ? LEGAL_VERSIONS.businessTerms : LEGAL_VERSIONS.terms;
+async function termsVersionForContext(userId: string, context: LegalContext) {
+  if (context === "subscription") return LEGAL_VERSIONS.businessTerms;
+
+  const { data } = await createAdminClient()
+    .from("profiles")
+    .select("account_type")
+    .eq("id", userId)
+    .maybeSingle();
+
+  return data?.account_type === "business" ? LEGAL_VERSIONS.businessTerms : LEGAL_VERSIONS.terms;
 }
 
 export async function hasCurrentLegalAcceptance(userId: string, context: LegalContext, organizationId?: string | null) {
   const admin = createAdminClient();
+  const termsVersion = await termsVersionForContext(userId, context);
   let query = admin
     .from("legal_acceptances")
     .select("id")
     .eq("user_id", userId)
     .eq("context", context)
-    .eq("terms_version", termsVersionForContext(context))
+    .eq("terms_version", termsVersion)
     .eq("privacy_version", LEGAL_VERSIONS.privacy)
     .eq("terms_accepted", true)
     .eq("privacy_acknowledged", true)
@@ -62,6 +71,7 @@ export async function recordLegalAcceptance({
   immediateServiceRequested?: boolean;
   metadata?: Record<string, string | number | boolean | null>;
 }) {
+  const termsVersion = await termsVersionForContext(userId, context);
   const requestHeaders = await headers();
   const trustedForwarded = requestHeaders.get("x-vercel-forwarded-for");
   const developmentForwarded = process.env.NODE_ENV !== "production" ? requestHeaders.get("x-forwarded-for") : null;
@@ -75,7 +85,7 @@ export async function recordLegalAcceptance({
     user_id: userId,
     organization_id: organizationId,
     context,
-    terms_version: termsVersionForContext(context),
+    terms_version: termsVersion,
     privacy_version: LEGAL_VERSIONS.privacy,
     withdrawal_version: context === "subscription" ? LEGAL_VERSIONS.withdrawal : null,
     terms_accepted: true,
