@@ -169,6 +169,25 @@ const tombstone = await outsider.client.from("sync_tombstones").select("resource
 assert.ifError(tombstone.error);
 assert.deepEqual(tombstone.data, { resource_type: "offer", resource_id: disposableOffer.data.id });
 
+const voucher = await owner.client.from("offers").insert({
+  organization_id: organizationId,
+  location_id: locationId,
+  title: "Integration Gutschein",
+  description: "Ein vollständiger Gutschein aus dem Merchant-Formular.",
+  offer_type: "gutschein",
+  discount_type: "fixed",
+  discount_value: 10,
+  minimum_purchase_amount: 25,
+  redemption_code: `TR-${randomBytes(4).toString("hex").toUpperCase()}`,
+  conditions: "Einmal pro Person",
+  is_active: true,
+}).select("id,offer_type,discount_type,discount_value").single();
+assert.ifError(voucher.error);
+assert.deepEqual(voucher.data.offer_type, "gutschein");
+assert.deepEqual(voucher.data.discount_type, "fixed");
+assert.equal(Number(voucher.data.discount_value), 10);
+assert.ifError((await owner.client.from("offers").delete().eq("id", voucher.data.id)).error);
+
 const privacyRequest = await customer.client.from("privacy_requests").insert({ user_id: customer.user.id, request_type: "export" }).select("id").single();
 assert.ifError(privacyRequest.error);
 const outsiderPrivacy = await outsider.client.from("privacy_requests").select("id").eq("id", privacyRequest.data.id);
@@ -232,6 +251,6 @@ assert.ifError((await admin.from("platform_api_keys").delete().eq("id", apiKey.d
 
 console.log(JSON.stringify({
   organizationId,
-  checks: ["guided-onboarding", "multi-organization", "payment-gate", "review-workflow", "field-protection", "public-RLS", "tenant-foreign-keys", "location-assignment", "team-invitation", "device-cooldown", "stamp-ledger", "reward-creation", "reward-redemption", "storage-policy", "sync-tombstones", "privacy-RLS", "database-rate-limit", "notification-outbox", "admin-approval", "product-catalog-RLS", "vat-validation", "contact-inbox-RLS", "invoice-settings-RLS", "payment-provider-RLS", "platform-api-key-RLS"],
+  checks: ["guided-onboarding", "multi-organization", "payment-gate", "review-workflow", "field-protection", "public-RLS", "tenant-foreign-keys", "location-assignment", "team-invitation", "device-cooldown", "stamp-ledger", "reward-creation", "reward-redemption", "storage-policy", "sync-tombstones", "voucher-write", "privacy-RLS", "database-rate-limit", "notification-outbox", "admin-approval", "product-catalog-RLS", "vat-validation", "contact-inbox-RLS", "invoice-settings-RLS", "payment-provider-RLS", "platform-api-key-RLS"],
   status: "passed",
 }));
