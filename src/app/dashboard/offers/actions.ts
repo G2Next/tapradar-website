@@ -12,6 +12,9 @@ const allowedFiles:Record<string,string>={"image/jpeg":"jpg","image/png":"png","
 type Context=Awaited<ReturnType<typeof getDashboardContext>>;
 export type OfferActionState={error?:string};
 
+function destination(offerType:string){return offerType==="gutschein"?"/dashboard/vouchers":"/dashboard/actions";}
+function refreshOfferPages(){revalidatePath("/dashboard");revalidatePath("/dashboard/actions");revalidatePath("/dashboard/vouchers");}
+
 function payload(formData:FormData) {
   const type=requiredText(formData.get("offer_type"),20);
   const offerType=offerTypes.includes(type)?type:"aktion";
@@ -52,7 +55,7 @@ export async function createOffer(_:OfferActionState,formData:FormData):Promise<
   let media=null;try{media=await uploadOfferMedia(context,formData);}catch{return{error:"Die Datei ist ungültig oder konnte nicht hochgeladen werden. Erlaubt sind JPG, PNG, WebP oder PDF bis 5 MB."};}
   const{error}=await context.supabase.from("offers").insert({...value,media_asset_id:media?.id??null,organization_id:context.organizationId});
   if(error){await cleanupAsset(context,media);return{error:"Der Eintrag konnte nicht gespeichert werden. Deine Eingaben bleiben erhalten."};}
-  revalidatePath("/dashboard");revalidatePath("/dashboard/offers");redirect("/dashboard/offers?saved=1");
+  refreshOfferPages();redirect(`${destination(value.offer_type)}?saved=1`);
 }
 
 export async function updateOffer(_:OfferActionState,formData:FormData):Promise<OfferActionState>{
@@ -66,5 +69,5 @@ export async function updateOffer(_:OfferActionState,formData:FormData):Promise<
   if(error){await cleanupAsset(context,media);return{error:"Der Eintrag konnte nicht gespeichert werden. Deine Eingaben bleiben erhalten."};}
   const oldAsset=Array.isArray(existing?.organization_assets)?existing.organization_assets[0]:existing?.organization_assets;
   if(media&&oldAsset)await cleanupAsset(context,oldAsset);
-  revalidatePath("/dashboard");revalidatePath("/dashboard/offers");redirect("/dashboard/offers?saved=1");
+  refreshOfferPages();redirect(`${destination(value.offer_type)}?saved=1`);
 }
