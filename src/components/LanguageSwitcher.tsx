@@ -1,22 +1,26 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { hasTranslation, languageOptions, localizedPath, usesCookieLocale, type Locale } from "@/i18n/config";
 
 export function LanguageSwitcher({ locale, label, fullWidth = false }: { locale: Locale; label: string; fullWidth?: boolean }) {
   const pathname = usePathname();
-  const router = useRouter();
   const current = languageOptions.find((option) => option.locale === locale) ?? languageOptions[0];
 
   function selectLanguage(nextLocale: Locale) {
     document.cookie = `tapradar_locale=${nextLocale}; Path=/; Max-Age=31536000; SameSite=Lax`;
     if (usesCookieLocale(pathname)) {
-      router.refresh();
+      window.location.reload();
       return;
     }
     const translated = hasTranslation(pathname);
     const destination = translated ? localizedPath(nextLocale, pathname) : localizedPath(nextLocale, "/");
-    router.push(`${destination}${translated ? window.location.search : ""}`);
+    // Locale-prefixed public URLs are rewritten to the same internal Next.js
+    // route. A client-side transition can therefore reuse the previous RSC
+    // payload, leaving the page body and metadata in the old language. A full
+    // document navigation keeps the URL, chrome, content and <head> in sync.
+    // eslint-disable-next-line @next/next/no-location-assign-relative-destination
+    window.location.assign(`${destination}${translated ? window.location.search : ""}`);
   }
 
   return (
