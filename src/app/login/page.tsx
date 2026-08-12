@@ -5,10 +5,15 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
-type LoginSearchParams = Promise<{ mode?: string | string[]; password?: string | string[] }>;
+type LoginSearchParams = Promise<{
+  mode?: string | string[];
+  password?: string | string[];
+  account?: string | string[];
+}>;
 
 export default function LoginPage({ searchParams }: { searchParams: LoginSearchParams }) {
   const params = use(searchParams);
+  const isBusinessSignup = params.mode === "signup" && params.account === "business";
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -45,6 +50,7 @@ export default function LoginPage({ searchParams }: { searchParams: LoginSearchP
                 email,
                 password,
                 options: {
+                  data: { account_type: isBusinessSignup ? "business" : "customer" },
                   emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(nextPath)}`,
                 },
               })
@@ -94,9 +100,13 @@ export default function LoginPage({ searchParams }: { searchParams: LoginSearchP
         <Link href="/" className="text-sm font-black text-cyan-300">
           Zurück zur Website
         </Link>
-        <h1 className="mt-6 text-4xl font-black tracking-normal">Anmelden</h1>
+        <h1 className="mt-6 text-4xl font-black tracking-normal">
+          {isBusinessSignup ? "Geschäftskonto erstellen" : "Anmelden"}
+        </h1>
         <p className="mt-3 leading-7 text-slate-300">
-          Melde dich mit E-Mail und Passwort an oder erstelle ein neues Konto.
+          {isBusinessSignup
+            ? "Registriere dein Händlerkonto und richte anschließend Unternehmen und Filiale ein."
+            : "Melde dich mit E-Mail und Passwort an oder erstelle ein neues Konto."}
         </p>
         <div className="mt-7 grid grid-cols-3 rounded-2xl border border-white/10 bg-white/[0.05] p-1 text-sm font-black">
           {[
@@ -148,7 +158,7 @@ export default function LoginPage({ searchParams }: { searchParams: LoginSearchP
           ) : null}
           {mode === "signup" ? <label className="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-sm leading-6 text-slate-300">
             <input type="checkbox" required checked={legalConfirmed} onChange={(event) => setLegalConfirmed(event.target.checked)} className="mt-1 h-5 w-5 shrink-0 accent-cyan-300"/>
-            <span>Ich akzeptiere die <Link href="/agb-verbraucher" target="_blank" rel="noopener noreferrer" className="font-black text-cyan-300 underline">Verbraucher-AGB</Link> und bestätige, die <Link href="/datenschutz" target="_blank" rel="noopener noreferrer" className="font-black text-cyan-300 underline">Datenschutzerklärung</Link> gelesen zu haben.</span>
+            <span>Ich akzeptiere die <Link href={isBusinessSignup ? "/agb-geschaeftskunden" : "/agb-verbraucher"} target="_blank" rel="noopener noreferrer" className="font-black text-cyan-300 underline">{isBusinessSignup ? "Geschäftskunden-AGB" : "Verbraucher-AGB"}</Link> und bestätige, die <Link href="/datenschutz" target="_blank" rel="noopener noreferrer" className="font-black text-cyan-300 underline">Datenschutzerklärung</Link> gelesen zu haben.</span>
           </label> : null}
           <button
             disabled={isLoading}

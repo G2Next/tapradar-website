@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
 
 export default function RegisterPage() {
-  redirect("/login?mode=signup&next=/dashboard/onboarding");
+  redirect("/login?mode=signup&account=business&next=/dashboard/onboarding");
 }
