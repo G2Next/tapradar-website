@@ -17,6 +17,7 @@ Successful responses have `{ "data": ..., "meta": { "request_id": "..." } }`. Er
 | Method | Route | Minimum role | Purpose |
 | --- | --- | --- | --- |
 | GET | `/api/v1/merchant/context` | active member | Memberships, selected organization, plan and permitted locations |
+| GET | `/api/v1/merchant/dashboard` | active member | Shared daily metrics and privacy-safe live activity for website and Merchant App |
 | GET, PATCH | `/api/v1/merchant/organization` | member / manager | Read or edit safe organization profile fields |
 | GET, POST | `/api/v1/merchant/locations` | member / manager | List or create locations; creation enforces the plan limit |
 | PATCH, DELETE | `/api/v1/merchant/locations/:id` | manager | Edit or delete a non-primary location |
@@ -26,6 +27,8 @@ Successful responses have `{ "data": ..., "meta": { "request_id": "..." } }`. Er
 | PATCH, DELETE | `/api/v1/merchant/offers/:id` | manager | Edit or delete an action/coupon (Gold or Platinum) |
 
 `owner` and `manager` satisfy the manager requirement. `staff` reads are restricted to assigned locations. Database RLS remains active for every user-scoped operation.
+
+The dashboard accepts an optional `X-Location-Id`. Owners and managers may omit it for an organization-wide view. Staff requests are always restricted to assigned locations. Calendar-day metrics use the selected or primary location timezone. Customer activity contains a stable anonymized label instead of email addresses or profile data.
 
 ## Safe retries
 
