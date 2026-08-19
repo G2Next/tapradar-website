@@ -44,3 +44,20 @@ Organization, location, loyalty-card and offer changes are written to `audit_log
 2. Point an internal Merchant App build at the preview website API.
 3. Verify login, organization switching, CRUD, role denial, plan limits and customer-app sync.
 4. Deploy the website after approval; then replace the matching direct table calls in the Merchant App endpoint by endpoint.
+
+## Mitarbeiter-Terminal API
+
+PIN-basierte Terminal-Mitarbeiter verwenden keine Portal-Anmeldung. Der Geschäftsadmin erstellt sie unter
+`/dashboard/team`; dort werden Business-Code, Tarifbelegung, Status, Filialrechte und die einmalig sichtbare PIN
+verwaltet.
+
+| Method | Route | Authentifizierung | Zweck |
+| --- | --- | --- | --- |
+| POST | `/api/v1/staff/login` | Business-Code + PIN im JSON-Body | 12-Stunden-Terminalsitzung erstellen |
+| GET | `/api/v1/staff/session` | `Authorization: Bearer <session_token>` | Sitzung und erlaubte Filialen prüfen |
+| DELETE | `/api/v1/staff/session` | `Authorization: Bearer <session_token>` | Sitzung widerrufen |
+
+Der Login-Body lautet `{ "business_code": "TAP482", "pin": "012345" }`. Fehlgeschlagene Versuche werden pro
+Geschäft und Netzwerkadresse begrenzt; nach fünf Fehlversuchen sperrt das System die Anmeldung für 15 Minuten. PINs werden niemals
+im Klartext gespeichert oder über Lese-Endpunkte zurückgegeben. Eine Statusänderung, PIN-Erneuerung oder Löschung
+widerruft vorhandene Sitzungen sofort beziehungsweise entfernt sie durch die referenzielle Löschung.
