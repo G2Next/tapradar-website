@@ -39,7 +39,7 @@ export async function SiteHeader() {
         </Link>
         <nav className="hidden items-center gap-7 text-sm font-bold text-slate-300 md:flex">
           {navItems.map((item) => (
-            <Link key={item.href} href={localizedPath(locale, item.href)} className="transition hover:text-cyan-300">
+            <Link key={item.href} href={localizedPath(locale, item.href)} className="transition duration-150 hover:text-cyan-300 active:text-cyan-200">
               {item.label}
             </Link>
           ))}
@@ -48,7 +48,7 @@ export async function SiteHeader() {
           <LanguageSwitcher locale={locale} label={messages.language.choose} />
           <Link
             href={isPlatformAdmin ? "/admin" : isLoggedIn ? hasBusiness ? "/dashboard" : "/app" : "/login"}
-            className="inline-flex h-11 items-center justify-center rounded-2xl bg-cyan-300 px-3 text-sm font-black text-slate-950 shadow-lg shadow-cyan-300/20 transition hover:-translate-y-0.5 hover:bg-cyan-200 sm:px-5"
+            className="inline-flex h-11 items-center justify-center rounded-2xl bg-cyan-300 px-3 text-sm font-black text-slate-950 shadow-lg shadow-cyan-300/20 transition duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 hover:bg-cyan-200 active:translate-y-0 active:scale-[0.97] sm:px-5"
           >
             {isPlatformAdmin ? messages.account.admin : isLoggedIn ? hasBusiness ? messages.account.dashboard : messages.account.app : messages.account.login}
           </Link>
