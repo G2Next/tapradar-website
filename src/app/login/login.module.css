@@ -1,0 +1,100 @@
+.page {
+  position: relative;
+  min-height: calc(100vh - 73px);
+  overflow: hidden;
+  padding: 44px 24px 64px;
+  color: white;
+  background:
+    radial-gradient(circle at 82% 9%, #0b4f63 0%, #061827 31%, transparent 57%),
+    radial-gradient(circle at 10% 88%, rgba(37, 99, 235, .16), transparent 31%),
+    #020617;
+}
+
+.page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: .16;
+  pointer-events: none;
+  background-image: linear-gradient(rgba(103,232,249,.08) 1px, transparent 1px), linear-gradient(90deg, rgba(103,232,249,.08) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(circle at 70% 40%, black, transparent 70%);
+}
+
+.orbitOne, .orbitTwo { position: absolute; border: 1px solid rgba(103,232,249,.13); border-radius: 50%; pointer-events: none; }
+.orbitOne { width: 470px; height: 470px; right: -210px; top: -210px; }
+.orbitTwo { width: 620px; height: 620px; left: -410px; bottom: -390px; }
+.stage { position: relative; z-index: 1; width: min(1120px, 100%); height: 650px; margin: 0 auto; overflow: hidden; isolation: isolate; border: 1px solid rgba(255,255,255,.12); border-radius: 30px; background: radial-gradient(circle at 78% 24%, rgba(34,211,238,.15), transparent 28%), linear-gradient(135deg, #061827, #020617 74%); box-shadow: 0 40px 100px rgba(0,0,0,.48), inset 0 1px rgba(255,255,255,.04); }
+.grid { position: absolute; inset: 0; opacity: .14; background-image: linear-gradient(rgba(103,232,249,.08) 1px, transparent 1px), linear-gradient(90deg, rgba(103,232,249,.08) 1px, transparent 1px); background-size: 42px 42px; mask-image: linear-gradient(90deg, black, transparent 64%); }
+.radar { position: absolute; right: -70px; top: -80px; width: 410px; height: 410px; border-radius: 50%; opacity: .3; }
+.radar span { position: absolute; inset: 0; border: 1px solid rgba(103,232,249,.25); border-radius: 50%; animation: pulse 4s ease-out infinite; }
+.radar span:nth-child(2) { inset: 58px; animation-delay: 1.1s; }
+.radar span:nth-child(3) { inset: 116px; animation-delay: 2.2s; }
+@keyframes pulse { 0%,100% { opacity: .3; transform: scale(.96); } 50% { opacity: .8; transform: scale(1.02); } }
+
+.formPanel { position: absolute; z-index: 3; inset: 0 auto 0 0; width: 59%; display: grid; place-items: center; overflow: hidden; background: linear-gradient(145deg, rgba(15,36,57,.99), rgba(6,24,39,.99)); clip-path: polygon(0 0, 84% 0, 100% 100%, 0 100%); transform: translateX(0); box-shadow: 30px 0 80px rgba(0,0,0,.26); transition: transform .9s cubic-bezier(.77,0,.18,1), clip-path .9s cubic-bezier(.77,0,.18,1); }
+.formPanel::before { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at 30% 25%, rgba(34,211,238,.13), transparent 37%); }
+.signup .formPanel { transform: translateX(69.5%); clip-path: polygon(16% 0, 100% 0, 100% 100%, 0 100%); }
+.edge { position: absolute; z-index: 1; top: -10%; right: 7.6%; width: 1px; height: 120%; background: linear-gradient(transparent, rgba(103,232,249,.9), transparent); transform: rotate(-9.2deg); box-shadow: 0 0 25px rgba(34,211,238,.4); }
+.signup .edge { right: auto; left: 7.6%; transform: rotate(9.2deg); }
+.formContent { position: relative; z-index: 2; width: min(390px, 66%); margin-right: 11%; animation: formIn .48s .34s both; }
+.signup .formContent { margin-right: 0; margin-left: 11%; }
+@keyframes formIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+.back { display: inline-flex; margin-bottom: 21px; color: #67e8f9; font-size: 11px; font-weight: 800; }
+.kicker, .eyebrow { margin: 0 0 12px; color: #67e8f9; font-size: 10px; font-weight: 800; letter-spacing: .22em; text-transform: uppercase; }
+.formContent h1 { max-width: 420px; margin: 0; color: white; font-size: clamp(31px, 3.7vw, 49px); font-weight: 900; letter-spacing: -.045em; line-height: .98; }
+.intro { margin: 12px 0 20px; color: #a8bdd3; font-size: 13px; line-height: 1.55; }
+.tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-bottom: 18px; padding: 4px; border: 1px solid rgba(255,255,255,.1); border-radius: 15px; background: rgba(255,255,255,.04); }
+.tabs button { min-height: 34px; cursor: pointer; border: 0; border-radius: 11px; color: #9fb4ca; background: transparent; font-size: 10px; font-weight: 800; transition: color .2s, background .2s, transform .2s; }
+.tabs button:active { transform: scale(.97); }
+.tabs .activeTab { color: #07111f; background: #67e8f9; }
+.form { display: grid; gap: 14px; }
+.form > label:not(.consent) { display: grid; gap: 7px; color: #aec2d6; font-size: 10px; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; }
+.form input[type="email"], .form input[type="password"], .form input[type="text"] { width: 100%; min-height: 44px; border: 1px solid rgba(255,255,255,.14); border-radius: 14px; outline: 0; color: white; background: rgba(255,255,255,.055); padding: 0 14px; font-size: 13px; font-weight: 400; letter-spacing: 0; text-transform: none; transition: border-color .2s, box-shadow .2s, background .2s; }
+.form input::placeholder { color: #657c94; }
+.form input:focus { border-color: #67e8f9; background: rgba(255,255,255,.08); box-shadow: 0 0 0 3px rgba(103,232,249,.09); }
+.passwordField { position: relative; display: block; }
+.passwordField input { padding-right: 86px; }
+.passwordField button { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); cursor: pointer; border: 0; color: #67e8f9; background: transparent; font-size: 10px; font-weight: 800; }
+.consent { display: flex; align-items: flex-start; gap: 9px; padding: 10px 12px; cursor: pointer; border: 1px solid rgba(255,255,255,.1); border-radius: 14px; color: #9fb4ca; background: rgba(255,255,255,.035); font-size: 10px; line-height: 1.5; }
+.consent input { flex: 0 0 auto; margin-top: 2px; accent-color: #22d3ee; }
+.consent a { color: #67e8f9; font-weight: 800; text-decoration: underline; }
+.submit { min-height: 46px; cursor: pointer; border: 0; border-radius: 15px; color: #04111e; background: linear-gradient(90deg, #67e8f9, #3b82f6); box-shadow: 0 10px 27px rgba(34,211,238,.18); font-size: 12px; font-weight: 900; transition: transform .2s cubic-bezier(.32,.72,0,1), box-shadow .2s; }
+.submit:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(34,211,238,.27); }
+.submit:active { transform: scale(.98); }
+.submit:disabled { cursor: not-allowed; opacity: .58; }
+.forgot { color: #67e8f9; text-align: center; font-size: 10px; font-weight: 800; }
+.message { min-height: 31px; margin: 11px 0 0; padding: 8px 10px; border: 1px solid transparent; border-radius: 12px; color: #cbd5e1; text-align: center; font-size: 10px; line-height: 1.4; opacity: 0; }
+.messageVisible { border-color: rgba(103,232,249,.15); background: rgba(103,232,249,.06); opacity: 1; }
+
+.brand { position: absolute; z-index: 2; top: 50%; width: 31%; color: #9fb4ca; transform: translateY(-50%); transition: opacity .35s .42s, transform .6s .32s; }
+.brandRight { right: 7%; }
+.brandLeft { left: 7%; }
+.brand h2 { margin: 0 0 18px; color: white; font-size: clamp(38px, 4.2vw, 61px); font-weight: 900; letter-spacing: -.06em; line-height: .96; }
+.brand h2 span { display: block; color: #67e8f9; }
+.brand > p:not(.eyebrow) { max-width: 310px; margin: 0; font-size: 13px; line-height: 1.65; }
+.signin .brandLeft, .signup .brandRight { opacity: 0; pointer-events: none; transform: translateY(-44%); transition-delay: 0s; }
+.chips { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 24px; }
+.chips span { padding: 6px 9px; border: 1px solid rgba(103,232,249,.18); border-radius: 999px; color: #c8f8ff; background: rgba(103,232,249,.07); font-size: 9px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+
+@media (max-width: 800px) {
+  .page { min-height: 850px; padding: 22px 13px 42px; }
+  .stage { height: 780px; border-radius: 25px; }
+  .brand { top: 0; left: 0; right: auto; width: 100%; height: 225px; padding: 38px 29px 25px; transform: none; }
+  .brand h2 { max-width: 440px; font-size: clamp(34px, 10vw, 44px); }
+  .brand > p:not(.eyebrow) { max-width: 360px; font-size: 11px; }
+  .chips { margin-top: 15px; }
+  .signin .brandLeft, .signup .brandRight { transform: translateY(-8px); }
+  .formPanel, .signup .formPanel { inset: 194px 0 0; width: 100%; transform: none; clip-path: polygon(0 6%, 100% 0, 100% 100%, 0 100%); }
+  .signup .formPanel { clip-path: polygon(0 0, 100% 6%, 100% 100%, 0 100%); }
+  .edge { top: 1%; right: -5%; width: 110%; height: 1px; transform: rotate(-3.5deg); }
+  .signup .edge { top: 1%; left: -5%; width: 110%; height: 1px; transform: rotate(3.5deg); }
+  .formContent, .signup .formContent { width: min(440px, calc(100% - 44px)); margin: 27px auto 0; }
+  .formContent h1 { font-size: 36px; }
+  .back { margin-bottom: 15px; }
+  .intro { margin-bottom: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .formPanel, .brand, .formContent, .radar span { transition: none; animation: none; }
+}
