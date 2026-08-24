@@ -1,9 +1,8 @@
-"use client";
-
-import { use, useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
+import type { Metadata } from "next";
+import { LoginClient, type LoginMode } from "./LoginClient";
+import { authMessages } from "@/i18n/auth";
+import { localizedPath } from "@/i18n/config";
+import { getLocale } from "@/i18n/server";
 
 type LoginSearchParams = Promise<{
   mode?: string | string[];
@@ -11,175 +10,27 @@ type LoginSearchParams = Promise<{
   account?: string | string[];
 }>;
 
-export default function LoginPage({ searchParams }: { searchParams: LoginSearchParams }) {
-  const params = use(searchParams);
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocale();
+  const messages = authMessages[locale];
+  return { title: messages.metaTitle, description: messages.metaDescription };
+}
+
+export default async function LoginPage({ searchParams }: { searchParams: LoginSearchParams }) {
+  const [locale, params] = await Promise.all([getLocale(), searchParams]);
+  const messages = authMessages[locale];
+  const initialMode: LoginMode = params.mode === "signup" || params.mode === "magic" ? params.mode : "signin";
   const isBusinessSignup = params.mode === "signup" && params.account === "business";
-  const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [message, setMessage] = useState(params.password === "updated" ? "Dein Passwort wurde geändert. Du kannst dich jetzt anmelden." : "");
-  const [mode, setMode] = useState<"signin" | "signup" | "magic">(
-    params.mode === "signup" || params.mode === "magic" ? params.mode : "signin",
-  );
-  const [isLoading, setIsLoading] = useState(false);
-  const [legalConfirmed, setLegalConfirmed] = useState(false);
-
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setIsLoading(true);
-    setMessage("");
-
-    try {
-      const requestedNext = new URLSearchParams(window.location.search).get("next");
-      const nextPath = requestedNext?.startsWith("/") && !requestedNext.startsWith("//") ? requestedNext : "/dashboard";
-      if (mode === "signup" && !legalConfirmed) {
-        setMessage("Bitte bestätige die AGB und die Kenntnisnahme der Datenschutzerklärung.");
-        return;
-      }
-      const supabase = createClient();
-      const { data, error } =
-        mode === "magic"
-          ? await supabase.auth.signInWithOtp({
-              email,
-              options: {
-                emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(nextPath)}`,
-              },
-            })
-          : mode === "signup"
-            ? await supabase.auth.signUp({
-                email,
-                password,
-                options: {
-                  data: { account_type: isBusinessSignup ? "business" : "customer" },
-                  emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(nextPath)}`,
-                },
-              })
-            : await supabase.auth.signInWithPassword({
-                email,
-                password,
-              });
-
-      if (error) {
-        setMessage(
-          mode === "signup"
-            ? "Konto konnte nicht erstellt werden. Prüfe die Eingaben oder versuche es später erneut."
-            : mode === "magic"
-              ? "Login-Link konnte nicht gesendet werden. Prüfe die Eingabe oder versuche es später erneut."
-              : "Anmeldung nicht möglich. E-Mail oder Passwort ist falsch.",
-        );
-        return;
-      }
-
-      if (mode === "magic") {
-        setMessage("Login-Link wurde gesendet. Bitte prüfe dein E-Mail-Postfach.");
-        return;
-      }
-
-      if (mode === "signup") {
-        if (data.session) {
-          router.push(`/rechtliches?next=${encodeURIComponent(nextPath)}`);
-          router.refresh();
-          return;
-        }
-        setMessage("Konto wurde erstellt. Falls Supabase eine Bestätigung verlangt, prüfe bitte dein E-Mail-Postfach.");
-        return;
-      }
-
-      router.push(`/rechtliches?next=${encodeURIComponent(nextPath)}`);
-      router.refresh();
-    } catch {
-      setMessage("Supabase ist noch nicht verbunden. Bitte trage zuerst die Umgebungsvariablen ein.");
-    } finally {
-      setIsLoading(false);
-    }
-  }
 
   return (
-    <main className="bg-[radial-gradient(circle_at_top_right,#0b4f63_0%,#061827_35%,#020617_100%)] px-5 py-20 text-white sm:px-8">
-      <section className="mx-auto max-w-md rounded-[28px] border border-white/10 bg-white/[0.07] p-8 shadow-2xl shadow-black/20">
-        <Link href="/" className="text-sm font-black text-cyan-300">
-          Zurück zur Website
-        </Link>
-        <h1 className="mt-6 text-4xl font-black tracking-normal">
-          {isBusinessSignup ? "Geschäftskonto erstellen" : "Anmelden"}
-        </h1>
-        <p className="mt-3 leading-7 text-slate-300">
-          {isBusinessSignup
-            ? "Registriere dein Händlerkonto und richte anschließend Unternehmen und Filiale ein."
-            : "Melde dich mit E-Mail und Passwort an oder erstelle ein neues Konto."}
-        </p>
-        <div className="mt-7 grid grid-cols-3 rounded-2xl border border-white/10 bg-white/[0.05] p-1 text-sm font-black">
-          {[
-            ["signin", "Login"],
-            ["signup", "Neu"],
-            ["magic", "Link"],
-          ].map(([value, label]) => (
-            <button
-              key={value}
-              type="button"
-              onClick={() => {
-                setMode(value as "signin" | "signup" | "magic");
-                setMessage("");
-                setLegalConfirmed(false);
-              }}
-              className={`rounded-xl px-3 py-2 transition ${
-                mode === value ? "bg-cyan-300 text-slate-950" : "text-slate-300 hover:text-white"
-              }`}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-        <form className="mt-8 grid gap-5" onSubmit={handleSubmit}>
-          <label className="grid gap-2 text-xs font-black uppercase tracking-wide text-slate-300">
-            E-Mail
-            <input
-              type="email"
-              required
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              className="rounded-2xl border border-white/15 bg-white/[0.06] px-4 py-3 text-base font-normal normal-case tracking-normal text-white outline-none focus:border-cyan-300"
-              placeholder="name@firma.at"
-            />
-          </label>
-          {mode !== "magic" ? (
-            <label className="grid gap-2 text-xs font-black uppercase tracking-wide text-slate-300">
-              Passwort
-              <input
-                type="password"
-                required
-                minLength={8}
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                className="rounded-2xl border border-white/15 bg-white/[0.06] px-4 py-3 text-base font-normal normal-case tracking-normal text-white outline-none focus:border-cyan-300"
-                placeholder="Mindestens 8 Zeichen"
-              />
-            </label>
-          ) : null}
-          {mode === "signup" ? <label className="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-sm leading-6 text-slate-300">
-            <input type="checkbox" required checked={legalConfirmed} onChange={(event) => setLegalConfirmed(event.target.checked)} className="mt-1 h-5 w-5 shrink-0 accent-cyan-300"/>
-            <span>Ich akzeptiere die <Link href={isBusinessSignup ? "/agb-geschaeftskunden" : "/agb-verbraucher"} target="_blank" rel="noopener noreferrer" className="font-black text-cyan-300 underline">{isBusinessSignup ? "Geschäftskunden-AGB" : "Verbraucher-AGB"}</Link> und bestätige, die <Link href="/datenschutz" target="_blank" rel="noopener noreferrer" className="font-black text-cyan-300 underline">Datenschutzerklärung</Link> gelesen zu haben.</span>
-          </label> : null}
-          <button
-            disabled={isLoading}
-            className="rounded-2xl bg-gradient-to-r from-cyan-300 to-blue-500 px-5 py-4 font-black text-slate-950 disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {isLoading
-              ? "Bitte warten..."
-              : mode === "magic"
-                ? "Login-Link senden"
-                : mode === "signup"
-                  ? "Konto erstellen"
-                  : "Anmelden"}
-          </button>
-          {mode === "signin" ? (
-            <Link href="/passwort-vergessen" className="text-center text-sm font-black text-cyan-300">
-              Passwort vergessen?
-            </Link>
-          ) : null}
-        </form>
-        {message ? <p className="mt-5 rounded-2xl border border-white/10 bg-white/[0.06] p-4 text-sm leading-6 text-slate-200">{message}</p> : null}
-      </section>
-    </main>
+    <LoginClient
+      messages={messages}
+      initialMode={initialMode}
+      initialPasswordUpdated={params.password === "updated"}
+      isBusinessSignup={isBusinessSignup}
+      backHref={localizedPath(locale, "/")}
+      privacyHref={localizedPath(locale, "/datenschutz")}
+      termsHref={localizedPath(locale, isBusinessSignup ? "/agb-geschaeftskunden" : "/agb-verbraucher")}
+    />
   );
 }
