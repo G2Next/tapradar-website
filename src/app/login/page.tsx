@@ -19,7 +19,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function LoginPage({ searchParams }: { searchParams: LoginSearchParams }) {
   const [locale, params] = await Promise.all([getLocale(), searchParams]);
   const messages = authMessages[locale];
-  const initialMode: LoginMode = params.mode === "signup" || params.mode === "magic" ? params.mode : "signin";
+  const initialMode: LoginMode = params.mode === "signup" ? "signup" : "signin";
   const isBusinessSignup = params.mode === "signup" && params.account === "business";
 
   return (
@@ -28,7 +28,6 @@ export default async function LoginPage({ searchParams }: { searchParams: LoginS
       initialMode={initialMode}
       initialPasswordUpdated={params.password === "updated"}
       isBusinessSignup={isBusinessSignup}
-      backHref={localizedPath(locale, "/")}
       privacyHref={localizedPath(locale, "/datenschutz")}
       termsHref={localizedPath(locale, isBusinessSignup ? "/agb-geschaeftskunden" : "/agb-verbraucher")}
     />

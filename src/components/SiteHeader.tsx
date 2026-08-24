@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { headers } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { chromeMessages } from "@/i18n/chrome";
@@ -6,7 +7,8 @@ import { localizedPath } from "@/i18n/config";
 import { getLocale } from "@/i18n/server";
 
 export async function SiteHeader() {
-  const locale = await getLocale();
+  const [locale, requestHeaders] = await Promise.all([getLocale(), headers()]);
+  const isAuthPage = requestHeaders.get("x-tapradar-pathname") === "/login";
   const messages = chromeMessages[locale] ?? chromeMessages.de;
   const navItems = [
     { href: "/", label: messages.nav.home },
@@ -46,12 +48,14 @@ export async function SiteHeader() {
         </nav>
         <div className="flex items-center gap-2 sm:gap-3">
           <LanguageSwitcher locale={locale} label={messages.language.choose} />
-          <Link
-            href={isPlatformAdmin ? "/admin" : isLoggedIn ? hasBusiness ? "/dashboard" : "/app" : "/login"}
-            className="inline-flex h-11 items-center justify-center rounded-2xl bg-cyan-300 px-3 text-sm font-black text-slate-950 shadow-lg shadow-cyan-300/20 transition duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 hover:bg-cyan-200 active:translate-y-0 active:scale-[0.97] sm:px-5"
-          >
-            {isPlatformAdmin ? messages.account.admin : isLoggedIn ? hasBusiness ? messages.account.dashboard : messages.account.app : messages.account.login}
-          </Link>
+          {isAuthPage ? null : (
+            <Link
+              href={isPlatformAdmin ? "/admin" : isLoggedIn ? hasBusiness ? "/dashboard" : "/app" : "/login"}
+              className="inline-flex h-11 items-center justify-center rounded-2xl bg-cyan-300 px-3 text-sm font-black text-slate-950 shadow-lg shadow-cyan-300/20 transition duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 hover:bg-cyan-200 active:translate-y-0 active:scale-[0.97] sm:px-5"
+            >
+              {isPlatformAdmin ? messages.account.admin : isLoggedIn ? hasBusiness ? messages.account.dashboard : messages.account.app : messages.account.login}
+            </Link>
+          )}
         </div>
       </div>
     </header>

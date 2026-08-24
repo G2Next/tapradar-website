@@ -2,7 +2,7 @@
   position: relative;
   min-height: calc(100vh - 73px);
   overflow: hidden;
-  padding: 44px 24px 64px;
+  padding: 34px 24px 54px;
   color: white;
   background:
     radial-gradient(circle at 82% 9%, #0b4f63 0%, #061827 31%, transparent 57%),
@@ -24,7 +24,7 @@
 .orbitOne, .orbitTwo { position: absolute; border: 1px solid rgba(103,232,249,.13); border-radius: 50%; pointer-events: none; }
 .orbitOne { width: 470px; height: 470px; right: -210px; top: -210px; }
 .orbitTwo { width: 620px; height: 620px; left: -410px; bottom: -390px; }
-.stage { position: relative; z-index: 1; width: min(1120px, 100%); height: 650px; margin: 0 auto; overflow: hidden; isolation: isolate; border: 1px solid rgba(255,255,255,.12); border-radius: 30px; background: radial-gradient(circle at 78% 24%, rgba(34,211,238,.15), transparent 28%), linear-gradient(135deg, #061827, #020617 74%); box-shadow: 0 40px 100px rgba(0,0,0,.48), inset 0 1px rgba(255,255,255,.04); }
+.stage { position: relative; z-index: 1; width: min(1120px, 100%); height: 610px; margin: 0 auto; overflow: hidden; overflow-anchor: none; isolation: isolate; border: 1px solid rgba(255,255,255,.12); border-radius: 30px; background: radial-gradient(circle at 78% 24%, rgba(34,211,238,.15), transparent 28%), linear-gradient(135deg, #061827, #020617 74%); box-shadow: 0 40px 100px rgba(0,0,0,.48), inset 0 1px rgba(255,255,255,.04); }
 .grid { position: absolute; inset: 0; opacity: .14; background-image: linear-gradient(rgba(103,232,249,.08) 1px, transparent 1px), linear-gradient(90deg, rgba(103,232,249,.08) 1px, transparent 1px); background-size: 42px 42px; mask-image: linear-gradient(90deg, black, transparent 64%); }
 .radar { position: absolute; right: -70px; top: -80px; width: 410px; height: 410px; border-radius: 50%; opacity: .3; }
 .radar span { position: absolute; inset: 0; border: 1px solid rgba(103,232,249,.25); border-radius: 50%; animation: pulse 4s ease-out infinite; }
@@ -37,17 +37,12 @@
 .signup .formPanel { transform: translateX(69.5%); clip-path: polygon(16% 0, 100% 0, 100% 100%, 0 100%); }
 .edge { position: absolute; z-index: 1; top: -10%; right: 7.6%; width: 1px; height: 120%; background: linear-gradient(transparent, rgba(103,232,249,.9), transparent); transform: rotate(-9.2deg); box-shadow: 0 0 25px rgba(34,211,238,.4); }
 .signup .edge { right: auto; left: 7.6%; transform: rotate(9.2deg); }
-.formContent { position: relative; z-index: 2; width: min(390px, 66%); margin-right: 11%; animation: formIn .48s .34s both; }
+.formContent { position: relative; z-index: 2; width: min(410px, 68%); margin-right: 11%; animation: formIn .48s .34s both; }
 .signup .formContent { margin-right: 0; margin-left: 11%; }
 @keyframes formIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-.back { display: inline-flex; margin-bottom: 21px; color: #67e8f9; font-size: 11px; font-weight: 800; }
 .kicker, .eyebrow { margin: 0 0 12px; color: #67e8f9; font-size: 10px; font-weight: 800; letter-spacing: .22em; text-transform: uppercase; }
 .formContent h1 { max-width: 420px; margin: 0; color: white; font-size: clamp(31px, 3.7vw, 49px); font-weight: 900; letter-spacing: -.045em; line-height: .98; }
-.intro { margin: 12px 0 20px; color: #a8bdd3; font-size: 13px; line-height: 1.55; }
-.tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-bottom: 18px; padding: 4px; border: 1px solid rgba(255,255,255,.1); border-radius: 15px; background: rgba(255,255,255,.04); }
-.tabs button { min-height: 34px; cursor: pointer; border: 0; border-radius: 11px; color: #9fb4ca; background: transparent; font-size: 10px; font-weight: 800; transition: color .2s, background .2s, transform .2s; }
-.tabs button:active { transform: scale(.97); }
-.tabs .activeTab { color: #07111f; background: #67e8f9; }
+.intro { margin: 13px 0 24px; color: #a8bdd3; font-size: 13px; line-height: 1.55; }
 .form { display: grid; gap: 14px; }
 .form > label:not(.consent) { display: grid; gap: 7px; color: #aec2d6; font-size: 10px; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; }
 .form input[type="email"], .form input[type="password"], .form input[type="text"] { width: 100%; min-height: 44px; border: 1px solid rgba(255,255,255,.14); border-radius: 14px; outline: 0; color: white; background: rgba(255,255,255,.055); padding: 0 14px; font-size: 13px; font-weight: 400; letter-spacing: 0; text-transform: none; transition: border-color .2s, box-shadow .2s, background .2s; }
@@ -63,7 +58,13 @@
 .submit:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(34,211,238,.27); }
 .submit:active { transform: scale(.98); }
 .submit:disabled { cursor: not-allowed; opacity: .58; }
-.forgot { color: #67e8f9; text-align: center; font-size: 10px; font-weight: 800; }
+.secondaryActions { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 12px; }
+.signupActions { display: flex; justify-content: flex-end; }
+.forgot { color: #b9c9d9; font-size: 11px; font-weight: 800; transition: color .2s; }
+.forgot:hover { color: #67e8f9; }
+.modeAction { min-height: 42px; min-width: 142px; cursor: pointer; border: 1px solid rgba(103,232,249,.42); border-radius: 13px; color: #07111f; background: #67e8f9; padding: 0 20px; font-size: 12px; font-weight: 900; box-shadow: 0 9px 24px rgba(34,211,238,.14); transition: transform .2s, background .2s, box-shadow .2s; }
+.modeAction:hover { transform: translateY(-1px); background: #a5f3fc; box-shadow: 0 12px 26px rgba(34,211,238,.22); }
+.modeAction:active { transform: scale(.98); }
 .message { min-height: 31px; margin: 11px 0 0; padding: 8px 10px; border: 1px solid transparent; border-radius: 12px; color: #cbd5e1; text-align: center; font-size: 10px; line-height: 1.4; opacity: 0; }
 .messageVisible { border-color: rgba(103,232,249,.15); background: rgba(103,232,249,.06); opacity: 1; }
 
@@ -91,8 +92,10 @@
   .signup .edge { top: 1%; left: -5%; width: 110%; height: 1px; transform: rotate(3.5deg); }
   .formContent, .signup .formContent { width: min(440px, calc(100% - 44px)); margin: 27px auto 0; }
   .formContent h1 { font-size: 36px; }
-  .back { margin-bottom: 15px; }
   .intro { margin-bottom: 16px; }
+  .secondaryActions { grid-template-columns: 1fr; }
+  .forgot { text-align: center; }
+  .modeAction { width: 100%; }
 }
 
 @media (prefers-reduced-motion: reduce) {
