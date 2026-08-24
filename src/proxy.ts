@@ -47,6 +47,7 @@ export async function proxy(request: NextRequest) {
     ? new URL(normalizedPath, request.url)
     : undefined;
   const requestHeaders = new Headers(request.headers);
+  requestHeaders.set("x-tapradar-pathname", normalizedPath);
   if (locale) requestHeaders.set("x-tapradar-locale", locale);
 
   const createResponse = () => rewriteUrl

@@ -7,14 +7,13 @@ import type { AuthMessages } from "@/i18n/auth";
 import { createClient } from "@/lib/supabase/client";
 import styles from "./login.module.css";
 
-export type LoginMode = "signin" | "signup" | "magic";
+export type LoginMode = "signin" | "signup";
 
 type LoginClientProps = {
   messages: AuthMessages;
   initialMode: LoginMode;
   initialPasswordUpdated: boolean;
   isBusinessSignup: boolean;
-  backHref: string;
   privacyHref: string;
   termsHref: string;
 };
@@ -24,7 +23,6 @@ export function LoginClient({
   initialMode,
   initialPasswordUpdated,
   isBusinessSignup,
-  backHref,
   privacyHref,
   termsHref,
 }: LoginClientProps) {
@@ -59,12 +57,7 @@ export function LoginClient({
       }
 
       const supabase = createClient();
-      const { data, error } = mode === "magic"
-        ? await supabase.auth.signInWithOtp({
-            email,
-            options: { emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(nextPath)}` },
-          })
-        : mode === "signup"
+      const { data, error } = mode === "signup"
           ? await supabase.auth.signUp({
               email,
               password,
@@ -76,11 +69,7 @@ export function LoginClient({
           : await supabase.auth.signInWithPassword({ email, password });
 
       if (error) {
-        setMessage(mode === "signup" ? messages.signupFailed : mode === "magic" ? messages.magicFailed : messages.signInFailed);
-        return;
-      }
-      if (mode === "magic") {
-        setMessage(messages.magicSent);
+        setMessage(mode === "signup" ? messages.signupFailed : messages.signInFailed);
         return;
       }
       if (mode === "signup" && !data.session) {
@@ -106,7 +95,7 @@ export function LoginClient({
 
         <div className={`${styles.brand} ${styles.brandRight}`} aria-hidden={isSignup}>
           <p className={styles.eyebrow}>TAPRADAR</p>
-          <h2>{messages.title}<span>{messages.tabs.magic}</span></h2>
+          <h2>{messages.title}</h2>
           <p>{messages.metaDescription}</p>
           <div className={styles.chips}><span>NFC</span><span>QR</span><span>Rewards</span></div>
         </div>
@@ -121,33 +110,22 @@ export function LoginClient({
         <div className={styles.formPanel}>
           <div className={styles.edge} aria-hidden="true" />
           <div className={styles.formContent} key={mode}>
-            <Link href={backHref} className={styles.back}>← {messages.back}</Link>
             <p className={styles.kicker}>TapRadar Account</p>
-            <h1>{isSignup && isBusinessSignup ? messages.businessTitle : isSignup ? messages.createAccount : mode === "magic" ? messages.sendLink : messages.title}</h1>
+            <h1>{isSignup && isBusinessSignup ? messages.businessTitle : isSignup ? messages.createAccount : messages.title}</h1>
             <p className={styles.intro}>{isSignup && isBusinessSignup ? messages.businessIntro : messages.intro}</p>
-
-            <div className={styles.tabs} role="group" aria-label={messages.metaTitle}>
-              {(["signin", "signup", "magic"] as const).map((value) => (
-                <button key={value} type="button" onClick={() => selectMode(value)} className={mode === value ? styles.activeTab : ""}>
-                  {messages.tabs[value]}
-                </button>
-              ))}
-            </div>
 
             <form className={styles.form} onSubmit={handleSubmit}>
               <label>
                 <span>{messages.email}</span>
                 <input type="email" required autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="name@firma.at" />
               </label>
-              {mode !== "magic" ? (
-                <label>
-                  <span>{messages.password}</span>
-                  <span className={styles.passwordField}>
-                    <input type={showPassword ? "text" : "password"} required minLength={8} autoComplete={isSignup ? "new-password" : "current-password"} value={password} onChange={(event) => setPassword(event.target.value)} placeholder={messages.passwordPlaceholder} />
-                    <button type="button" onClick={() => setShowPassword((visible) => !visible)}>{showPassword ? messages.hide : messages.show}</button>
-                  </span>
-                </label>
-              ) : null}
+              <label>
+                <span>{messages.password}</span>
+                <span className={styles.passwordField}>
+                  <input type={showPassword ? "text" : "password"} required minLength={8} autoComplete={isSignup ? "new-password" : "current-password"} value={password} onChange={(event) => setPassword(event.target.value)} placeholder={messages.passwordPlaceholder} />
+                  <button type="button" onClick={() => setShowPassword((visible) => !visible)}>{showPassword ? messages.hide : messages.show}</button>
+                </span>
+              </label>
 
               {isSignup ? (
                 <label className={styles.consent}>
@@ -157,9 +135,21 @@ export function LoginClient({
               ) : null}
 
               <button disabled={isLoading} className={styles.submit}>
-                {isLoading ? messages.waiting : mode === "magic" ? messages.sendLink : isSignup ? messages.createAccount : messages.signIn}
+                {isLoading ? messages.waiting : isSignup ? messages.createAccount : messages.signIn}
               </button>
-              {mode === "signin" ? <Link href="/passwort-vergessen" className={styles.forgot}>{messages.forgot}</Link> : null}
+              <div className={`${styles.secondaryActions} ${isSignup ? styles.signupActions : ""}`}>
+                {isSignup ? null : <Link href="/passwort-vergessen" className={styles.forgot}>{messages.forgot}</Link>}
+                <button
+                  type="button"
+                  className={styles.modeAction}
+                  onClick={(event) => {
+                    event.currentTarget.blur();
+                    selectMode(isSignup ? "signin" : "signup");
+                  }}
+                >
+                  {isSignup ? messages.signIn : messages.createAccount}
+                </button>
+              </div>
             </form>
 
             <p className={`${styles.message} ${message ? styles.messageVisible : ""}`} role="status" aria-live="polite">{message}</p>
