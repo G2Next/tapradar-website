@@ -40,7 +40,7 @@ export default async function CheckoutConfirmationPage({ searchParams }: { searc
           <Consent name="withdrawal_acknowledged">Ich habe die <LegalLink href="/widerrufsbelehrung">Widerrufsbelehrung</LegalLink> (Version {LEGAL_VERSIONS.withdrawal}) gelesen. Mir ist bekannt, dass gesetzliche Verbraucherrechte nur bei Vorliegen der gesetzlichen Voraussetzungen gelten.</Consent>
           <Consent name="immediate_service_requested">Ich verlange ausdrücklich, dass TapRadar nach erfolgreicher Zahlung bereits vor Ablauf einer möglichen Widerrufsfrist mit der Leistung beginnt.</Consent>
           <button className="mt-2 rounded-2xl bg-gradient-to-r from-cyan-300 to-blue-500 px-5 py-4 text-lg font-black text-slate-950">Zahlungspflichtig abonnieren</button>
-          <p className="text-center text-xs leading-5 text-slate-500">Anschließend wirst du zur sicheren Zahlungsabwicklung von Stripe weitergeleitet.</p>
+          <p className="text-center text-xs leading-5 text-slate-500">Anschließend wirst du zur sicheren Zahlungsabwicklung von Stripe weitergeleitet. Dort werden die für dein Land, dein Gerät und dieses Abonnement verfügbaren Zahlungsarten angezeigt.</p>
         </form>
       </div>
     </section>

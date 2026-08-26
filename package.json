@@ -12,6 +12,7 @@
     "test:sync": "node scripts/sync-integration-test.mjs",
     "test:webhook": "node scripts/webhook-integration-test.mjs",
     "check:production": "node scripts/check-production-env.mjs",
+    "check:stripe": "node scripts/check-stripe-catalog.mjs",
     "admin:grant": "node scripts/grant-admin.mjs",
     "demo:seed": "node scripts/seed-local-demo.mjs"
   },
