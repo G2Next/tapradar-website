@@ -3,6 +3,7 @@ import generatedCatalog from "./secondary.generated.json";
 import appCatalogJson from "./app.generated.json";
 import legalCatalogJson from "./legal.generated.json";
 import currentCatalogJson from "./current.generated.json";
+import recentCatalogJson from "./recent.generated.json";
 import { dashboardMessages } from "./dashboard";
 import { legalManualOverrides } from "./legal";
 import type { Locale } from "./config";
@@ -11,6 +12,7 @@ const catalog = generatedCatalog as Partial<Record<Locale, Record<string, string
 const appCatalog = appCatalogJson as Partial<Record<Locale, Record<string, string>>>;
 const legalCatalog = legalCatalogJson as Partial<Record<Locale, Record<string, string>>>;
 const currentCatalog = currentCatalogJson as Partial<Record<Locale, Record<string, string>>>;
+const recentCatalog = recentCatalogJson as Partial<Record<Locale, Record<string, string>>>;
 
 const supplements: { de: Record<string, string> } & Partial<Record<Locale, Record<string, string>>> = {
   de: { Funktionen: "Funktionen", "Warum TapRadar": "Warum TapRadar", "So starten Sie": "So starten Sie", "Was Sie bekommen": "Was Sie bekommen", Pakete: "Pakete", Name: "Name", Support: "Support" },
@@ -34,7 +36,7 @@ export function translateText(locale: Locale, value: string) {
     : key === "Zum Login"
       ? (dashboardMessages[locale] ?? dashboardMessages.de).loginCta
       : businessOverrides[locale]?.[key]);
-  let translated = commonOverride ?? supplements[locale]?.[key] ?? legalManualOverrides[locale]?.[key] ?? legalCatalog[locale]?.[key] ?? currentCatalog[locale]?.[key] ?? appCatalog[locale]?.[key] ?? catalog[locale]?.[key];
+  let translated = commonOverride ?? supplements[locale]?.[key] ?? legalManualOverrides[locale]?.[key] ?? legalCatalog[locale]?.[key] ?? recentCatalog[locale]?.[key] ?? currentCatalog[locale]?.[key] ?? appCatalog[locale]?.[key] ?? catalog[locale]?.[key];
   if (!translated) return value;
   if (locale === "sr-Latn") translated = transliterateSerbian(translated);
   const leading = value.match(/^\s*/u)?.[0] ?? "";
@@ -43,16 +45,21 @@ export function translateText(locale: Locale, value: string) {
 }
 
 const businessOverrides: { de: Record<string, string> } & Partial<Record<Locale, Record<string, string>>> = {
-  de: { Geschäft: "Geschäft", "Geschäft speichern": "Geschäft speichern" },
-  en: { Geschäft: "Business", "Geschäft speichern": "Save business" },
-  tr: { Geschäft: "İşletme", "Geschäft speichern": "İşletmeyi kaydet" },
-  "sr-Latn": { Geschäft: "Preduzeće", "Geschäft speichern": "Sačuvaj preduzeće" },
-  bs: { Geschäft: "Firma", "Geschäft speichern": "Sačuvaj firmu" },
-  hr: { Geschäft: "Tvrtka", "Geschäft speichern": "Spremi tvrtku" },
-  hu: { Geschäft: "Vállalkozás", "Geschäft speichern": "Vállalkozás mentése" },
-  ro: { Geschäft: "Afacere", "Geschäft speichern": "Salvează afacerea" },
-  pl: { Geschäft: "Firma", "Geschäft speichern": "Zapisz firmę" },
-  bg: { Geschäft: "Бизнес", "Geschäft speichern": "Запази бизнеса" },
+  de: { Geschäft: "Geschäft", "Geschäft anlegen": "Geschäft anlegen", "Geschäft bearbeiten": "Geschäft bearbeiten", "Geschäft speichern": "Geschäft speichern", "Unternehmen speichern": "Unternehmen speichern", Aktion: "Aktion", Aktionen: "Aktionen", Tarif: "Tarif", "Tarif und Rechnungen": "Tarif und Rechnungen" },
+  en: { Geschäft: "Business", "Geschäft anlegen": "Create business", "Geschäft bearbeiten": "Edit business", "Geschäft speichern": "Save business", "Unternehmen speichern": "Save company", Aktion: "Promotion", Aktionen: "Promotions", Tarif: "Plan", "Tarif und Rechnungen": "Plan and invoices" },
+  tr: { Geschäft: "İşletme", "Geschäft speichern": "İşletmeyi kaydet", "Unternehmen speichern": "Şirketi kaydet", Aktion: "Kampanya", Aktionen: "Kampanyalar", Tarif: "Plan", "Tarif und Rechnungen": "Plan ve faturalar" },
+  fr: { Geschäft: "Entreprise", "Geschäft speichern": "Enregistrer l’entreprise", "Unternehmen speichern": "Enregistrer l’entreprise", Aktion: "Promotion", Aktionen: "Promotions", Tarif: "Formule", "Tarif und Rechnungen": "Formule et factures" },
+  it: { Geschäft: "Attività", "Geschäft speichern": "Salva attività", "Unternehmen speichern": "Salva azienda", Aktion: "Promozione", Aktionen: "Promozioni", Tarif: "Piano", "Tarif und Rechnungen": "Piano e fatture" },
+  es: { Geschäft: "Negocio", "Geschäft speichern": "Guardar negocio", "Unternehmen speichern": "Guardar empresa", Aktion: "Promoción", Aktionen: "Promociones", Tarif: "Plan", "Tarif und Rechnungen": "Plan y facturas" },
+  pl: { Geschäft: "Firma", "Geschäft speichern": "Zapisz firmę", "Unternehmen speichern": "Zapisz firmę", Aktion: "Akcja promocyjna", Aktionen: "Akcje promocyjne", Tarif: "Plan", "Tarif und Rechnungen": "Plan i faktury" },
+  cs: { Geschäft: "Firma", "Geschäft speichern": "Uložit firmu", "Unternehmen speichern": "Uložit společnost", Aktion: "Propagační akce", Aktionen: "Propagační akce", Tarif: "Tarif", "Tarif und Rechnungen": "Tarif a faktury" },
+  hu: { Geschäft: "Vállalkozás", "Geschäft speichern": "Vállalkozás mentése", "Unternehmen speichern": "Vállalkozás mentése", Aktion: "Promóció", Aktionen: "Promóciók", Tarif: "Csomag", "Tarif und Rechnungen": "Csomag és számlák" },
+  sk: { Geschäft: "Firma", "Geschäft speichern": "Uložiť firmu", "Unternehmen speichern": "Uložiť spoločnosť", Aktion: "Propagačná akcia", Aktionen: "Propagačné akcie", Tarif: "Program", "Tarif und Rechnungen": "Program a faktúry" },
+  "sr-Latn": { Geschäft: "Preduzeće", "Geschäft speichern": "Sačuvaj preduzeće", "Unternehmen speichern": "Sačuvaj preduzeće", Aktion: "Promocija", Aktionen: "Promocije", Tarif: "Paket", "Tarif und Rechnungen": "Paket i fakture" },
+  bs: { Geschäft: "Firma", "Geschäft speichern": "Sačuvaj firmu", "Unternehmen speichern": "Sačuvaj firmu", Aktion: "Promocija", Aktionen: "Promocije", Tarif: "Paket", "Tarif und Rechnungen": "Paket i fakture" },
+  hr: { Geschäft: "Tvrtka", "Geschäft speichern": "Spremi tvrtku", "Unternehmen speichern": "Spremi tvrtku", Aktion: "Promocija", Aktionen: "Promocije", Tarif: "Paket", "Tarif und Rechnungen": "Paket i računi" },
+  ro: { Geschäft: "Afacere", "Geschäft speichern": "Salvează afacerea", "Unternehmen speichern": "Salvează compania", Aktion: "Promoție", Aktionen: "Promoții", Tarif: "Plan", "Tarif und Rechnungen": "Plan și facturi" },
+  bg: { Geschäft: "Бизнес", "Geschäft speichern": "Запази бизнеса", "Unternehmen speichern": "Запази компанията", Aktion: "Промоция", Aktionen: "Промоции", Tarif: "План", "Tarif und Rechnungen": "План и фактури" },
 };
 
 const metadataOverrides: Partial<Record<Locale, Record<string, string>>> = {

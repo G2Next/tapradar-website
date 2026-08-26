@@ -1,4 +1,5 @@
 import type { Locale } from "./config";
+import { generatedStructuredLocales, localizeStructuredMessage } from "./structured";
 
 export type ChromeMessages = {
   nav: { home: string; business: string; pricing: string; contact: string };
@@ -132,3 +133,7 @@ export const chromeMessages: { de: ChromeMessages } & Partial<Record<Locale, Chr
     },
   },
 };
+
+for (const locale of generatedStructuredLocales) {
+  chromeMessages[locale] = localizeStructuredMessage(chromeMessages.de, locale);
+}

@@ -1,4 +1,5 @@
 import type { Locale } from "./config";
+import { generatedStructuredLocales, localizeStructuredMessage } from "./structured";
 
 type HomeMessages = {
   metaTitle: string;
@@ -105,3 +106,6 @@ export const homeMessages: { de: HomeMessages } & Partial<Record<Locale, HomeMes
   },
 };
 
+for (const locale of generatedStructuredLocales) {
+  homeMessages[locale] = localizeStructuredMessage(homeMessages.de, locale);
+}

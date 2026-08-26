@@ -1,4 +1,5 @@
 import type { Locale } from "./config";
+import { generatedStructuredLocales, localizeStructuredMessage } from "./structured";
 
 export type DashboardMessages = {
   loginTitle: string; loginText: string; loginCta: string; badge: string; welcome: string; signedInAs: string;
@@ -21,3 +22,6 @@ export const dashboardMessages: { de: DashboardMessages } & Partial<Record<Local
   bg: { loginTitle: "Моля, влезте", loginText: "Бизнес таблото е достъпно само за влезли собственици и служители.", loginCta: "Към входа", badge: "Бизнес табло", welcome: "Добре дошли в TapRadar", signedInAs: "Влезли като", setupTitle: "Настройте бизнеса", setupText: "Акаунтът е активен, но още не е свързан с бизнес. Създайте профила за бизнес и клиентското приложение.", setupCta: "Създай бизнес", business: "Бизнес", planStatus: "План и статус", loyaltyProgram: "Програма за лоялност", stampWord: "печата", customerCards: "Клиентски карти", stamps: "Печати", rewards: "Награди", campaigns: "Кампании", coupons: "Купони", manageTitle: "Управлявай програмата за лоялност", manageText: "Променете целта и наградата едновременно в двете приложения.", offersTitle: "Кампании и купони", offersText: "Създавайте оферти, зареждани директно от общата база данни.", preview: "Преглед на клиентското приложение", newLabel: "Нов", back: "Назад към сайта", logout: "Изход", qrTitle: "QR / NFC линк за печат", qrText: "Можете да отпечатате този линк като QR код или да го запишете на NFC таг.", qrOpen: "Отвори страницата за печат" },
 };
 
+for (const locale of generatedStructuredLocales) {
+  dashboardMessages[locale] = localizeStructuredMessage(dashboardMessages.de, locale);
+}
