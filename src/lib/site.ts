@@ -5,4 +5,4 @@
  * robots.txt, or the sitemap. Runtime callback URLs can continue to use
  * NEXT_PUBLIC_SITE_URL where the deployment host is relevant.
  */
-export const PUBLIC_SITE_URL = "https://tapradar.app";
+export const PUBLIC_SITE_URL = "https://www.tapradar.app";

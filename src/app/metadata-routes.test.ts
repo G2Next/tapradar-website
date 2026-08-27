@@ -9,8 +9,8 @@ describe("public metadata routes", () => {
 
     try {
       const result = robots();
-      expect(result.host).toBe("https://tapradar.app");
-      expect(result.sitemap).toBe("https://tapradar.app/sitemap.xml");
+      expect(result.host).toBe("https://www.tapradar.app");
+      expect(result.sitemap).toBe("https://www.tapradar.app/sitemap.xml");
     } finally {
       if (previousSiteUrl === undefined) delete process.env.NEXT_PUBLIC_SITE_URL;
       else process.env.NEXT_PUBLIC_SITE_URL = previousSiteUrl;
@@ -25,10 +25,10 @@ describe("public metadata routes", () => {
       const entries = sitemap();
       expect(entries.length).toBeGreaterThan(0);
       for (const entry of entries) {
-        expect(entry.url).toMatch(/^https:\/\/tapradar\.app(?:\/|$)/);
+        expect(entry.url).toMatch(/^https:\/\/www\.tapradar\.app(?:\/|$)/);
         expect(entry.url).not.toContain("localhost");
         for (const alternate of Object.values(entry.alternates?.languages ?? {})) {
-          expect(alternate).toMatch(/^https:\/\/tapradar\.app(?:\/|$)/);
+          expect(alternate).toMatch(/^https:\/\/www\.tapradar\.app(?:\/|$)/);
         }
       }
     } finally {
