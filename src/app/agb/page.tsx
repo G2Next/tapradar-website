@@ -1,8 +1,15 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { LegalPage } from "@/components/LegalPage";
 import { localizedPath } from "@/i18n/config";
 import { getLocale } from "@/i18n/server";
 import { translateTree } from "@/i18n/translate";
+import { createPublicPageMetadata } from "@/lib/metadata";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocale();
+  return createPublicPageMetadata(locale, "/agb", "Allgemeine Geschäftsbedingungen | TapRadar", "Die TapRadar-AGB für Endkundinnen, Endkunden und Geschäftskunden im Überblick.");
+}
 
 export default async function AgbPage() {
   const locale = await getLocale();

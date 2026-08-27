@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
+    "check:i18n": "node scripts/check-i18n-completeness.mjs",
     "test:integration": "node scripts/integration-test.mjs",
     "test:sync": "node scripts/sync-integration-test.mjs",
     "test:webhook": "node scripts/webhook-integration-test.mjs",

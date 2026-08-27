@@ -1,4 +1,5 @@
 import type { Locale } from "./config";
+import { generatedStructuredLocales, localizeStructuredMessage } from "./structured";
 
 type PlanCopy = {
   perMonth: string; intro: string; permanent: string; later: string; popular: string;
@@ -58,3 +59,6 @@ export const planMessages: { de: PlanCopy } & Partial<Record<Locale, PlanCopy>> 
   ] },
 };
 
+for (const locale of generatedStructuredLocales) {
+  planMessages[locale] = localizeStructuredMessage(planMessages.de, locale);
+}

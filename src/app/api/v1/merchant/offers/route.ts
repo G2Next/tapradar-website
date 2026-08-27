@@ -3,7 +3,7 @@ import { databaseError, parseJson, requireAsset, requireLocation, requireOfferPl
 import { offerCreateSchema } from "@/lib/merchant-api/schemas";
 
 export const dynamic = "force-dynamic";
-const fields = "id,organization_id,location_id,title,description,offer_type,discount_type,discount_value,minimum_purchase_amount,redemption_code,conditions,media_asset_id,starts_at,ends_at,is_active,created_at,updated_at";
+const fields = "id,organization_id,location_id,title,description,offer_type,discount_type,discount_value,minimum_purchase_amount,redemption_code,conditions,media_asset_id,starts_at,ends_at,is_active,moderation_status,rejection_reason,submitted_at,reviewed_at,created_at,updated_at";
 
 export async function GET(request: Request) {
   return runMerchantRoute(request, {}, async (context) => {
