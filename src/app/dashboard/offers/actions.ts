@@ -6,6 +6,7 @@ import sharp from "sharp";
 import { getDashboardContext } from "@/lib/dashboard";
 import { validateUploadedFile } from "@/lib/file-security";
 import { isUuid, requiredText } from "@/lib/validation";
+import { sendReviewRequestedPush } from "@/lib/marketing-push";
 
 const offerTypes=["aktion","gutschein"];
 const allowedFiles:Record<string,string>={"image/jpeg":"jpg","image/png":"png","image/webp":"webp","application/pdf":"pdf"};
@@ -65,7 +66,9 @@ export async function createOffer(_:OfferActionState,formData:FormData):Promise<
   let media=null;try{media=await uploadOfferMedia(context,formData);}catch{return{error:"Die Datei ist ungültig oder konnte nicht hochgeladen werden. Erlaubt sind JPG, PNG, WebP oder PDF bis 5 MB."};}
   const{error}=await context.supabase.from("offers").insert({...value,media_asset_id:media?.id??null,organization_id:context.organizationId});
   if(error){await cleanupAsset(context,media);return saveError(error,"create",context.organizationId);}
-  refreshOfferPages();redirect(`${destination(value.offer_type)}?saved=1`);
+  const {data:organization}=await context.supabase.from("organizations").select("name").eq("id",context.organizationId).single();
+  await sendReviewRequestedPush({title:value.title,kind:value.offer_type==="gutschein"?"Gutschein":"Aktion",organizationName:organization?.name??"Geschäft"}).catch(()=>undefined);
+  refreshOfferPages();redirect(`${destination(value.offer_type)}?saved=pending`);
 }
 
 export async function updateOffer(_:OfferActionState,formData:FormData):Promise<OfferActionState>{
@@ -76,9 +79,10 @@ export async function updateOffer(_:OfferActionState,formData:FormData):Promise<
   const{data:existing}=await context.supabase.from("offers").select("media_asset_id,organization_assets!offers_media_asset_id_fkey(id,storage_path)").eq("id",offerId).eq("organization_id",context.organizationId).maybeSingle();
   if(!existing)return{error:"Der Eintrag ist nicht mehr verfügbar. Bitte lade die Seite neu."};
   let media=null;try{media=await uploadOfferMedia(context,formData);}catch{return{error:"Die Datei ist ungültig oder konnte nicht hochgeladen werden. Erlaubt sind JPG, PNG, WebP oder PDF bis 5 MB."};}
-  const{error}=await context.supabase.from("offers").update({...value,...(media?{media_asset_id:media.id}:{})}).eq("id",offerId).eq("organization_id",context.organizationId);
+  const{data:updated,error}=await context.supabase.from("offers").update({...value,...(media?{media_asset_id:media.id}:{})}).eq("id",offerId).eq("organization_id",context.organizationId).select("moderation_status").single();
   if(error){await cleanupAsset(context,media);return saveError(error,"update",context.organizationId);}
   const oldAsset=Array.isArray(existing?.organization_assets)?existing.organization_assets[0]:existing?.organization_assets;
   if(media&&oldAsset)await cleanupAsset(context,oldAsset);
-  refreshOfferPages();redirect(`${destination(value.offer_type)}?saved=1`);
+  if(updated?.moderation_status==="pending_review") { const {data:organization}=await context.supabase.from("organizations").select("name").eq("id",context.organizationId).single(); await sendReviewRequestedPush({title:value.title,kind:value.offer_type==="gutschein"?"Gutschein":"Aktion",organizationName:organization?.name??"Geschäft"}).catch(()=>undefined); }
+  refreshOfferPages();redirect(`${destination(value.offer_type)}?saved=pending`);
 }
