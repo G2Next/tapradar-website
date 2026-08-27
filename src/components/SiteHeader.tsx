@@ -36,10 +36,10 @@ export async function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-white/10 bg-[#020617]/85 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-5 py-4 sm:px-8">
-        <Link href={localizedPath(locale, "/")} className="text-xl font-black tracking-tight text-white">
+        <Link href={localizedPath(locale, "/")} aria-label="TapRadar Startseite" className="text-xl font-black tracking-tight text-white">
           Tap<span className="text-cyan-300">Radar</span>
         </Link>
-        <nav className="hidden items-center gap-7 text-sm font-bold text-slate-300 md:flex">
+        <nav aria-label="Hauptnavigation" className="hidden items-center gap-7 text-sm font-bold text-slate-300 md:flex">
           {navItems.map((item) => (
             <Link key={item.href} href={localizedPath(locale, item.href)} className="transition duration-150 hover:text-cyan-300 active:text-cyan-200">
               {item.label}
