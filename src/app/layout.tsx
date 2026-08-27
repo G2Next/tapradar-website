@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ClientTranslator } from "@/components/ClientTranslator";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { getHtmlLang } from "@/i18n/config";
@@ -39,6 +40,7 @@ export default async function RootLayout({
   return (
     <html lang={getHtmlLang(locale)} className="h-full antialiased">
       <body className="min-h-full bg-slate-950 font-sans">
+        <ClientTranslator locale={locale} />
         <a href="#main-content" className="skip-link">Zum Inhalt springen</a>
         <SiteHeader />
         <div id="main-content" tabIndex={-1}>{children}</div>
