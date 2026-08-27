@@ -6,7 +6,7 @@ import { OfferForm, type EditableOffer } from "./OfferForm";
 type SearchParams = Promise<{ saved?: string; error?: string }>;
 type OfferType = "aktion" | "gutschein";
 type Asset = { storage_path: string; mime_type: string; alt_text: string | null };
-type Offer = EditableOffer & { organization_assets: Asset | Asset[] | null };
+type Offer = EditableOffer & { moderation_status: "pending_review" | "approved" | "rejected"; rejection_reason: string | null; organization_assets: Asset | Asset[] | null };
 
 const pageConfig = {
   aktion: {
@@ -43,7 +43,7 @@ export async function OfferManagementPage({ searchParams, type }: { searchParams
   const [{ data }, { data: organization }] = await Promise.all([
     supabase
       .from("offers")
-      .select("id,title,description,offer_type,discount_type,discount_value,minimum_purchase_amount,redemption_code,conditions,starts_at,ends_at,is_active,location_id,organization_assets!offers_media_asset_id_fkey(storage_path,mime_type,alt_text)")
+      .select("id,title,description,offer_type,discount_type,discount_value,minimum_purchase_amount,redemption_code,conditions,starts_at,ends_at,is_active,location_id,moderation_status,rejection_reason,organization_assets!offers_media_asset_id_fkey(storage_path,mime_type,alt_text)")
       .eq("organization_id", organizationId)
       .eq("offer_type", type)
       .order("created_at", { ascending: false }),
@@ -60,7 +60,7 @@ export async function OfferManagementPage({ searchParams, type }: { searchParams
         <div><h1 className="text-5xl font-black">{config.title}</h1><p className="mt-4 max-w-3xl text-lg leading-8 text-slate-300">{config.intro}</p></div>
         <Link href={config.newRoute} className={`rounded-2xl px-5 py-4 font-black text-slate-950 transition hover:-translate-y-0.5 ${isVoucher ? "bg-cyan-300" : "bg-orange-300"}`}>{config.newCta}</Link>
       </div>
-      {params.saved ? <p className="mt-7 rounded-2xl bg-emerald-300/10 p-4 text-emerald-100">{isVoucher ? "Gutschein" : "Aktion"} gespeichert.</p> : null}
+      {params.saved ? <p className="mt-7 rounded-2xl bg-amber-300/10 p-4 text-amber-100">{isVoucher ? "Gutschein" : "Aktion"} wurde zur Admin-Freigabe eingereicht.</p> : null}
       {params.error ? <p className="mt-7 rounded-2xl bg-red-300/10 p-4 text-red-100">Speichern nicht möglich. Bitte prüfe Pflichtfelder, Zeitraum und Datei.</p> : null}
       <h2 className="mt-10 text-3xl font-black">Bestehende {config.title}</h2>
       <div className="mt-5 grid content-start gap-4">
@@ -69,7 +69,7 @@ export async function OfferManagementPage({ searchParams, type }: { searchParams
           const mediaUrl = asset ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/business-media/${asset.storage_path}` : null;
           return <details key={offer.id} className="group rounded-[24px] border border-white/10 bg-white/[0.07]">
             <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-5">
-              <div><div className="flex items-center gap-3"><span className={`rounded-full bg-white/[0.08] px-3 py-2 text-sm font-black ${isVoucher ? "text-cyan-200" : "text-orange-200"}`}>{config.icon} {isVoucher ? "Gutschein" : "Aktion"}</span><span className={offer.is_active ? "text-sm font-black text-emerald-200" : "text-sm font-black text-slate-400"}>{offer.is_active ? "Aktiv" : "Inaktiv"}</span></div><h3 className="mt-3 text-xl font-black">{offer.title}</h3>{isVoucher ? <p className="mt-1 text-sm text-slate-300">{offer.discount_type === "percentage" ? `${offer.discount_value} % Rabatt` : `${offer.discount_value?.toFixed(2).replace(".", ",")} € Gutschein`} · Code {offer.redemption_code}</p> : null}</div>
+              <div><div className="flex flex-wrap items-center gap-3"><span className={`rounded-full bg-white/[0.08] px-3 py-2 text-sm font-black ${isVoucher ? "text-cyan-200" : "text-orange-200"}`}>{config.icon} {isVoucher ? "Gutschein" : "Aktion"}</span><ModerationBadge status={offer.moderation_status}/><span className={offer.is_active ? "text-sm font-black text-emerald-200" : "text-sm font-black text-slate-400"}>{offer.is_active ? "Aktiv" : "Nicht veröffentlicht"}</span></div><h3 className="mt-3 text-xl font-black">{offer.title}</h3>{offer.rejection_reason?<p className="mt-2 text-sm font-bold text-red-200">Begründung: {offer.rejection_reason}</p>:null}{isVoucher ? <p className="mt-1 text-sm text-slate-300">{offer.discount_type === "percentage" ? `${offer.discount_value} % Rabatt` : `${offer.discount_value?.toFixed(2).replace(".", ",")} € Gutschein`} · Code {offer.redemption_code}</p> : null}</div>
               <span className={`text-sm font-black group-open:hidden ${isVoucher ? "text-cyan-300" : "text-orange-200"}`}>Bearbeiten ↓</span><span className={`hidden text-sm font-black group-open:inline ${isVoucher ? "text-cyan-300" : "text-orange-200"}`}>Minimieren ↑</span>
             </summary>
             <OfferForm offer={offer} locations={locations} mediaUrl={mediaUrl} fixedType={type} showVoucherPreview={isVoucher} previewBusinessName={organization?.name ?? "Firmenname"} className="border-t border-white/10 p-5" />
@@ -79,4 +79,9 @@ export async function OfferManagementPage({ searchParams, type }: { searchParams
       </div>
     </section>
   </main>;
+}
+
+function ModerationBadge({status}:{status:Offer["moderation_status"]}) {
+  const value=status==="approved"?["Freigegeben","bg-emerald-300/15 text-emerald-100"]:status==="rejected"?["Abgelehnt","bg-red-300/15 text-red-100"]:["Wartet auf Freigabe","bg-amber-300/15 text-amber-100"];
+  return <span className={`rounded-full px-3 py-2 text-xs font-black ${value[1]}`}>{value[0]}</span>;
 }
