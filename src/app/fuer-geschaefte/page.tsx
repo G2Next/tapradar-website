@@ -1,8 +1,20 @@
+import type { Metadata } from "next";
 import { PlanCards } from "@/components/PlanCards";
 import { PlanComparisonTable } from "@/components/PlanComparisonTable";
 import { Badge, PrimaryLink, SecondaryLink, SectionTitle } from "@/components/Ui";
 import { getLocale } from "@/i18n/server";
 import { translateTree } from "@/i18n/translate";
+import { createPublicPageMetadata } from "@/lib/metadata";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocale();
+  return createPublicPageMetadata(
+    locale,
+    "/fuer-geschaefte",
+    "TapRadar für Geschäfte | Digitale Kundenbindung",
+    "Digitale Stempelkarten, NFC, QR-Codes, Kampagnen und Analysen für lokale Geschäfte in Österreich – ab 9,99 € pro Monat.",
+  );
+}
 
 const features = [
   ["🏷️", "Digitale Stempelkarte", "Ersetzen Sie Papierkarten durch ein modernes, fälschungssicheres System."],
