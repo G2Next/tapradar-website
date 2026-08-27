@@ -35,7 +35,7 @@ export function translateText(locale: Locale, value: string) {
     ? (dashboardMessages[locale] ?? dashboardMessages.de).loginTitle
     : key === "Zum Login"
       ? (dashboardMessages[locale] ?? dashboardMessages.de).loginCta
-      : businessOverrides[locale]?.[key]);
+      : portalTerminology[locale]?.[key] ?? businessOverrides[locale]?.[key]);
   let translated = commonOverride ?? supplements[locale]?.[key] ?? legalManualOverrides[locale]?.[key] ?? legalCatalog[locale]?.[key] ?? recentCatalog[locale]?.[key] ?? currentCatalog[locale]?.[key] ?? appCatalog[locale]?.[key] ?? catalog[locale]?.[key];
   if (!translated) return value;
   if (locale === "sr-Latn") translated = transliterateSerbian(translated);
@@ -60,6 +60,23 @@ const businessOverrides: { de: Record<string, string> } & Partial<Record<Locale,
   hr: { Geschäft: "Tvrtka", "Geschäft speichern": "Spremi tvrtku", "Unternehmen speichern": "Spremi tvrtku", Aktion: "Promocija", Aktionen: "Promocije", Tarif: "Paket", "Tarif und Rechnungen": "Paket i računi" },
   ro: { Geschäft: "Afacere", "Geschäft speichern": "Salvează afacerea", "Unternehmen speichern": "Salvează compania", Aktion: "Promoție", Aktionen: "Promoții", Tarif: "Plan", "Tarif und Rechnungen": "Plan și facturi" },
   bg: { Geschäft: "Бизнес", "Geschäft speichern": "Запази бизнеса", "Unternehmen speichern": "Запази компанията", Aktion: "Промоция", Aktionen: "Промоции", Tarif: "План", "Tarif und Rechnungen": "План и фактури" },
+};
+
+const portalTerminology: Partial<Record<Locale, Record<string, string>>> = {
+  en: { "Marketing-Freigaben": "Marketing approvals" },
+  tr: { "Marketing-Freigaben": "Pazarlama onayları" },
+  fr: { "Marketing-Freigaben": "Approbations marketing" },
+  it: { "Marketing-Freigaben": "Approvazioni marketing" },
+  es: { "Marketing-Freigaben": "Aprobaciones de marketing" },
+  pl: { "Marketing-Freigaben": "Zatwierdzenia marketingowe" },
+  cs: { "Marketing-Freigaben": "Schvalování marketingu" },
+  hu: { "Marketing-Freigaben": "Marketingjóváhagyások" },
+  sk: { "Marketing-Freigaben": "Schvaľovanie marketingu" },
+  "sr-Latn": { "Marketing-Freigaben": "Marketinška odobrenja" },
+  bs: { "Marketing-Freigaben": "Marketinška odobrenja" },
+  hr: { "Marketing-Freigaben": "Marketinška odobrenja" },
+  ro: { "Marketing-Freigaben": "Aprobări de marketing" },
+  bg: { "Marketing-Freigaben": "Маркетингови одобрения" },
 };
 
 const metadataOverrides: Partial<Record<Locale, Record<string, string>>> = {

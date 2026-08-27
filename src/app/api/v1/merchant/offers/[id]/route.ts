@@ -3,7 +3,7 @@ import { offerCreateSchema, offerPatchSchema } from "@/lib/merchant-api/schemas"
 import { isUuid } from "@/lib/validation";
 
 export const dynamic = "force-dynamic";
-const fields = "id,organization_id,location_id,title,description,offer_type,discount_type,discount_value,minimum_purchase_amount,redemption_code,conditions,media_asset_id,starts_at,ends_at,is_active,created_at,updated_at";
+const fields = "id,organization_id,location_id,title,description,offer_type,discount_type,discount_value,minimum_purchase_amount,redemption_code,conditions,media_asset_id,starts_at,ends_at,is_active,moderation_status,rejection_reason,submitted_at,reviewed_at,created_at,updated_at";
 type Params = { params: Promise<{ id: string }> };
 
 export async function PATCH(request: Request, { params }: Params) {

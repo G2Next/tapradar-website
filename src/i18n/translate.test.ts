@@ -26,5 +26,13 @@ describe("translation completeness", () => {
 
   it("keeps Serbian portal translations in Latin script", () => {
     expect(translateText("sr-Latn", "Medien und Dateien")).toBe("Mediji i datoteke");
+    expect(translateText("sr-Latn", "Seite nicht gefunden | TapRadar")).toContain("TapRadar");
+  });
+
+  it("preserves product names and uses approval terminology", () => {
+    for (const locale of ["it", "pl", "hu", "hr"] as const) {
+      expect(translateText(locale, "Seite nicht gefunden | TapRadar"), locale).toContain("TapRadar");
+    }
+    expect(translateText("en", "Marketing-Freigaben")).toBe("Marketing approvals");
   });
 });

@@ -9,6 +9,7 @@ type Item = { href: string; label: string; icon: string; exact?: boolean };
 
 const adminItems: Item[] = [
   { href: "/admin", label: "Übersicht", icon: "⌂", exact: true },
+  { href: "/admin/marketing", label: "Marketing-Freigaben", icon: "✓" },
   { href: "/admin/messages", label: "Nachrichten", icon: "✉" },
   { href: "/admin/products", label: "Produkte & Preise", icon: "◆" },
   { href: "/admin/payments", label: "Zahlungsanbieter", icon: "◉" },
@@ -25,6 +26,7 @@ const dashboardItems: Item[] = [
   { href: "/dashboard/loyalty-cards", label: "Treuekarten", icon: "★" },
   { href: "/dashboard/actions", label: "Aktionen", icon: "🔥" },
   { href: "/dashboard/vouchers", label: "Gutscheine", icon: "🎟" },
+  { href: "/dashboard/push", label: "Push-Nachrichten", icon: "🔔" },
   { href: "/dashboard/devices", label: "QR- / NFC-Geräte", icon: "⌁" },
   { href: "/dashboard/redeem", label: "Belohnung einlösen", icon: "✓" },
   { href: "/dashboard/analytics", label: "Statistik", icon: "↗" },

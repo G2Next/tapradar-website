@@ -1,21 +1,19 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Badge, PrimaryLink, SecondaryLink, SectionTitle } from "@/components/Ui";
-import { localeAlternates, localizedPath, type Locale } from "@/i18n/config";
+import { localizedPath, type Locale } from "@/i18n/config";
 import { getLocale } from "@/i18n/server";
 import { translateText, translateTree } from "@/i18n/translate";
+import { createPublicPageMetadata } from "@/lib/metadata";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
-  const title = translateText(locale, "TapRadar | Alle Stempelkarten und Belohnungen in einer App");
-  const description = translateText(locale, "TapRadar ist die kostenlose digitale Stempelkarten-App für Kunden: lokale Geschäfte entdecken, Stempel sammeln und Belohnungen erhalten.");
-  return {
-    title,
-    description,
-    alternates: { canonical: localizedPath(locale, "/"), languages: localeAlternates("/") },
-    openGraph: { title, description, url: localizedPath(locale, "/") },
-    twitter: { title, description },
-  };
+  return createPublicPageMetadata(
+    locale,
+    "/",
+    "TapRadar | Alle Stempelkarten und Belohnungen in einer App",
+    "TapRadar ist die kostenlose digitale Stempelkarten-App für Kunden: lokale Geschäfte entdecken, Stempel sammeln und Belohnungen erhalten.",
+  );
 }
 
 const appAreas = [

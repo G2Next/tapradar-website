@@ -1,6 +1,13 @@
+import type { Metadata } from "next";
 import { LegalPage } from "@/components/LegalPage";
 import { getLocale } from "@/i18n/server";
 import { translateTree } from "@/i18n/translate";
+import { createPublicPageMetadata } from "@/lib/metadata";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocale();
+  return createPublicPageMetadata(locale, "/impressum", "Impressum | TapRadar", "Impressum und Anbieterinformationen der TapRadar-Plattform.");
+}
 
 export default async function ImpressumPage() {
   const locale = await getLocale();

@@ -1,6 +1,8 @@
+import type { Metadata } from "next";
 import { FormSubmitButton } from "@/components/FormSubmitButton";
 import { getLocale } from "@/i18n/server";
-import { translateTree } from "@/i18n/translate";
+import { translateText, translateTree } from "@/i18n/translate";
+import { createPublicPageMetadata } from "@/lib/metadata";
 import { submitContactMessage } from "./actions";
 
 const faqs = [
@@ -15,11 +17,32 @@ const faqs = [
 
 type SearchParams = Promise<{ sent?: string; error?: string }>;
 
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocale();
+  return createPublicPageMetadata(
+    locale,
+    "/kontakt",
+    "Kontakt & FAQ | TapRadar",
+    "Antworten auf häufige Fragen zu TapRadar, digitalen Stempelkarten, Tarifen und Support sowie unser Kontaktformular.",
+  );
+}
+
 export default async function ContactPage({ searchParams }: { searchParams: SearchParams }) {
   const locale = await getLocale();
   const params = await searchParams;
+  const translatedFaqs = faqs.map(([question, answer]) => [translateText(locale, question), translateText(locale, answer)]);
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: translatedFaqs.map(([question, answer]) => ({
+      "@type": "Question",
+      name: question,
+      acceptedAnswer: { "@type": "Answer", text: answer },
+    })),
+  };
   return translateTree(
     <main className="bg-[radial-gradient(circle_at_top_right,#0b4f63_0%,#061827_35%,#020617_100%)] px-5 py-20 text-white sm:px-8">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd).replace(/</g, "\\u003c") }} />
       <section className="mx-auto max-w-3xl text-center">
         <span className="inline-flex rounded-full border border-cyan-300/35 bg-cyan-300/10 px-4 py-2 text-sm font-black text-cyan-300">
           Kontakt & FAQ
@@ -31,14 +54,14 @@ export default async function ContactPage({ searchParams }: { searchParams: Sear
       </section>
 
       <section className="mx-auto mt-14 grid max-w-7xl gap-12 lg:grid-cols-[1.1fr_0.9fr]">
-        <div>
+        <div id="faq" className="scroll-mt-28">
           <h2 className="mb-6 text-3xl font-black">Häufig gestellte Fragen</h2>
           <div className="divide-y divide-white/10">
-            {faqs.map(([question, answer]) => (
+            {translatedFaqs.map(([question, answer]) => (
               <details key={question} className="group py-5">
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-left font-black text-white transition hover:text-cyan-300">
                   {question}
-                  <span className="text-xl text-cyan-300 group-open:rotate-45">+</span>
+                  <span aria-hidden="true" className="text-xl text-cyan-300 group-open:rotate-45">+</span>
                 </summary>
                 <p className="mt-4 leading-7 text-slate-300">{answer}</p>
               </details>
@@ -49,8 +72,8 @@ export default async function ContactPage({ searchParams }: { searchParams: Sear
         <aside className="rounded-[28px] border border-white/10 bg-white/[0.07] p-8 lg:sticky lg:top-28">
           <h2 className="text-3xl font-black">Nachricht senden</h2>
           <p className="mt-3 leading-7 text-slate-300">Wir antworten in der Regel innerhalb von 24 Stunden.</p>
-          {params.sent ? <p className="mt-6 rounded-2xl border border-emerald-300/30 bg-emerald-300/10 p-4 text-left font-bold text-emerald-100">Vielen Dank. Ihre Nachricht ist bei uns angekommen.</p> : null}
-          {params.error ? <p className="mt-6 rounded-2xl border border-red-300/30 bg-red-300/10 p-4 text-left font-bold text-red-100">{params.error === "limit" ? "Zu viele Nachrichten. Bitte versuchen Sie es später erneut." : "Bitte prüfen Sie alle Felder und versuchen Sie es erneut."}</p> : null}
+          {params.sent ? <p role="status" className="mt-6 rounded-2xl border border-emerald-300/30 bg-emerald-300/10 p-4 text-left font-bold text-emerald-100">Vielen Dank. Ihre Nachricht ist bei uns angekommen.</p> : null}
+          {params.error ? <p role="alert" className="mt-6 rounded-2xl border border-red-300/30 bg-red-300/10 p-4 text-left font-bold text-red-100">{params.error === "limit" ? "Zu viele Nachrichten. Bitte versuchen Sie es später erneut." : "Bitte prüfen Sie alle Felder und versuchen Sie es erneut."}</p> : null}
           <form action={submitContactMessage} className="mt-8 grid gap-5">
             <input type="hidden" name="locale" value={locale} />
             <label className="sr-only" aria-hidden="true">Website<input name="company_website" tabIndex={-1} autoComplete="off" /></label>
