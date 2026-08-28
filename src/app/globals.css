@@ -5,6 +5,19 @@
   --foreground: #ffffff;
 }
 
+@media print {
+  body * { visibility: hidden; }
+  .print-device-qr, .print-device-qr * { visibility: visible; }
+  .print-device-qr {
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: 100%;
+    border: 0;
+    background: white;
+    color: black;
+  }
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
