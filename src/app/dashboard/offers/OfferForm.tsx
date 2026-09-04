@@ -108,26 +108,28 @@ export function OfferForm({
 
   function validate(event: FormEvent<HTMLFormElement>) {
     setClientError(null);
+    const missing: string[] = [];
+    if (!values.title.trim()) missing.push(isVoucher ? "Gutschein-Titel" : "Aktions-Titel");
+    if (!values.description.trim()) missing.push("Beschreibung");
     if (isVoucher) {
       const amount = Number(values.discount_value);
       if (!Number.isFinite(amount) || amount <= 0 || (values.discount_type === "percentage" && amount > 100)) {
-        event.preventDefault();
-        setClientError(values.discount_type === "percentage" ? "Bitte einen Gutscheinwert zwischen 0,01 und 100 Prozent eingeben." : "Bitte einen Gutscheinwert größer als 0 Euro eingeben.");
-        return;
+        missing.push(values.discount_type === "percentage" ? "Gutscheinwert zwischen 0,01 und 100 Prozent" : "Gutscheinwert größer als 0 Euro");
       }
     }
     if (values.starts_at && values.ends_at && values.starts_at >= values.ends_at) {
-      event.preventDefault();
-      setClientError("Das Enddatum muss nach dem Startdatum liegen.");
-      return;
+      missing.push("Enddatum nach dem Startdatum");
     }
     const file = event.currentTarget.elements.namedItem("media");
     if (file instanceof HTMLInputElement && file.files?.[0]) {
       const selected = file.files[0];
       if (!allowedFiles.has(selected.type) || selected.size > 5 * 1024 * 1024) {
-        event.preventDefault();
-        setClientError("Erlaubt sind JPG, PNG, WebP oder PDF bis maximal 5 MB.");
+        missing.push("Datei als JPG, PNG, WebP oder PDF bis maximal 5 MB");
       }
+    }
+    if (missing.length) {
+      event.preventDefault();
+      setClientError(`Bitte korrigiere: ${missing.join(", ")}.`);
     }
   }
 
@@ -150,7 +152,7 @@ export function OfferForm({
     <FormSubmitButton label={offer ? "Eintrag speichern" : isVoucher ? "Gutschein anlegen" : "Aktion anlegen"} pendingLabel="Wird gespeichert …" className={offer ? "mt-5 rounded-2xl bg-cyan-300 px-5 py-3 font-black text-slate-950" : "mt-5 rounded-2xl bg-gradient-to-r from-cyan-300 to-blue-500 px-5 py-4 font-black text-slate-950"} />
   </div>;
 
-  return <form action={formAction} onSubmit={validate} className={className}>
+  return <form action={formAction} onSubmit={validate} noValidate className={className}>
     {offer ? <input type="hidden" name="offer_id" value={offer.id} /> : null}
     {showVoucherPreview && isVoucher ? <div className="grid items-start gap-7 xl:grid-cols-[minmax(520px,1.25fr)_minmax(380px,.75fr)]"><VoucherPreview values={values} businessName={previewBusinessName} mediaPreview={mediaPreview} />{editor}</div> : editor}
   </form>;

@@ -16,6 +16,7 @@ const adminItems: Item[] = [
   { href: "/admin/billing", label: "Rechnungen", icon: "▤" },
   { href: "/admin/api-keys", label: "API-Schlüssel", icon: "⌘" },
   { href: "/admin/operations", label: "Betrieb & Datenschutz", icon: "⚙" },
+  { href: "/admin/errors", label: "Fehlerzentrale", icon: "⚠" },
   { href: "/", label: "Website öffnen", icon: "↗" },
 ];
 

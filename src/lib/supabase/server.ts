@@ -1,8 +1,9 @@
 import { createServerClient } from "@supabase/ssr";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
+import { createMonitoredFetch } from "@/lib/app-errors";
 
 export async function createClient() {
-  const cookieStore = await cookies();
+  const [cookieStore, requestHeaders] = await Promise.all([cookies(), headers()]);
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
@@ -11,6 +12,7 @@ export async function createClient() {
   }
 
   return createServerClient(supabaseUrl, supabaseAnonKey, {
+    global: { fetch: createMonitoredFetch("supabase-server", requestHeaders.get("x-tapradar-pathname")) },
     cookies: {
       getAll() {
         return cookieStore.getAll();
