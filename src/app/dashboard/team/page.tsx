@@ -43,6 +43,7 @@ export default async function TeamPage({ searchParams }: { searchParams: SearchP
   const activeCount = staff.filter((member) => member.is_active).length;
   const inactiveCount = staff.length - activeCount;
   const canManage = ["owner", "manager"].includes(context.role ?? "");
+  const currentRoleLabel = context.role === "owner" ? "Inhaber" : context.role === "manager" ? "Manager" : "Mitarbeiter";
   const cookieStore = await cookies();
   const invitationToken = params.created === "manager" ? cookieStore.get(INVITATION_TOKEN_COOKIE)?.value : null;
   const pinSecret = params.pin ? parsePinCookie(cookieStore.get(STAFF_PIN_COOKIE)?.value, params.pin) : null;
@@ -52,7 +53,7 @@ export default async function TeamPage({ searchParams }: { searchParams: SearchP
   return <main className="min-h-screen bg-slate-950 px-5 py-14 text-white"><section className="mx-auto max-w-6xl">
     <Link href="/dashboard" className="font-black text-cyan-300">Zurück</Link>
     <div className="mt-6 flex flex-wrap items-end justify-between gap-5">
-      <div><h1 className="text-5xl font-black">Team und Filialrechte</h1><p className="mt-3 text-slate-300">Terminal-Mitarbeiter per Business-Code und PIN verwalten.</p></div>
+      <div><h1 className="text-5xl font-black">Team und Filialrechte</h1><p className="mt-3 text-slate-300">Terminal-Mitarbeiter per Business-Code und PIN verwalten.</p><p className="mt-3 inline-flex rounded-full border border-cyan-300/25 bg-cyan-300/10 px-3 py-1.5 text-sm font-black text-cyan-200">Deine Rolle: {currentRoleLabel}</p></div>
       <div className="rounded-2xl border border-cyan-300/20 bg-cyan-300/[0.08] px-5 py-4 text-right"><p className="text-xs font-black uppercase tracking-[0.18em] text-cyan-200">Business-Code</p><p className="mt-1 font-mono text-3xl font-black tracking-[0.18em]">{organization?.business_code ?? "—"}</p></div>
     </div>
 
