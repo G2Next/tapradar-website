@@ -1,4 +1,5 @@
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
+import { createMonitoredFetch } from "@/lib/app-errors";
 import { createClient as createServerClient } from "./server";
 
 export async function createRequestClient(request: Request) {
@@ -10,7 +11,7 @@ export async function createRequestClient(request: Request) {
   if (!supabaseUrl || !supabaseAnonKey) throw new Error("Missing Supabase environment variables.");
 
   return createSupabaseClient(supabaseUrl, supabaseAnonKey, {
-    global: { headers: { Authorization: authorization } },
+    global: { headers: { Authorization: authorization }, fetch: createMonitoredFetch("supabase-api", new URL(request.url).pathname) },
     auth: { autoRefreshToken: false, persistSession: false, detectSessionInUrl: false },
   });
 }

@@ -17,8 +17,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: npm
@@ -26,14 +26,38 @@ jobs:
       - run: npm test
       - run: npm run lint
       - run: npm run build
-      - run: npm audit --audit-level=high
+      - name: Audit dependencies
+        run: |
+          audit_output=/tmp/tapradar-npm-audit.json
+          for attempt in 1 2 3; do
+            if npm audit --audit-level=high --json \
+              --fetch-retries=2 \
+              --fetch-retry-mintimeout=2000 \
+              --fetch-retry-maxtimeout=10000 \
+              --fetch-timeout=30000 > "$audit_output"; then
+              cat "$audit_output"
+              exit 0
+            fi
+            if node -e 'const fs=require("fs");try{const report=JSON.parse(fs.readFileSync(process.argv[1],"utf8"));process.exit(report.metadata?.vulnerabilities?0:1)}catch{process.exit(1)}' "$audit_output"; then
+              cat "$audit_output"
+              echo "High or critical dependency vulnerabilities found."
+              exit 1
+            fi
+            if [ "$attempt" -eq 3 ]; then
+              cat "$audit_output"
+              echo "::warning::npm audit service unavailable after 3 attempts; tests, lint and build passed."
+              exit 0
+            fi
+            echo "npm audit service unavailable; retrying ($attempt/3)..."
+            sleep $((attempt * 5))
+          done
 
   database:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: npm

@@ -5,6 +5,7 @@ import { DeviceManagerCard } from "@/components/dashboard/DeviceManagerCard";
 import { StampQrCard } from "@/components/dashboard/StampQrCard";
 import { deviceMessages } from "@/i18n/devices";
 import { getLocale } from "@/i18n/server";
+import { recordAppError } from "@/lib/app-errors";
 import { getDashboardContext } from "@/lib/dashboard";
 import { STAMP_TOKEN_COOKIE } from "@/lib/flash-secrets";
 import { createStampDevice } from "./actions";
@@ -19,10 +20,11 @@ export default async function DevicesPage({ searchParams }: { searchParams: Sear
   if (!user) redirect("/login?next=/dashboard/devices");
   if (!organizationId) redirect("/dashboard/onboarding");
 
-  const [{ data: locations }, { data: devices }] = await Promise.all([
+  const [{ data: locations, error: locationsError }, { data: devices, error: devicesError }] = await Promise.all([
     supabase.from("locations").select("id, name").eq("organization_id", organizationId).eq("is_active", true).order("name"),
-    supabase.from("stamp_devices").select("id, name, location_id, is_active, last_used_at, locations(name)").eq("organization_id", organizationId).order("created_at", { ascending: false }),
+    supabase.from("stamp_devices").select("id, name, location_id, is_active, last_used_at, locations!stamp_devices_location_id_fkey(name)").eq("organization_id", organizationId).order("created_at", { ascending: false }),
   ]);
+  if (locationsError || devicesError) await recordAppError({ source: "merchant-devices", error: locationsError ?? devicesError, route: "/dashboard/devices", operation: "load", organizationId, userId: user.id });
   const token = params.revealed ? (await cookies()).get(STAMP_TOKEN_COOKIE)?.value : null;
   const revealedDevice = params.revealed ? (devices ?? []).find((device) => device.id === params.revealed) : null;
   const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/$/, "");
@@ -42,6 +44,7 @@ export default async function DevicesPage({ searchParams }: { searchParams: Sear
       </div> : null}
       {params.saved || params.deleted ? <p className="mt-7 rounded-2xl border border-emerald-300/30 bg-emerald-300/10 p-4 text-emerald-100">Änderung wurde gespeichert.</p> : null}
       {params.error ? <p className="mt-7 rounded-2xl border border-red-300/30 bg-red-300/10 p-4 text-red-100">Gerät konnte nicht gespeichert werden.</p> : null}
+      {locationsError || devicesError ? <p className="mt-7 rounded-2xl border border-red-300/30 bg-red-300/10 p-4 text-red-100">Geräte konnten nicht geladen werden. Bitte lade die Seite erneut.</p> : null}
 
       <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_.72fr]">
         <div>
