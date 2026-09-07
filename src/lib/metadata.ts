@@ -8,7 +8,12 @@ export function createPublicPageMetadata(
   germanTitle: string,
   germanDescription: string,
 ): Metadata {
-  const title = translateText(locale, germanTitle);
+  const translatedTitle = translateText(locale, germanTitle);
+  // Page headings are already translated; reuse them when the branded title
+  // has no separate catalog entry.
+  const title = translatedTitle === germanTitle && germanTitle.endsWith(" | TapRadar")
+    ? `${translateText(locale, germanTitle.slice(0, -" | TapRadar".length))} | TapRadar`
+    : translatedTitle;
   const description = translateText(locale, germanDescription);
   const url = localizedPath(locale, path);
 

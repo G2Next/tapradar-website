@@ -48,7 +48,7 @@ export function localizedPath(locale: Locale, href: string) {
 
   const cleanPath = `/${segments.join("/")}`;
   const base = cleanPath === "/" ? "" : cleanPath;
-  return `${locale === defaultLocale ? "" : `/${locale}`}${base || "/"}${suffix}`;
+  return `${locale === defaultLocale ? "" : `/${locale}`}${base || (locale === defaultLocale ? "/" : "")}${suffix}`;
 }
 
 const translatedPaths = new Set(["/", "/fuer-geschaefte", "/kontakt", "/impressum", "/datenschutz", "/agb", "/agb-geschaeftskunden", "/agb-verbraucher", "/widerrufsbelehrung"]);

@@ -37,3 +37,33 @@ describe("public metadata routes", () => {
     }
   });
 });
+
+describe("crawlable canonical URLs", () => {
+  it("allows Apple icons while excluding only the app path boundary", () => {
+    const rules = robots().rules;
+    if (Array.isArray(rules) || !rules) throw new Error("Expected shared crawler rules");
+    const disallowed = [rules.disallow].flat().filter((rule): rule is string => !!rule);
+    const isBlocked = (path: string) => disallowed.some((rule) =>
+      rule.endsWith("$") ? path === rule.slice(0, -1) : path.startsWith(rule));
+    expect(isBlocked("/apple-icon?ad969dd1f23a2787")).toBe(false);
+    expect(isBlocked("/app")).toBe(true);
+    expect(isBlocked("/app?source=google")).toBe(true);
+    expect(isBlocked("/app/settings")).toBe(true);
+    expect(isBlocked("/fuer-geschaefte")).toBe(false);
+  });
+
+  it("does not submit redirects, duplicate URLs or invented modification dates", () => {
+    const entries = sitemap();
+    expect(entries).toHaveLength(135);
+    expect(new Set(entries.map((entry) => entry.url)).size).toBe(entries.length);
+    for (const entry of entries) {
+      const paths = [entry.url, ...Object.values(entry.alternates?.languages ?? {})];
+      for (const url of paths) {
+        const path = new URL(url!).pathname;
+        expect(path === "/" || !path.endsWith("/"), path).toBe(true);
+        expect(path).not.toMatch(/\/(preis|my-konto|feed|login)(\/|$)/);
+      }
+      expect(entry.lastModified).toBeUndefined();
+    }
+  });
+});
