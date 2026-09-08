@@ -25,6 +25,7 @@
 .orbitOne { width: 470px; height: 470px; right: -210px; top: -210px; }
 .orbitTwo { width: 620px; height: 620px; left: -410px; bottom: -390px; }
 .stage { position: relative; z-index: 1; width: min(1120px, 100%); height: 610px; margin: 0 auto; overflow: hidden; overflow-anchor: none; isolation: isolate; border: 1px solid rgba(255,255,255,.12); border-radius: 30px; background: radial-gradient(circle at 78% 24%, rgba(34,211,238,.15), transparent 28%), linear-gradient(135deg, #061827, #020617 74%); box-shadow: 0 40px 100px rgba(0,0,0,.48), inset 0 1px rgba(255,255,255,.04); }
+.stage.social { height: 735px; }
 .grid { position: absolute; inset: 0; opacity: .14; background-image: linear-gradient(rgba(103,232,249,.08) 1px, transparent 1px), linear-gradient(90deg, rgba(103,232,249,.08) 1px, transparent 1px); background-size: 42px 42px; mask-image: linear-gradient(90deg, black, transparent 64%); }
 .radar { position: absolute; right: -70px; top: -80px; width: 410px; height: 410px; border-radius: 50%; opacity: .3; }
 .radar span { position: absolute; inset: 0; border: 1px solid rgba(103,232,249,.25); border-radius: 50%; animation: pulse 4s ease-out infinite; }
@@ -44,7 +45,7 @@
 .formContent h1 { max-width: 420px; margin: 0; color: white; font-size: clamp(31px, 3.7vw, 49px); font-weight: 900; letter-spacing: -.045em; line-height: .98; }
 .intro { margin: 13px 0 24px; color: #a8bdd3; font-size: 13px; line-height: 1.55; }
 .form { display: grid; gap: 14px; }
-.form > label:not(.consent) { display: grid; gap: 7px; color: #aec2d6; font-size: 10px; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; }
+.form > label:not(.consent):not(.remember) { display: grid; gap: 7px; color: #aec2d6; font-size: 10px; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; }
 .form input[type="email"], .form input[type="password"], .form input[type="text"] { width: 100%; min-height: 44px; border: 1px solid rgba(255,255,255,.14); border-radius: 14px; outline: 0; color: white; background: rgba(255,255,255,.055); padding: 0 14px; font-size: 13px; font-weight: 400; letter-spacing: 0; text-transform: none; transition: border-color .2s, box-shadow .2s, background .2s; }
 .form input::placeholder { color: #657c94; }
 .form input:focus { border-color: #67e8f9; background: rgba(255,255,255,.08); box-shadow: 0 0 0 3px rgba(103,232,249,.09); }
@@ -54,6 +55,19 @@
 .consent { display: flex; align-items: flex-start; gap: 9px; padding: 10px 12px; cursor: pointer; border: 1px solid rgba(255,255,255,.1); border-radius: 14px; color: #9fb4ca; background: rgba(255,255,255,.035); font-size: 10px; line-height: 1.5; }
 .consent input { flex: 0 0 auto; margin-top: 2px; accent-color: #22d3ee; }
 .consent a { color: #67e8f9; font-weight: 800; text-decoration: underline; }
+.remember { display: flex; align-items: center; gap: 9px; cursor: pointer; color: #b9c9d9; font-size: 11px; font-weight: 800; }
+.remember input { width: 15px; height: 15px; accent-color: #22d3ee; }
+.socialButtons { display: grid; gap: 9px; }
+.socialButton { min-height: 44px; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; border-radius: 14px; font-size: 12px; font-weight: 850; transition: transform .2s, border-color .2s, box-shadow .2s; }
+.socialButton svg { width: 18px; height: 18px; flex: 0 0 auto; }
+.socialButton:hover { transform: translateY(-1px); box-shadow: 0 10px 24px rgba(0,0,0,.2); }
+.socialButton:active { transform: scale(.985); }
+.socialButton:disabled { cursor: not-allowed; opacity: .58; }
+.googleButton { border: 1px solid rgba(255,255,255,.78); color: #172033; background: #fff; }
+.appleButton { border: 1px solid rgba(255,255,255,.22); color: #fff; background: #050505; }
+.divider { display: flex; align-items: center; gap: 10px; color: #71889f; font-size: 9px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.divider::before, .divider::after { content: ""; height: 1px; flex: 1; background: rgba(255,255,255,.12); }
+.divider span { white-space: nowrap; }
 .submit { min-height: 46px; cursor: pointer; border: 0; border-radius: 15px; color: #04111e; background: linear-gradient(90deg, #67e8f9, #3b82f6); box-shadow: 0 10px 27px rgba(34,211,238,.18); font-size: 12px; font-weight: 900; transition: transform .2s cubic-bezier(.32,.72,0,1), box-shadow .2s; }
 .submit:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(34,211,238,.27); }
 .submit:active { transform: scale(.98); }
@@ -62,7 +76,7 @@
 .signupActions { display: flex; justify-content: flex-end; }
 .forgot { color: #b9c9d9; font-size: 11px; font-weight: 800; transition: color .2s; }
 .forgot:hover { color: #67e8f9; }
-.modeAction { min-height: 42px; min-width: 142px; cursor: pointer; border: 1px solid rgba(103,232,249,.42); border-radius: 13px; color: #07111f; background: #67e8f9; padding: 0 20px; font-size: 12px; font-weight: 900; box-shadow: 0 9px 24px rgba(34,211,238,.14); transition: transform .2s, background .2s, box-shadow .2s; }
+.modeAction { min-height: 42px; min-width: 142px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid rgba(103,232,249,.42); border-radius: 13px; color: #07111f; background: #67e8f9; padding: 0 20px; font-size: 12px; font-weight: 900; box-shadow: 0 9px 24px rgba(34,211,238,.14); transition: transform .2s, background .2s, box-shadow .2s; }
 .modeAction:hover { transform: translateY(-1px); background: #a5f3fc; box-shadow: 0 12px 26px rgba(34,211,238,.22); }
 .modeAction:active { transform: scale(.98); }
 .message { min-height: 31px; margin: 11px 0 0; padding: 8px 10px; border: 1px solid transparent; border-radius: 12px; color: #cbd5e1; text-align: center; font-size: 10px; line-height: 1.4; opacity: 0; }
@@ -81,6 +95,8 @@
 @media (max-width: 800px) {
   .page { min-height: 850px; padding: 22px 13px 42px; }
   .stage { height: 780px; border-radius: 25px; }
+  .stage.social { height: 920px; }
+  .page:has(.stage.social) { min-height: 990px; }
   .brand { top: 0; left: 0; right: auto; width: 100%; height: 225px; padding: 38px 29px 25px; transform: none; }
   .brand h2 { max-width: 440px; font-size: clamp(34px, 10vw, 44px); }
   .brand > p:not(.eyebrow) { max-width: 360px; font-size: 11px; }

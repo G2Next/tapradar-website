@@ -1,6 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { defaultLocale, isLocale, type Locale } from "@/i18n/config";
+import { AUTH_PERSISTENCE_COOKIE, withoutCookiePersistence } from "@/lib/auth-session";
 
 const PUBLIC_PATHS = new Set([
   "/",
@@ -60,6 +61,7 @@ export async function proxy(request: NextRequest) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   if (!supabaseUrl || !supabaseAnonKey) return response;
+  const sessionOnly = request.cookies.get(AUTH_PERSISTENCE_COOKIE)?.value === "session";
 
   const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
     cookies: {
@@ -69,7 +71,7 @@ export async function proxy(request: NextRequest) {
         requestHeaders.set("cookie", request.cookies.toString());
         response = createResponse();
         if (locale) setLocaleCookie(response, locale);
-        cookiesToSet.forEach(({ name, value, options }) => response.cookies.set(name, value, options));
+        cookiesToSet.forEach(({ name, value, options }) => response.cookies.set(name, value, sessionOnly ? withoutCookiePersistence(options) : options));
       },
     },
   });
