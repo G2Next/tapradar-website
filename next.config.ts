@@ -33,6 +33,12 @@ const nextConfig: NextConfig = {
       bodySizeLimit: "6mb",
     },
   },
+  async redirects() {
+    return [
+      { source: "/preis", destination: "/fuer-geschaefte#tarife", permanent: true },
+      { source: "/my-konto", destination: "/login", permanent: true },
+    ];
+  },
   async headers() {
     return [
       {
