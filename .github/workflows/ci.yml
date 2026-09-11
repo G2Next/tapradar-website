@@ -68,6 +68,8 @@ jobs:
         run: |
           npx --yes supabase@latest db reset --local
           npx --yes supabase@latest db lint --local
+      - name: Test email events and admin permissions
+        run: npm run test:email
       - name: Stop local Supabase
         if: always()
         run: npx --yes supabase@latest stop --no-backup

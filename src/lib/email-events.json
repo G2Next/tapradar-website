@@ -1,0 +1,189 @@
+{
+  "contact_form_sent": {
+    "label": "Kontaktanfrage eingegangen",
+    "recipient": "Absender der Kontaktanfrage",
+    "sample": {
+      "name": "Alex",
+      "subject": "Frage zu TapRadar"
+    },
+    "de": {
+      "subject": "Deine Nachricht an TapRadar",
+      "body": "Hallo {{name}},\n\nvielen Dank für deine Nachricht zum Thema „{{subject}}“. Wir haben deine Anfrage erhalten und melden uns bei dir.\n\nDein TapRadar-Team"
+    },
+    "en": {
+      "subject": "Your message to TapRadar",
+      "body": "Hello {{name}},\n\nThank you for your message about “{{subject}}”. We have received your enquiry and will get back to you.\n\nYour TapRadar team"
+    }
+  },
+  "business_registered": {
+    "label": "Geschäft registriert",
+    "recipient": "Rechnungsadresse des Geschäfts, sonst Inhaber",
+    "sample": {
+      "organization_name": "Café Beispiel"
+    },
+    "de": {
+      "subject": "Willkommen bei TapRadar, {{organization_name}}",
+      "body": "Dein Geschäft {{organization_name}} wurde registriert. Vervollständige die Einrichtung im Geschäftsbereich, um es zur Prüfung einzureichen."
+    },
+    "en": {
+      "subject": "Welcome to TapRadar, {{organization_name}}",
+      "body": "Your business {{organization_name}} has been registered. Complete the setup in your dashboard to submit it for review."
+    }
+  },
+  "customer_registered": {
+    "label": "Kunde registriert",
+    "recipient": "Registrierter Kunde",
+    "sample": {
+      "name": "Alex"
+    },
+    "de": {
+      "subject": "Willkommen bei TapRadar",
+      "body": "Hallo {{name}},\n\ndein Kundenprofil bei TapRadar ist eingerichtet. Entdecke lokale Geschäfte und sammle digitale Stempel."
+    },
+    "en": {
+      "subject": "Welcome to TapRadar",
+      "body": "Hello {{name}},\n\nYour TapRadar customer profile is ready. Discover local businesses and collect digital stamps."
+    }
+  },
+  "purchase_completed": {
+    "label": "Zahlung abgeschlossen",
+    "recipient": "Rechnungsadresse des Geschäfts, sonst Inhaber",
+    "sample": {
+      "organization_name": "Café Beispiel",
+      "betrag": "29.90 EUR",
+      "datum": "2026-09-11",
+      "invoice_number": "TR-2026-001"
+    },
+    "de": {
+      "subject": "Zahlung erhalten: {{invoice_number}}",
+      "body": "Hallo {{organization_name}},\n\nwir haben deine Zahlung von {{betrag}} am {{datum}} erhalten. Die Rechnung {{invoice_number}} findest du im Geschäftsbereich unter Tarif & Rechnungen."
+    },
+    "en": {
+      "subject": "Payment received: {{invoice_number}}",
+      "body": "Hello {{organization_name}},\n\nWe received your payment of {{betrag}} on {{datum}}. You can find invoice {{invoice_number}} under Plan & invoices in your dashboard."
+    }
+  },
+  "offer_created": {
+    "label": "Angebot oder Gutschein erstellt",
+    "recipient": "Rechnungsadresse des Geschäfts, sonst Inhaber",
+    "sample": {
+      "organization_name": "Café Beispiel",
+      "title": "Kaffee-Aktion"
+    },
+    "de": {
+      "subject": "Angebot erstellt: {{title}}",
+      "body": "Hallo {{organization_name}},\n\ndein Angebot „{{title}}“ wurde gespeichert. Den aktuellen Freigabestatus siehst du im Geschäftsbereich."
+    },
+    "en": {
+      "subject": "Offer created: {{title}}",
+      "body": "Hello {{organization_name}},\n\nYour offer “{{title}}” has been saved. Check its approval status in your dashboard."
+    }
+  },
+  "push_created": {
+    "label": "Push-Nachricht erstellt",
+    "recipient": "Rechnungsadresse des Geschäfts, sonst Inhaber",
+    "sample": {
+      "organization_name": "Café Beispiel",
+      "title": "Neuigkeiten"
+    },
+    "de": {
+      "subject": "Push-Nachricht erstellt: {{title}}",
+      "body": "Hallo {{organization_name}},\n\ndeine Push-Nachricht „{{title}}“ wurde gespeichert. Den Freigabe- und Versandstatus siehst du im Geschäftsbereich."
+    },
+    "en": {
+      "subject": "Push message created: {{title}}",
+      "body": "Hello {{organization_name}},\n\nYour push message “{{title}}” has been saved. Check its approval and delivery status in your dashboard."
+    }
+  },
+  "team_invitation": {
+    "label": "Team-Einladung",
+    "recipient": "Eingeladene Person",
+    "sample": {
+      "organization_name": "Café Beispiel",
+      "link": "https://www.tapradar.app/invite/example"
+    },
+    "de": {
+      "subject": "Einladung zu {{organization_name}}",
+      "body": "Du wurdest zum TapRadar-Team von {{organization_name}} eingeladen.\n\nEinladung annehmen: {{link}}"
+    },
+    "en": {
+      "subject": "Invitation to {{organization_name}}",
+      "body": "You have been invited to the TapRadar team of {{organization_name}}.\n\nAccept the invitation: {{link}}"
+    }
+  },
+  "review_submitted": {
+    "label": "Geschäft zur Prüfung eingereicht",
+    "recipient": "Rechnungsadresse des Geschäfts, sonst Inhaber",
+    "sample": {
+      "organization_name": "Café Beispiel"
+    },
+    "de": {
+      "subject": "{{organization_name}} wurde zur Prüfung eingereicht",
+      "body": "{{organization_name}} wurde erfolgreich zur TapRadar-Prüfung eingereicht. Wir informieren dich über das Ergebnis."
+    },
+    "en": {
+      "subject": "{{organization_name}} has been submitted for review",
+      "body": "{{organization_name}} has been submitted for TapRadar review. We will let you know the result."
+    }
+  },
+  "organization_approved": {
+    "label": "Geschäft freigegeben",
+    "recipient": "Rechnungsadresse des Geschäfts",
+    "sample": {
+      "organization_name": "Café Beispiel"
+    },
+    "de": {
+      "subject": "{{organization_name}} ist jetzt auf TapRadar veröffentlicht",
+      "body": "{{organization_name}} wurde freigegeben und ist jetzt in der App sichtbar."
+    },
+    "en": {
+      "subject": "{{organization_name}} is now published on TapRadar",
+      "body": "{{organization_name}} has been approved and is now visible in the app."
+    }
+  },
+  "organization_rejected": {
+    "label": "Geschäft benötigt Änderungen",
+    "recipient": "Rechnungsadresse des Geschäfts",
+    "sample": {
+      "organization_name": "Café Beispiel",
+      "reason": "Bitte ergänze die Öffnungszeiten."
+    },
+    "de": {
+      "subject": "Rückfrage zu {{organization_name}}",
+      "body": "Bitte überarbeite die Angaben für {{organization_name}}.\n\nBegründung: {{reason}}"
+    },
+    "en": {
+      "subject": "Changes needed for {{organization_name}}",
+      "body": "Please update the details for {{organization_name}}.\n\nReason: {{reason}}"
+    }
+  },
+  "privacy_request": {
+    "label": "Datenschutzanfrage",
+    "recipient": "Anfragende Person",
+    "sample": {},
+    "de": {
+      "subject": "Deine Datenschutzanfrage bei TapRadar",
+      "body": "Wir haben deine Datenschutzanfrage erhalten und bearbeiten sie entsprechend der gesetzlichen Fristen."
+    },
+    "en": {
+      "subject": "Your privacy request at TapRadar",
+      "body": "We have received your privacy request and will process it within the applicable statutory deadlines."
+    }
+  },
+  "contact_reply": {
+    "label": "Antwort auf Kontaktanfrage",
+    "recipient": "Absender der ursprünglichen Kontaktanfrage",
+    "sample": {
+      "subject": "Frage zu TapRadar",
+      "response": "Vielen Dank. Wir helfen dir gerne weiter."
+    },
+    "de": {
+      "subject": "Antwort von TapRadar: {{subject}}",
+      "body": "Vielen Dank für deine Nachricht.\n\n{{response}}"
+    },
+    "en": {
+      "subject": "Reply from TapRadar: {{subject}}",
+      "body": "Thank you for your message.\n\n{{response}}"
+    }
+  }
+}

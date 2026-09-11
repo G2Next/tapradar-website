@@ -28,6 +28,7 @@ export default async function LoginPage({ searchParams }: { searchParams: LoginS
 
   return (
     <LoginClient
+      locale={locale}
       messages={messages}
       socialMessages={socialMessages}
       enabledProviders={{

@@ -8,7 +8,7 @@ const supabaseOrigin = (() => {
 const supabaseWebSocketOrigin = supabaseOrigin?.replace(/^http/, "ws") ?? null;
 const contentSecurityPolicy = [
   "default-src 'self'",
-  `script-src 'self' 'unsafe-inline'${isDevelopment ? " 'unsafe-eval'" : ""}`,
+  `script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com${isDevelopment ? " 'unsafe-eval'" : ""}`,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https:",
   "font-src 'self' data:",
@@ -16,7 +16,7 @@ const contentSecurityPolicy = [
   "media-src 'self' blob: https:",
   "worker-src 'self' blob:",
   "manifest-src 'self'",
-  "frame-src 'none'",
+  "frame-src https://challenges.cloudflare.com",
   "frame-ancestors 'none'",
   "base-uri 'self'",
   "object-src 'none'",
