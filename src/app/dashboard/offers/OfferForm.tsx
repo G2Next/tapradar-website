@@ -73,6 +73,7 @@ export function OfferForm({
   offer,
   locations,
   mediaUrl,
+  mediaType,
   fixedType,
   showVoucherPreview = false,
   previewBusinessName = "Firmenname",
@@ -81,6 +82,7 @@ export function OfferForm({
   offer?: EditableOffer;
   locations: Location[];
   mediaUrl?: string | null;
+  mediaType?: string | null;
   fixedType?: OfferType;
   showVoucherPreview?: boolean;
   previewBusinessName?: string;
@@ -90,7 +92,7 @@ export function OfferForm({
   const [state, formAction] = useActionState<OfferActionState, FormData>(action, {});
   const [values, setValues] = useState<Values>(() => initialValues(offer, fixedType));
   const [clientError, setClientError] = useState<string | null>(null);
-  const [mediaPreview, setMediaPreview] = useState<MediaPreview>(mediaUrl ? { url: mediaUrl, type: "image/existing" } : null);
+  const [mediaPreview, setMediaPreview] = useState<MediaPreview>(mediaUrl ? { url: mediaUrl, type: mediaType ?? "image/existing" } : null);
   const set = <K extends keyof Values>(key: K, value: Values[K]) => setValues(current => ({ ...current, [key]: value }));
   const isVoucher = values.offer_type === "gutschein";
 
@@ -101,7 +103,7 @@ export function OfferForm({
   function updateMediaPreview(file?: File) {
     setMediaPreview(current => {
       if (current?.url.startsWith("blob:")) URL.revokeObjectURL(current.url);
-      if (!file) return mediaUrl ? { url: mediaUrl, type: "image/existing" } : null;
+      if (!file) return mediaUrl ? { url: mediaUrl, type: mediaType ?? "image/existing" } : null;
       return { url: URL.createObjectURL(file), type: file.type };
     });
   }
@@ -169,6 +171,7 @@ function VoucherPreview({ values, businessName, mediaPreview }: { values: Values
   const numericValue = Number(values.discount_value);
   const amount = Number.isFinite(numericValue) && numericValue > 0 ? values.discount_type === "percentage" ? `${numericValue.toLocaleString("de-AT")} %` : `${numericValue.toLocaleString("de-AT", { maximumFractionDigits: 2 })} €` : "10 €";
   const hasImage = Boolean(mediaPreview && mediaPreview.type !== "application/pdf");
+  const hasPdf = mediaPreview?.type === "application/pdf";
   const safeBusinessName = businessName.trim() || "Firmenname";
   const initial = safeBusinessName.slice(0, 1).toUpperCase();
   const imageLayer = hasImage ? `linear-gradient(115deg,rgba(255,244,210,.82),rgba(240,185,45,.78)),url(${mediaPreview?.url})` : undefined;
@@ -181,11 +184,11 @@ function VoucherPreview({ values, businessName, mediaPreview }: { values: Values
         <div className="grid h-full grid-rows-[auto_1fr_auto] gap-[clamp(18px,4vw,42px)] p-[clamp(24px,5vw,54px)]">
           <header className="flex flex-col items-start justify-between gap-4 md:flex-row"><p className="text-[clamp(32px,4vw,58px)] font-light leading-none tracking-[-.07em]">GUT<span className="text-[#087a99]">SCHEIN</span></p><div className="flex min-w-0 items-center gap-3 pt-1"><span className="grid size-12 shrink-0 place-items-center rounded-xl bg-[#0b2d48] text-xl text-[#f3c84d]">{initial}</span><span className="max-w-40 truncate text-xs font-black uppercase tracking-[.22em] sm:text-sm">{safeBusinessName}</span></div></header>
           <div className="grid items-center gap-6 md:grid-cols-[minmax(260px,1.2fr)_minmax(120px,.55fr)]"><div className="rounded-2xl border border-[#8b9aa0]/40 bg-[#fff3d2]/80 p-5 backdrop-blur-sm"><div aria-hidden className="h-16 w-full" style={{ backgroundImage: "repeating-linear-gradient(90deg,#082139 0,#082139 3px,transparent 3px,transparent 7px,#082139 7px,#082139 9px,transparent 9px,transparent 13px)" }} /><div className="mt-3 flex items-center justify-between gap-3"><span className="text-[10px] font-bold uppercase tracking-[.22em] text-[#647078] sm:text-xs">Gutscheincode</span><span className="font-mono text-sm font-bold tracking-[.15em]">{values.redemption_code.trim().toUpperCase() || "TR-8F2A9C"}</span></div></div><p className="text-center font-serif text-[clamp(58px,11vw,106px)] leading-none tracking-[-.06em]">{amount}</p></div>
-          <footer className="grid gap-4 border-t border-[#8b792f]/30 pt-5 md:grid-cols-[.8fr_1.2fr] md:items-end"><div><h2 className="text-[clamp(21px,3vw,34px)] font-bold tracking-[-.03em]">{values.title.trim() || "Gutschein-Titel"}</h2><p className="mt-3 text-[10px] font-bold uppercase tracking-[.18em] text-[#52616c] sm:text-xs">Start: {formatPreviewDate(values.starts_at, "01.09.2026")} <span className="px-2">—</span> Ende: {formatPreviewDate(values.ends_at, "31.12.2026")}</p></div><div className="md:text-right"><p className="text-sm leading-6 text-[#314759] sm:text-base">{values.description.trim() || "Beschreibung des Gutscheins – kurz, klar und hochwertig präsentiert."}</p>{values.minimum_purchase_amount ? <p className="mt-2 text-xs font-bold text-[#6e5211]">Mindestkauf: {Number(values.minimum_purchase_amount).toLocaleString("de-AT", { minimumFractionDigits: 2 })} €</p> : null}</div></footer>
+          <footer className="grid gap-4 border-t border-[#8b792f]/30 pt-5 md:grid-cols-[.8fr_1.2fr] md:items-end"><div><h2 className="text-[clamp(21px,3vw,34px)] font-bold tracking-[-.03em]">{values.title.trim() || "Gutschein-Titel"}</h2><p className="mt-3 text-[10px] font-bold uppercase tracking-[.18em] text-[#52616c] sm:text-xs">Start: {formatPreviewDate(values.starts_at, "01.09.2026")} <span className="px-2">—</span> Ende: {formatPreviewDate(values.ends_at, "31.12.2026")}</p></div><div className="md:text-right"><p className="text-sm leading-6 text-[#314759] sm:text-base">{values.description.trim() || "Beschreibung des Gutscheins – kurz, klar und hochwertig präsentiert."}</p>{values.minimum_purchase_amount ? <p className="mt-2 text-xs font-bold text-[#6e5211]">Mindestkauf: {Number(values.minimum_purchase_amount).toLocaleString("de-AT", { minimumFractionDigits: 2 })} €</p> : null}{hasPdf ? <a href={mediaPreview.url} target="_blank" rel="noreferrer" className="mt-3 inline-flex items-center gap-2 rounded-xl border border-[#0b2d48]/20 bg-[#fff3d2]/85 px-4 py-2 text-xs font-black text-[#0b2d48] shadow-sm transition hover:bg-white"><span aria-hidden>📄</span> PDF-Angebot öffnen</a> : null}</div></footer>
         </div>
       </div>
     </div>
-    <p className="mt-3 text-xs leading-5 text-slate-500">Die Vorschau reagiert direkt auf Titel, Wert, Kassencode, Laufzeit, Beschreibung und Firmenname.</p>
+    <p className="mt-3 text-xs leading-5 text-slate-500">Die Vorschau reagiert direkt auf Titel, Wert, Kassencode, Laufzeit, Beschreibung und Firmenname. Bilder erscheinen als Hintergrund; PDFs als anklickbarer Anhang.</p>
   </aside>;
 }
 
