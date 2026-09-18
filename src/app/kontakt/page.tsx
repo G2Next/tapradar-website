@@ -98,7 +98,7 @@ export default async function ContactPage({ searchParams }: { searchParams: Sear
               Nachricht
               <textarea name="message" required minLength={10} maxLength={5000} className="min-h-32 rounded-2xl border border-white/15 bg-white/[0.06] px-4 py-3 text-base font-normal normal-case tracking-normal text-white outline-none focus:border-cyan-300" placeholder="Wie können wir helfen?" />
             </label>
-            <ContactCaptcha key={`${params.error ?? "initial"}-${params.sent ?? ""}`} siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY} locale={locale} label={translateText(locale, "Nachricht senden")} pendingLabel={translateText(locale, "Nachricht wird gesendet …")} />
+            <ContactCaptcha key={`${params.error ?? "initial"}-${params.sent ?? ""}`} siteKey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY} locale={locale} label={translateText(locale, "Nachricht senden")} pendingLabel={translateText(locale, "Nachricht wird gesendet …")} />
           </form>
           <div className="mt-7 border-t border-white/10 pt-6">
             <a href="mailto:support@tapradar.app" className="font-black text-cyan-300">support@tapradar.app</a>

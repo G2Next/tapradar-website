@@ -8,15 +8,15 @@ const supabaseOrigin = (() => {
 const supabaseWebSocketOrigin = supabaseOrigin?.replace(/^http/, "ws") ?? null;
 const contentSecurityPolicy = [
   "default-src 'self'",
-  `script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com${isDevelopment ? " 'unsafe-eval'" : ""}`,
+  `script-src 'self' 'unsafe-inline' https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/${isDevelopment ? " 'unsafe-eval'" : ""}`,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https:",
   "font-src 'self' data:",
-  `connect-src 'self'${supabaseOrigin ? ` ${supabaseOrigin}` : ""}${supabaseWebSocketOrigin ? ` ${supabaseWebSocketOrigin}` : ""}${isDevelopment ? " ws: http:" : ""}`,
+  `connect-src 'self' https://www.google.com/recaptcha/${supabaseOrigin ? ` ${supabaseOrigin}` : ""}${supabaseWebSocketOrigin ? ` ${supabaseWebSocketOrigin}` : ""}${isDevelopment ? " ws: http:" : ""}`,
   "media-src 'self' blob: https:",
   "worker-src 'self' blob:",
   "manifest-src 'self'",
-  "frame-src https://challenges.cloudflare.com",
+  "frame-src https://www.google.com/recaptcha/ https://recaptcha.google.com/recaptcha/",
   "frame-ancestors 'none'",
   "base-uri 'self'",
   "object-src 'none'",
