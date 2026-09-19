@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { FormSubmitButton } from "@/components/FormSubmitButton";
+import { ContactCaptcha } from "@/components/ContactCaptcha";
 import { getLocale } from "@/i18n/server";
 import { translateText, translateTree } from "@/i18n/translate";
 import { createPublicPageMetadata } from "@/lib/metadata";
@@ -73,7 +73,7 @@ export default async function ContactPage({ searchParams }: { searchParams: Sear
           <h2 className="text-3xl font-black">Nachricht senden</h2>
           <p className="mt-3 leading-7 text-slate-300">Wir antworten in der Regel innerhalb von 24 Stunden.</p>
           {params.sent ? <p role="status" className="mt-6 rounded-2xl border border-emerald-300/30 bg-emerald-300/10 p-4 text-left font-bold text-emerald-100">Vielen Dank. Ihre Nachricht ist bei uns angekommen.</p> : null}
-          {params.error ? <p role="alert" className="mt-6 rounded-2xl border border-red-300/30 bg-red-300/10 p-4 text-left font-bold text-red-100">{params.error === "limit" ? "Zu viele Nachrichten. Bitte versuchen Sie es später erneut." : "Bitte prüfen Sie alle Felder und versuchen Sie es erneut."}</p> : null}
+          {params.error ? <p role="alert" className="mt-6 rounded-2xl border border-red-300/30 bg-red-300/10 p-4 text-left font-bold text-red-100">{params.error === "captcha" ? (locale === "de" ? "Die Sicherheitsprüfung ist abgelaufen oder fehlgeschlagen. Bitte erneut versuchen." : "The security check expired or failed. Please try again.") : params.error === "limit" ? "Zu viele Nachrichten. Bitte versuchen Sie es später erneut." : "Bitte prüfen Sie alle Felder und versuchen Sie es erneut."}</p> : null}
           <form action={submitContactMessage} className="mt-8 grid gap-5">
             <input type="hidden" name="locale" value={locale} />
             <label className="sr-only" aria-hidden="true">Website<input name="company_website" tabIndex={-1} autoComplete="off" /></label>
@@ -98,7 +98,7 @@ export default async function ContactPage({ searchParams }: { searchParams: Sear
               Nachricht
               <textarea name="message" required minLength={10} maxLength={5000} className="min-h-32 rounded-2xl border border-white/15 bg-white/[0.06] px-4 py-3 text-base font-normal normal-case tracking-normal text-white outline-none focus:border-cyan-300" placeholder="Wie können wir helfen?" />
             </label>
-            <FormSubmitButton label="Nachricht senden" pendingLabel="Nachricht wird gesendet …" className="rounded-2xl bg-gradient-to-r from-cyan-300 to-blue-500 px-5 py-4 font-black text-slate-950" />
+            <ContactCaptcha key={`${params.error ?? "initial"}-${params.sent ?? ""}`} siteKey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY} locale={locale} label={translateText(locale, "Nachricht senden")} pendingLabel={translateText(locale, "Nachricht wird gesendet …")} />
           </form>
           <div className="mt-7 border-t border-white/10 pt-6">
             <a href="mailto:support@tapradar.app" className="font-black text-cyan-300">support@tapradar.app</a>

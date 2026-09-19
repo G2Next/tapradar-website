@@ -1,5 +1,7 @@
 "use server";
 
+import { emailLocale } from "@/lib/email-templates";
+import { verifyContactCaptcha } from "@/lib/captcha";
 import { createHash } from "crypto";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
@@ -26,7 +28,8 @@ export async function submitContactMessage(formData: FormData) {
   const { data: limit, error: limitError } = await admin.rpc("consume_rate_limit", { rate_bucket: "contact-form", rate_key_hash: key, maximum_requests: 5, window_seconds: 3600 });
   const result = Array.isArray(limit) ? limit[0] : limit;
   if (limitError || !result?.allowed) redirect(`${contactPath}?error=limit`);
-  const { error } = await admin.from("contact_messages").insert({ name, email, subject, message });
+  if (!(await verifyContactCaptcha(formData.get("g-recaptcha-response"), ip))) redirect(`${contactPath}?error=captcha`);
+  const { error } = await admin.from("contact_messages").insert({ name, email, subject, message, locale: emailLocale(requestedLocale) });
   if (error) redirect(`${contactPath}?error=save`);
   redirect(`${contactPath}?sent=1`);
 }

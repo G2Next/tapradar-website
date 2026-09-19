@@ -15,7 +15,8 @@
     "check:production": "node scripts/check-production-env.mjs",
     "check:stripe": "node scripts/check-stripe-catalog.mjs",
     "admin:grant": "node scripts/grant-admin.mjs",
-    "demo:seed": "node scripts/seed-local-demo.mjs"
+    "demo:seed": "node scripts/seed-local-demo.mjs",
+    "test:email": "node scripts/email-integration-test.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.4",

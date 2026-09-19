@@ -13,6 +13,7 @@ import styles from "./login.module.css";
 export type LoginMode = "signin" | "signup";
 
 type LoginClientProps = {
+  locale: string;
   messages: AuthMessages;
   socialMessages: SocialAuthMessages;
   enabledProviders: { google: boolean; apple: boolean };
@@ -25,6 +26,7 @@ type LoginClientProps = {
 };
 
 export function LoginClient({
+  locale,
   messages,
   socialMessages,
   enabledProviders,
@@ -73,7 +75,7 @@ export function LoginClient({
               email,
               password,
               options: {
-                data: { account_type: isBusinessSignup ? "business" : "customer" },
+                data: { locale, account_type: isBusinessSignup ? "business" : "customer" },
                 emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(nextPath)}`,
               },
             })
@@ -83,6 +85,7 @@ export function LoginClient({
         setMessage(mode === "signup" ? messages.signupFailed : messages.signInFailed);
         return;
       }
+      if (data.session) await supabase.auth.updateUser({ data: { locale } });
       setAuthPersistence(isSignup || rememberSession);
       if (mode === "signup" && !data.session) {
         setMessage(messages.accountCreated);

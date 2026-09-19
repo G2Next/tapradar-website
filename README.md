@@ -117,3 +117,7 @@ Review `docs/PRODUCTION_CHECKLIST.md` before launch and follow `docs/DEPLOYMENT.
 - Security headers and Supabase session refresh run at the Next.js proxy layer.
 
 Before production launch, configure Supabase email templates and redirect URLs, Vercel environment variables, Stripe live-mode products, backups, monitoring, rate limiting at the edge, and a legal review of the privacy policy and terms.
+
+## E-Mail-Vorlagen und Kontakt-CAPTCHA
+
+Admin-Seite: `/admin/email-templates`. Einrichtung, Ereignisse, DE/EN-Regel, Testmodus und Tests: [docs/EMAIL_SYSTEM.md](docs/EMAIL_SYSTEM.md).

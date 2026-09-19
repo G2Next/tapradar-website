@@ -22,10 +22,10 @@ export async function replyToContactMessage(formData: FormData) {
   const id = requiredText(formData.get("message_id"), 40);
   const response = requiredText(formData.get("response"), 5000);
   if (!isUuid(id) || response.length < 2) redirect("/admin/messages?error=response");
-  const { data: message } = await supabase.from("contact_messages").select("email,subject").eq("id", id).maybeSingle();
+  const { data: message } = await supabase.from("contact_messages").select("email,subject,locale").eq("id", id).maybeSingle();
   if (!message) redirect("/admin/messages?error=missing");
   try {
-    await enqueueNotification({ email: message.email, template: "contact_reply", payload: { subject: message.subject, response } });
+    await enqueueNotification({ email: message.email, template: "contact_reply", locale: message.locale, payload: { subject: message.subject, response } });
   } catch {
     redirect("/admin/messages?error=email");
   }

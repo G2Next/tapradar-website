@@ -1,5 +1,6 @@
 "use client";
 
+import { createClient } from "@/lib/supabase/client";
 import { usePathname } from "next/navigation";
 import { hasTranslation, languageOptions, localizedPath, usesCookieLocale, type Locale } from "@/i18n/config";
 
@@ -7,8 +8,13 @@ export function LanguageSwitcher({ locale, label, fullWidth = false }: { locale:
   const pathname = usePathname();
   const current = languageOptions.find((option) => option.locale === locale) ?? languageOptions[0];
 
-  function selectLanguage(nextLocale: Locale) {
+  async function selectLanguage(nextLocale: Locale) {
     document.cookie = `tapradar_locale=${nextLocale}; Path=/; Max-Age=31536000; SameSite=Lax`;
+    try {
+      const supabase = createClient();
+      const { data } = await supabase.auth.getUser();
+      if (data.user) await supabase.auth.updateUser({ data: { locale: nextLocale } });
+    } catch { /* Public language navigation remains available when auth is offline. */ }
     if (usesCookieLocale(pathname)) {
       window.location.reload();
       return;

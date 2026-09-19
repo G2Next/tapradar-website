@@ -11,6 +11,7 @@ const adminItems: Item[] = [
   { href: "/admin", label: "Übersicht", icon: "⌂", exact: true },
   { href: "/admin/marketing", label: "Marketing-Freigaben", icon: "✓" },
   { href: "/admin/messages", label: "Nachrichten", icon: "✉" },
+  { href: "/admin/email-templates", label: "E-Mail-Vorlagen", icon: "✉" },
   { href: "/admin/products", label: "Produkte & Preise", icon: "◆" },
   { href: "/admin/payments", label: "Zahlungsanbieter", icon: "◉" },
   { href: "/admin/billing", label: "Rechnungen", icon: "▤" },
