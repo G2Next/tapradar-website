@@ -1,4 +1,6 @@
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import { isApprovedOrganization } from "@/lib/dashboard-access";
 import { createClient } from "@/lib/supabase/server";
 
 export const ORGANIZATION_COOKIE = "tapradar_organization_id";
@@ -9,7 +11,7 @@ export async function getDashboardContext() {
   const [{ data: userData }, cookieStore] = await Promise.all([supabase.auth.getUser(), cookies()]);
 
   if (!userData.user) {
-    return { supabase, user: null, organizationId: null, locationId: null, role: null, memberships: [], locations: [] };
+    return { supabase, user: null, organizationId: null, locationId: null, role: null, onboardingStatus: null, isApproved: false, memberships: [], locations: [] };
   }
 
   const { data: membershipRows } = await supabase
@@ -23,6 +25,9 @@ export async function getDashboardContext() {
   const requestedOrganizationId = cookieStore.get(ORGANIZATION_COOKIE)?.value;
   const membership = memberships.find((item) => item.organization_id === requestedOrganizationId) ?? memberships[0];
   const organizationId = membership?.organization_id ?? null;
+  const relatedOrganization = Array.isArray(membership?.organizations) ? membership.organizations[0] : membership?.organizations;
+  const onboardingStatus = relatedOrganization?.onboarding_status ?? null;
+  const isApproved = isApprovedOrganization(onboardingStatus);
 
   let locations: { id: string; name: string; is_primary: boolean }[] = [];
   if (organizationId) {
@@ -58,7 +63,15 @@ export async function getDashboardContext() {
     organizationId,
     locationId: location?.id ?? null,
     role: membership?.role ?? null,
+    onboardingStatus,
+    isApproved,
     memberships,
     locations,
   };
+}
+
+export async function requireApprovedDashboardContext() {
+  const context = await getDashboardContext();
+  if (context.organizationId && !context.isApproved) redirect("/dashboard?approval=pending");
+  return context;
 }

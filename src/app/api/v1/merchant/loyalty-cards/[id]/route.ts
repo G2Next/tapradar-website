@@ -8,7 +8,7 @@ type Params = { params: Promise<{ id: string }> };
 
 export async function PATCH(request: Request, { params }: Params) {
   const { id } = await params;
-  return runMerchantRoute(request, { roles: ["owner", "manager"], requireLegal: true }, async (context) => {
+  return runMerchantRoute(request, { roles: ["owner", "manager"], requireLegal: true, requireApproved: true }, async (context) => {
     if (!isUuid(id)) throw new MerchantApiError(400, "invalid_loyalty_card_id", "Loyalty card ID must be a UUID.");
     const input = await parseJson(request, loyaltyCardPatchSchema);
     if (input.location_id !== undefined) await requireLocation(context, input.location_id);

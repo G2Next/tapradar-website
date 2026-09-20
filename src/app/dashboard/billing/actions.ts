@@ -1,7 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { getDashboardContext } from "@/lib/dashboard";
+import { requireApprovedDashboardContext } from "@/lib/dashboard";
 import { LEGAL_VERSIONS, recordLegalAcceptance } from "@/lib/legal-consent";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getPriceForPlan, getSiteUrl, getStripe } from "@/lib/stripe";
@@ -9,7 +9,7 @@ import { checkoutErrorCode, validateStripePrice } from "@/lib/stripe-catalog";
 import { requiredText } from "@/lib/validation";
 
 export async function startCheckout(formData: FormData) {
-  const { supabase, user, organizationId, role } = await getDashboardContext();
+  const { supabase, user, organizationId, role } = await requireApprovedDashboardContext();
   const plan = requiredText(formData.get("plan"), 40).toLowerCase();
   const onboarding = formData.get("onboarding") === "true";
   const returnPath = onboarding ? "/dashboard/onboarding" : "/dashboard/billing";
@@ -67,7 +67,7 @@ export async function startCheckout(formData: FormData) {
 }
 
 export async function openBillingPortal() {
-  const { user, organizationId, role } = await getDashboardContext();
+  const { user, organizationId, role } = await requireApprovedDashboardContext();
   if (!user || !organizationId || role !== "owner") redirect("/dashboard/billing?error=permission");
   let portalUrl: string | null = null;
   let failureCode: string | null = null;

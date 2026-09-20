@@ -18,7 +18,16 @@ export async function setBusinessApproval(formData:FormData) {
   if(!isUuid(organizationId)||!["approve","reject","suspend","hide"].includes(decision))redirect(`${returnTo}?error=invalid`);
   const rejectionReason=requiredText(formData.get("rejection_reason"),500);if(decision==="reject"&&!rejectionReason)redirect(`${returnTo}?error=reason`);
   const values=decision==="approve"?{is_active:true,public_status:"open",onboarding_status:"approved",approved_at:new Date().toISOString(),rejected_at:null,rejection_reason:null}:decision==="reject"?{is_active:true,public_status:"hidden",onboarding_status:"rejected",rejected_at:new Date().toISOString(),rejection_reason:rejectionReason}:decision==="suspend"?{is_active:false,public_status:"hidden"}:{is_active:true,public_status:"hidden"};
-  if(decision==="approve"){const locationUpdate=await supabase.from("locations").update({public_status:"open"}).eq("organization_id",organizationId).eq("is_primary",true);if(locationUpdate.error)redirect(`${returnTo}?error=save`);}
+  if(decision==="approve"){
+    const[{data:organization},{data:locations}]=await Promise.all([
+      supabase.from("organizations").select("legal_name,billing_email,registration_number,tax_id").eq("id",organizationId).maybeSingle(),
+      supabase.from("locations").select("id,address,city,latitude,longitude,opening_hours").eq("organization_id",organizationId).eq("is_active",true),
+    ]);
+    const hasIdentity=Boolean(organization?.registration_number?.trim()||organization?.tax_id?.trim());
+    const hasCompleteLocation=(locations??[]).some((location)=>Boolean(location.address?.trim()&&location.city?.trim()&&location.latitude!=null&&location.longitude!=null&&location.opening_hours&&Object.keys(location.opening_hours).length));
+    if(!organization?.legal_name?.trim()||!organization.billing_email?.trim()||!hasIdentity||!hasCompleteLocation)redirect(`${returnTo}?error=incomplete`);
+    const locationUpdate=await supabase.from("locations").update({public_status:"open"}).eq("organization_id",organizationId).eq("is_primary",true);if(locationUpdate.error)redirect(`${returnTo}?error=save`);
+  }
   const{error}=await supabase.from("organizations").update(values).eq("id",organizationId);if(error)redirect(`${returnTo}?error=save`);
   await supabase.from("audit_logs").insert({actor_user_id:user.id,organization_id:organizationId,action:`admin.organization.${decision}`,entity_type:"organization",entity_id:organizationId,metadata:decision==="reject"?{reason:rejectionReason}:{}});
   if(["approve","reject"].includes(decision)){const{data:organization}=await supabase.from("organizations").select("name,billing_email").eq("id",organizationId).single();if(organization?.billing_email){try{await enqueueNotification({organizationId,email:organization.billing_email,template:decision==="approve"?"organization_approved":"organization_rejected",payload:{organization_name:organization.name,reason:rejectionReason}});}catch(notificationError){await recordSystemEvent({severity:"warning",source:"admin-approval",message:notificationError instanceof Error?notificationError.message:"Approval email could not be queued",organizationId});}}}
