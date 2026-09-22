@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import sharp from "sharp";
 import { createErrorReference, recordAppError } from "@/lib/app-errors";
-import { getDashboardContext } from "@/lib/dashboard";
+import { getDashboardContext, requireApprovedDashboardContext } from "@/lib/dashboard";
 import { validateUploadedFile } from "@/lib/file-security";
 import { isUuid, requiredText } from "@/lib/validation";
 import { sendReviewRequestedPush } from "@/lib/marketing-push";
@@ -74,7 +74,7 @@ async function uploadOfferMedia(context:Context,formData:FormData) {
 async function cleanupAsset(context:Context,asset:{id:string;storage_path:string}|null){if(!asset)return;await context.supabase.storage.from("business-media").remove([asset.storage_path]);await context.supabase.from("organization_assets").delete().eq("id",asset.id).eq("organization_id",context.organizationId!);}
 
 export async function createOffer(_:OfferActionState,formData:FormData):Promise<OfferActionState>{
-  const context=await getDashboardContext();const value=payload(formData);
+  const context=await requireApprovedDashboardContext();const value=payload(formData);
   if(!context.user||!context.organizationId||!["owner","manager"].includes(context.role??""))return{error:"Du hast keine Berechtigung, diesen Eintrag anzulegen."};
   const inputError=validationError(value);if(inputError)return{error:inputError};
   if(!(await validLocation(context,value.location_id)))return{error:"Die ausgewählte Filiale ist nicht mehr verfügbar."};
@@ -87,7 +87,7 @@ export async function createOffer(_:OfferActionState,formData:FormData):Promise<
 }
 
 export async function updateOffer(_:OfferActionState,formData:FormData):Promise<OfferActionState>{
-  const context=await getDashboardContext();const offerId=requiredText(formData.get("offer_id"),40);const value=payload(formData);
+  const context=await requireApprovedDashboardContext();const offerId=requiredText(formData.get("offer_id"),40);const value=payload(formData);
   if(!context.user||!context.organizationId||!["owner","manager"].includes(context.role??"")||!isUuid(offerId))return{error:"Du hast keine Berechtigung, diesen Eintrag zu bearbeiten."};
   const inputError=validationError(value);if(inputError)return{error:inputError};
   if(!(await validLocation(context,value.location_id)))return{error:"Die ausgewählte Filiale ist nicht mehr verfügbar."};

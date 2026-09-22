@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 const fields = "id,organization_id,location_id,title,description,offer_type,discount_type,discount_value,minimum_purchase_amount,redemption_code,conditions,media_asset_id,starts_at,ends_at,is_active,moderation_status,rejection_reason,submitted_at,reviewed_at,created_at,updated_at";
 
 export async function GET(request: Request) {
-  return runMerchantRoute(request, {}, async (context) => {
+  return runMerchantRoute(request, { requireApproved: true }, async (context) => {
     const { data, error } = await context.supabase.from("offers").select(fields).eq("organization_id", context.organizationId!).order("created_at", { ascending: false });
     if (error) throw databaseError(error);
     const offers = context.role === "staff"
@@ -16,7 +16,7 @@ export async function GET(request: Request) {
   });
 }
 export async function POST(request: Request) {
-  return runMerchantRoute(request, { roles: ["owner", "manager"], requireLegal: true }, async (context) => {
+  return runMerchantRoute(request, { roles: ["owner", "manager"], requireLegal: true, requireApproved: true }, async (context) => {
     await requireOfferPlan(context);
     const input = await parseJson(request, offerCreateSchema);
     await Promise.all([requireLocation(context, input.location_id), requireAsset(context, input.media_asset_id)]);

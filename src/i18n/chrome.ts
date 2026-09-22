@@ -3,7 +3,7 @@ import { generatedStructuredLocales, localizeStructuredMessage } from "./structu
 
 export type ChromeMessages = {
   nav: { home: string; business: string; pricing: string; contact: string };
-  account: { admin: string; dashboard: string; app: string; login: string };
+  account: { admin: string; dashboard: string; portal: string; login: string };
   mobile: { open: string; close: string; label: string };
   language: { label: string; choose: string };
   footer: {
@@ -24,7 +24,7 @@ export type ChromeMessages = {
 export const chromeMessages: { de: ChromeMessages } & Partial<Record<Locale, ChromeMessages>> = {
   de: {
     nav: { home: "Home", business: "Für Geschäfte", pricing: "Preise", contact: "Kontakt" },
-    account: { admin: "Administration", dashboard: "Dashboard", app: "Meine App", login: "Anmelden" },
+    account: { admin: "Administration", dashboard: "Dashboard", portal: "Portal", login: "Anmelden" },
     mobile: { open: "Menü öffnen", close: "Menü schließen", label: "Mobile Navigation" },
     language: { label: "Sprache", choose: "Sprache auswählen" },
     footer: {
@@ -35,7 +35,7 @@ export const chromeMessages: { de: ChromeMessages } & Partial<Record<Locale, Chr
   },
   en: {
     nav: { home: "Home", business: "For businesses", pricing: "Pricing", contact: "Contact" },
-    account: { admin: "Administration", dashboard: "Dashboard", app: "My app", login: "Log in" },
+    account: { admin: "Administration", dashboard: "Dashboard", portal: "Portal", login: "Log in" },
     mobile: { open: "Open menu", close: "Close menu", label: "Mobile navigation" },
     language: { label: "Language", choose: "Choose language" },
     footer: {
@@ -46,7 +46,7 @@ export const chromeMessages: { de: ChromeMessages } & Partial<Record<Locale, Chr
   },
   tr: {
     nav: { home: "Ana sayfa", business: "İşletmeler için", pricing: "Fiyatlar", contact: "İletişim" },
-    account: { admin: "Yönetim", dashboard: "Panel", app: "Uygulamam", login: "Giriş" },
+    account: { admin: "Yönetim", dashboard: "Panel", portal: "Portal", login: "Giriş" },
     mobile: { open: "Menüyü aç", close: "Menüyü kapat", label: "Mobil menü" },
     language: { label: "Dil", choose: "Dil seçin" },
     footer: {
@@ -57,7 +57,7 @@ export const chromeMessages: { de: ChromeMessages } & Partial<Record<Locale, Chr
   },
   "sr-Latn": {
     nav: { home: "Početna", business: "Za preduzeća", pricing: "Cene", contact: "Kontakt" },
-    account: { admin: "Administracija", dashboard: "Kontrolna tabla", app: "Moja aplikacija", login: "Prijava" },
+    account: { admin: "Administracija", dashboard: "Kontrolna tabla", portal: "Portal", login: "Prijava" },
     mobile: { open: "Otvori meni", close: "Zatvori meni", label: "Mobilna navigacija" },
     language: { label: "Jezik", choose: "Izaberite jezik" },
     footer: {
@@ -68,7 +68,7 @@ export const chromeMessages: { de: ChromeMessages } & Partial<Record<Locale, Chr
   },
   bs: {
     nav: { home: "Početna", business: "Za poslovne korisnike", pricing: "Cijene", contact: "Kontakt" },
-    account: { admin: "Administracija", dashboard: "Kontrolna ploča", app: "Moja aplikacija", login: "Prijava" },
+    account: { admin: "Administracija", dashboard: "Kontrolna ploča", portal: "Portal", login: "Prijava" },
     mobile: { open: "Otvori meni", close: "Zatvori meni", label: "Mobilna navigacija" },
     language: { label: "Jezik", choose: "Odaberite jezik" },
     footer: {
@@ -79,7 +79,7 @@ export const chromeMessages: { de: ChromeMessages } & Partial<Record<Locale, Chr
   },
   hr: {
     nav: { home: "Početna", business: "Za tvrtke", pricing: "Cijene", contact: "Kontakt" },
-    account: { admin: "Administracija", dashboard: "Nadzorna ploča", app: "Moja aplikacija", login: "Prijava" },
+    account: { admin: "Administracija", dashboard: "Nadzorna ploča", portal: "Portal", login: "Prijava" },
     mobile: { open: "Otvori izbornik", close: "Zatvori izbornik", label: "Mobilna navigacija" },
     language: { label: "Jezik", choose: "Odaberite jezik" },
     footer: {
@@ -90,7 +90,7 @@ export const chromeMessages: { de: ChromeMessages } & Partial<Record<Locale, Chr
   },
   hu: {
     nav: { home: "Kezdőlap", business: "Vállalkozásoknak", pricing: "Árak", contact: "Kapcsolat" },
-    account: { admin: "Adminisztráció", dashboard: "Vezérlőpult", app: "Saját alkalmazás", login: "Belépés" },
+    account: { admin: "Adminisztráció", dashboard: "Vezérlőpult", portal: "Portál", login: "Belépés" },
     mobile: { open: "Menü megnyitása", close: "Menü bezárása", label: "Mobil navigáció" },
     language: { label: "Nyelv", choose: "Válasszon nyelvet" },
     footer: {
@@ -101,7 +101,7 @@ export const chromeMessages: { de: ChromeMessages } & Partial<Record<Locale, Chr
   },
   ro: {
     nav: { home: "Acasă", business: "Pentru companii", pricing: "Prețuri", contact: "Contact" },
-    account: { admin: "Administrare", dashboard: "Panou", app: "Aplicația mea", login: "Autentificare" },
+    account: { admin: "Administrare", dashboard: "Panou", portal: "Portal", login: "Autentificare" },
     mobile: { open: "Deschide meniul", close: "Închide meniul", label: "Navigare mobilă" },
     language: { label: "Limbă", choose: "Alegeți limba" },
     footer: {
@@ -112,7 +112,7 @@ export const chromeMessages: { de: ChromeMessages } & Partial<Record<Locale, Chr
   },
   pl: {
     nav: { home: "Strona główna", business: "Dla firm", pricing: "Cennik", contact: "Kontakt" },
-    account: { admin: "Administracja", dashboard: "Panel", app: "Moja aplikacja", login: "Logowanie" },
+    account: { admin: "Administracja", dashboard: "Panel", portal: "Portal", login: "Logowanie" },
     mobile: { open: "Otwórz menu", close: "Zamknij menu", label: "Nawigacja mobilna" },
     language: { label: "Język", choose: "Wybierz język" },
     footer: {
@@ -123,7 +123,7 @@ export const chromeMessages: { de: ChromeMessages } & Partial<Record<Locale, Chr
   },
   bg: {
     nav: { home: "Начало", business: "За бизнеса", pricing: "Цени", contact: "Контакти" },
-    account: { admin: "Администрация", dashboard: "Табло", app: "Моето приложение", login: "Вход" },
+    account: { admin: "Администрация", dashboard: "Табло", portal: "Портал", login: "Вход" },
     mobile: { open: "Отвори менюто", close: "Затвори менюто", label: "Мобилна навигация" },
     language: { label: "Език", choose: "Изберете език" },
     footer: {

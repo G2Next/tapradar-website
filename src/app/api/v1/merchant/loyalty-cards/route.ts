@@ -5,7 +5,7 @@ export const dynamic = "force-dynamic";
 const fields = "id,organization_id,location_id,title,reward_title,earning_rule,verification_instructions,stamps_required,is_active,created_at,updated_at";
 
 export async function GET(request: Request) {
-  return runMerchantRoute(request, {}, async (context) => {
+  return runMerchantRoute(request, { requireApproved: true }, async (context) => {
     const { data, error } = await context.supabase.from("loyalty_cards").select(fields).eq("organization_id", context.organizationId!).order("created_at");
     if (error) throw databaseError(error);
     const cards = context.role === "staff"
@@ -15,7 +15,7 @@ export async function GET(request: Request) {
   });
 }
 export async function POST(request: Request) {
-  return runMerchantRoute(request, { roles: ["owner", "manager"], requireLegal: true }, async (context) => {
+  return runMerchantRoute(request, { roles: ["owner", "manager"], requireLegal: true, requireApproved: true }, async (context) => {
     const input = await parseJson(request, loyaltyCardCreateSchema);
     await requireLocation(context, input.location_id);
     return runIdempotentMutation(context, input, async () => {

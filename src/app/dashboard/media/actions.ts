@@ -3,7 +3,7 @@
 import { randomUUID } from "crypto";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { getDashboardContext } from "@/lib/dashboard";
+import { requireApprovedDashboardContext } from "@/lib/dashboard";
 import { validateUploadedFile } from "@/lib/file-security";
 import { isUuid, requiredText } from "@/lib/validation";
 
@@ -11,7 +11,7 @@ const allowedTypes = new Set(["image/jpeg", "image/png", "image/webp", "applicat
 const extensions: Record<string, string> = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp", "application/pdf": "pdf" };
 
 export async function uploadBusinessAsset(formData: FormData) {
-  const { supabase, organizationId, role } = await getDashboardContext();
+  const { supabase, organizationId, role } = await requireApprovedDashboardContext();
   const file = formData.get("file");
   const locationIdValue = requiredText(formData.get("location_id"), 40);
   const locationId = isUuid(locationIdValue) ? locationIdValue : null;
@@ -38,7 +38,7 @@ export async function uploadBusinessAsset(formData: FormData) {
 }
 
 export async function deleteBusinessAsset(formData: FormData) {
-  const { supabase, organizationId, role } = await getDashboardContext(); const assetId = requiredText(formData.get("asset_id"), 40);
+  const { supabase, organizationId, role } = await requireApprovedDashboardContext(); const assetId = requiredText(formData.get("asset_id"), 40);
   if (!organizationId || !isUuid(assetId) || !["owner", "manager"].includes(role ?? "")) redirect("/dashboard/media?error=permission");
   const { data: asset } = await supabase.from("organization_assets").select("storage_path").eq("id", assetId).eq("organization_id", organizationId).maybeSingle();
   if (!asset) redirect("/dashboard/media?error=missing");

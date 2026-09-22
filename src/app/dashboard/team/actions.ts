@@ -4,7 +4,7 @@ import { createHash, randomBytes } from "crypto";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { getDashboardContext } from "@/lib/dashboard";
+import { requireApprovedDashboardContext as getDashboardContext } from "@/lib/dashboard";
 import { flashSecretCookieOptions, INVITATION_TOKEN_COOKIE, STAFF_PIN_COOKIE } from "@/lib/flash-secrets";
 import { enqueueNotification } from "@/lib/notifications";
 import { recordSystemEvent } from "@/lib/system-events";

@@ -43,14 +43,16 @@ export function PortalSidebar({
   locale,
   languageLabel,
   languageChoose,
+  dashboardApproved = true,
 }: {
   mode: "admin" | "dashboard";
   locale: Locale;
   languageLabel: string;
   languageChoose: string;
+  dashboardApproved?: boolean;
 }) {
   const pathname = usePathname();
-  const items = mode === "admin" ? adminItems : dashboardItems;
+  const items = mode === "admin" ? adminItems : dashboardApproved ? dashboardItems : dashboardItems.slice(0, 3);
   const title = mode === "admin" ? "Administration" : "Geschäftsbereich";
   const tone = mode === "admin" ? "text-purple-200 bg-purple-300/15" : "text-cyan-200 bg-cyan-300/15";
   const languageControl = <div className="mb-5 border-b border-white/10 px-3 pb-5">

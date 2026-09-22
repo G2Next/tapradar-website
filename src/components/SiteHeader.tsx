@@ -17,7 +17,6 @@ export async function SiteHeader() {
   ];
   let isLoggedIn = false;
   let isPlatformAdmin = false;
-  let hasBusiness = false;
 
   try {
     const supabase = await createClient();
@@ -26,8 +25,6 @@ export async function SiteHeader() {
     if (data.user) {
       const { data: admin } = await supabase.from("platform_admins").select("user_id").eq("user_id", data.user.id).eq("is_active", true).maybeSingle();
       isPlatformAdmin = Boolean(admin);
-      const { data: membership } = await supabase.from("organization_members").select("id").eq("user_id", data.user.id).eq("is_active", true).limit(1).maybeSingle();
-      hasBusiness = Boolean(membership);
     }
   } catch {
     isLoggedIn = false;
@@ -50,10 +47,10 @@ export async function SiteHeader() {
           <LanguageSwitcher locale={locale} label={messages.language.choose} />
           {isAuthPage ? null : (
             <Link
-              href={isPlatformAdmin ? "/admin" : isLoggedIn ? hasBusiness ? "/dashboard" : "/app" : "/login"}
+              href={isPlatformAdmin ? "/admin" : isLoggedIn ? "/dashboard" : "/login"}
               className="inline-flex h-11 items-center justify-center rounded-2xl bg-cyan-300 px-3 text-sm font-black text-slate-950 shadow-lg shadow-cyan-300/20 transition duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 hover:bg-cyan-200 active:translate-y-0 active:scale-[0.97] sm:px-5"
             >
-              {isPlatformAdmin ? messages.account.admin : isLoggedIn ? hasBusiness ? messages.account.dashboard : messages.account.app : messages.account.login}
+              {isPlatformAdmin ? messages.account.admin : isLoggedIn ? messages.account.portal : messages.account.login}
             </Link>
           )}
         </div>

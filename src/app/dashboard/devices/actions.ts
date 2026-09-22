@@ -4,14 +4,14 @@ import { createHash, randomBytes } from "crypto";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { getDashboardContext } from "@/lib/dashboard";
+import { getDashboardContext, requireApprovedDashboardContext } from "@/lib/dashboard";
 import { flashSecretCookieOptions, STAMP_TOKEN_COOKIE } from "@/lib/flash-secrets";
 import { isUuid, requiredText } from "@/lib/validation";
 
 const MANAGER_ROLES = ["owner", "manager"];
 
 async function requireManagedDevice(formData: FormData) {
-  const { supabase, organizationId, role } = await getDashboardContext();
+  const { supabase, organizationId, role } = await requireApprovedDashboardContext();
   const deviceId = requiredText(formData.get("device_id"), 40);
   if (!organizationId || !isUuid(deviceId) || !MANAGER_ROLES.includes(role ?? "")) {
     redirect("/dashboard/devices?error=permission");
@@ -36,7 +36,7 @@ async function revealToken(token: string, deviceId: string) {
 }
 
 export async function createStampDevice(formData: FormData) {
-  const { supabase, organizationId, role } = await getDashboardContext();
+  const { supabase, organizationId, role } = await requireApprovedDashboardContext();
   const locationId = requiredText(formData.get("location_id"), 40);
   const name = requiredText(formData.get("name"), 100);
   if (!organizationId || !isUuid(locationId) || !name || !MANAGER_ROLES.includes(role ?? "")) redirect("/dashboard/devices?error=permission");

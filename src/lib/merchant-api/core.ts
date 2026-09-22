@@ -30,6 +30,7 @@ type RouteOptions = {
   organization?: "none" | "optional" | "required";
   roles?: MerchantRole[];
   requireLegal?: boolean;
+  requireApproved?: boolean;
   rateLimit?: number;
   rateWindowSeconds?: number;
 };
@@ -109,6 +110,17 @@ export async function runMerchantRoute(
 
     if (options.roles && (!role || !options.roles.includes(role))) {
       throw new MerchantApiError(403, "role_forbidden", "This role cannot perform the requested action.");
+    }
+    if (options.requireApproved && suppliedOrganizationId) {
+      const { data: organization, error: organizationError } = await supabase
+        .from("organizations")
+        .select("onboarding_status")
+        .eq("id", suppliedOrganizationId)
+        .maybeSingle();
+      if (organizationError) throw databaseError(organizationError);
+      if (organization?.onboarding_status !== "approved") {
+        throw new MerchantApiError(403, "organization_approval_required", "The organization must be approved by TapRadar first.");
+      }
     }
     if (options.requireLegal && !(await hasCurrentLegalAcceptance(auth.user.id, "account"))) {
       throw new MerchantApiError(428, "legal_acceptance_required", "Current legal terms must be accepted first.", {

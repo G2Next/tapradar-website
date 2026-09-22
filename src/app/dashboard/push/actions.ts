@@ -2,12 +2,12 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { getDashboardContext } from "@/lib/dashboard";
+import { requireApprovedDashboardContext } from "@/lib/dashboard";
 import { sendReviewRequestedPush } from "@/lib/marketing-push";
 import { requiredText } from "@/lib/validation";
 
 export async function createPushMessage(formData: FormData) {
-  const context = await getDashboardContext();
+  const context = await requireApprovedDashboardContext();
   if (!context.user || !context.organizationId || !["owner", "manager"].includes(context.role ?? "")) redirect("/dashboard/push?error=role");
   const title = requiredText(formData.get("title"), 50);
   const body = requiredText(formData.get("body"), 150);
