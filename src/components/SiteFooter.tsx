@@ -1,10 +1,29 @@
 import Link from "next/link";
+import { createClient } from "@/lib/supabase/server";
+import { chromeMessages } from "@/i18n/chrome";
 import { localizedPath } from "@/i18n/config";
 import { getLocale } from "@/i18n/server";
 import { translateTree } from "@/i18n/translate";
 
 export async function SiteFooter() {
   const locale = await getLocale();
+  const messages = chromeMessages[locale] ?? chromeMessages.de;
+  let accountHref = "/login";
+  let accountLabel = messages.account.login;
+
+  try {
+    const supabase = await createClient();
+    const { data } = await supabase.auth.getUser();
+    if (data.user) {
+      const { data: admin } = await supabase.from("platform_admins").select("user_id").eq("user_id", data.user.id).eq("is_active", true).maybeSingle();
+      accountHref = admin ? "/admin" : "/dashboard";
+      accountLabel = admin ? messages.account.admin : messages.account.portal;
+    }
+  } catch {
+    accountHref = "/login";
+    accountLabel = messages.account.login;
+  }
+
   return translateTree(
     <footer className="border-t border-white/10 bg-[#010d1a] px-5 py-12 text-slate-400 sm:px-8">
       <div className="mx-auto grid max-w-7xl gap-10 md:grid-cols-[1.5fr_1fr_1fr]">
@@ -23,7 +42,7 @@ export async function SiteFooter() {
             <Link href={localizedPath(locale, "/#so-funktionierts")} className="hover:text-cyan-300">So funktioniert&apos;s</Link>
             <Link href={localizedPath(locale, "/fuer-geschaefte")} className="hover:text-cyan-300">Für Geschäfte</Link>
             <Link href={localizedPath(locale, "/kontakt#faq")} className="hover:text-cyan-300">FAQ</Link>
-            <Link href="/login" className="hover:text-cyan-300">Anmelden</Link>
+            <Link href={accountHref} className="hover:text-cyan-300">{accountLabel}</Link>
           </div>
         </div>
         <div>
