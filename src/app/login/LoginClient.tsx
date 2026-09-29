@@ -193,7 +193,7 @@ export function LoginClient({
               <label>
                 <span>{messages.password}</span>
                 <span className={styles.passwordField}>
-                  <input type={showPassword ? "text" : "password"} required minLength={8} autoComplete={isSignup ? "new-password" : "current-password"} value={password} onChange={(event) => setPassword(event.target.value)} placeholder={messages.passwordPlaceholder} />
+                <input type={showPassword ? "text" : "password"} required minLength={isSignup ? 12 : 1} autoComplete={isSignup ? "new-password" : "current-password"} value={password} onChange={(event) => setPassword(event.target.value)} placeholder={messages.passwordPlaceholder} />
                   <button type="button" onClick={() => setShowPassword((visible) => !visible)}>{showPassword ? messages.hide : messages.show}</button>
                 </span>
               </label>

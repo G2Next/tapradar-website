@@ -9,7 +9,8 @@ export function LanguageSwitcher({ locale, label, fullWidth = false }: { locale:
   const current = languageOptions.find((option) => option.locale === locale) ?? languageOptions[0];
 
   async function selectLanguage(nextLocale: Locale) {
-    document.cookie = `tapradar_locale=${nextLocale}; Path=/; Max-Age=31536000; SameSite=Lax`;
+    const secure = window.location.protocol === "https:" ? "; Secure" : "";
+    document.cookie = `tapradar_locale=${nextLocale}; Path=/; Max-Age=31536000; SameSite=Lax${secure}`;
     try {
       const supabase = createClient();
       const { data } = await supabase.auth.getUser();

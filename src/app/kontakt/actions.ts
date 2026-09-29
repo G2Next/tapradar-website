@@ -25,7 +25,13 @@ export async function submitContactMessage(formData: FormData) {
   const ip = (trustedForwarded ?? requestHeaders.get("x-real-ip") ?? developmentForwarded)?.split(",")[0]?.trim() || "unknown";
   const key = createHash("sha256").update(`${ip}|${email}`).digest("hex");
   const admin = createAdminClient();
-  const { data: limit, error: limitError } = await admin.rpc("consume_rate_limit", { rate_bucket: "contact-form", rate_key_hash: key, maximum_requests: 5, window_seconds: 3600 });
+  if (ip !== "unknown") {
+    const ipKey = createHash("sha256").update(ip).digest("hex");
+    const { data: ipLimit, error: ipLimitError } = await admin.rpc("consume_rate_limit", { rate_bucket: "contact-form-ip", rate_key_hash: ipKey, maximum_requests: 20, window_seconds: 3600 });
+    const ipResult = Array.isArray(ipLimit) ? ipLimit[0] : ipLimit;
+    if (ipLimitError || !ipResult?.allowed) redirect(`${contactPath}?error=limit`);
+  }
+  const { data: limit, error: limitError } = await admin.rpc("consume_rate_limit", { rate_bucket: "contact-form-address", rate_key_hash: key, maximum_requests: 5, window_seconds: 3600 });
   const result = Array.isArray(limit) ? limit[0] : limit;
   if (limitError || !result?.allowed) redirect(`${contactPath}?error=limit`);
   if (!(await verifyContactCaptcha(formData.get("g-recaptcha-response"), ip))) redirect(`${contactPath}?error=captcha`);
