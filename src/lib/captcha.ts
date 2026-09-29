@@ -1,4 +1,4 @@
-/** Google reCAPTCHA v3 is verified on the server before storing or emailing a contact request. */
+/** Google reCAPTCHA v2 is verified on the server before storing or emailing a contact request. */
 export async function verifyContactCaptcha(token: unknown, ip?: string) {
   const secret = process.env.RECAPTCHA_SECRET_KEY;
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
@@ -19,11 +19,8 @@ export async function verifyContactCaptcha(token: unknown, ip?: string) {
       signal: AbortSignal.timeout(8000),
     });
     if (!response.ok) return false;
-    const result = await response.json() as { success?: boolean; score?: number; action?: string; hostname?: string };
+    const result = await response.json() as { success?: boolean; hostname?: string };
     return result.success === true
-      && typeof result.score === "number"
-      && result.score >= 0.5
-      && result.action === "contact"
       && allowedHosts.has(result.hostname ?? "");
   } catch {
     return false;
