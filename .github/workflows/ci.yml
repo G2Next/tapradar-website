@@ -17,8 +17,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
           node-version: 24
           cache: npm
@@ -45,8 +45,8 @@ jobs:
             fi
             if [ "$attempt" -eq 3 ]; then
               cat "$audit_output"
-              echo "::warning::npm audit service unavailable after 3 attempts; tests, lint and build passed."
-              exit 0
+              echo "npm audit service unavailable after 3 attempts; failing closed."
+              exit 1
             fi
             echo "npm audit service unavailable; retrying ($attempt/3)..."
             sleep $((attempt * 5))
@@ -56,8 +56,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
           node-version: 24
           cache: npm

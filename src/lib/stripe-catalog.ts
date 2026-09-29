@@ -9,7 +9,7 @@ type StripePriceForValidation = {
   active: boolean;
   currency: string;
   recurring: { interval: string } | null;
-  tax_behavior: "exclusive" | "inclusive" | "unspecified" | null;
+  tax_behavior: string | null;
   unit_amount: number | null;
 };
 

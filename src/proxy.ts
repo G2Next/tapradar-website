@@ -64,6 +64,11 @@ export async function proxy(request: NextRequest) {
   const sessionOnly = request.cookies.get(AUTH_PERSISTENCE_COOKIE)?.value === "session";
 
   const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
+    cookieOptions: {
+      path: "/",
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+    },
     cookies: {
       getAll: () => request.cookies.getAll(),
       setAll(cookiesToSet) {
@@ -84,6 +89,7 @@ function setLocaleCookie(response: NextResponse, locale: Locale) {
   response.cookies.set("tapradar_locale", locale, {
     maxAge: 60 * 60 * 24 * 365,
     sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
   });
 }
 
