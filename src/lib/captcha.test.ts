@@ -10,19 +10,17 @@ function configured(result: unknown) {
   return fetch;
 }
 describe("contact CAPTCHA", () => {
-  it("accepts only a high-enough contact score for the configured hostname", async () => {
-    const fetch = configured({ success: true, score: 0.9, action: "contact", hostname: "www.tapradar.app" });
+  it("accepts a successful checkbox challenge for the configured hostname", async () => {
+    const fetch = configured({ success: true, hostname: "www.tapradar.app" });
     expect(await verifyContactCaptcha("valid-token", "192.0.2.10")).toBe(true);
     expect(fetch.mock.calls[0][0]).toBe("https://www.google.com/recaptcha/api/siteverify");
     expect(Object.fromEntries(new URLSearchParams(String(fetch.mock.calls[0][1].body)))).toEqual({ secret: "test-secret", response: "valid-token", remoteip: "192.0.2.10" });
   });
   it.each([
-    { success: false, score: 0.9, action: "contact", hostname: "www.tapradar.app" },
-    { success: true, score: 0.49, action: "contact", hostname: "www.tapradar.app" },
-    { success: true, score: 0.9, action: "login", hostname: "www.tapradar.app" },
-    { success: true, score: 0.9, action: "contact", hostname: "attacker.example" },
+    { success: false, hostname: "www.tapradar.app" },
+    { success: true, hostname: "attacker.example" },
     { success: true },
-  ])("rejects failed, low-score, wrong-action or wrong-host tokens", async (result) => {
+  ])("rejects failed or wrong-host checkbox tokens", async (result) => {
     configured(result);
     expect(await verifyContactCaptcha("token")).toBe(false);
   });
