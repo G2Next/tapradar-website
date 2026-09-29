@@ -1,7 +1,7 @@
 "use client";
 
 import Script from "next/script";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useFormStatus } from "react-dom";
 
 type ReCaptcha = {
@@ -13,6 +13,12 @@ declare global {
   interface Window { grecaptcha?: ReCaptcha }
 }
 
+function setBadgeVisibility(visible: boolean) {
+  document.querySelectorAll<HTMLElement>(".grecaptcha-badge").forEach((badge) => {
+    badge.style.display = visible ? "" : "none";
+  });
+}
+
 export function ContactCaptcha({ siteKey, locale, label, pendingLabel }: { siteKey?: string; locale: string; label: string; pendingLabel: string }) {
   const tokenInput = useRef<HTMLInputElement>(null);
   const button = useRef<HTMLButtonElement>(null);
@@ -22,8 +28,14 @@ export function ContactCaptcha({ siteKey, locale, label, pendingLabel }: { siteK
   const { pending } = useFormStatus();
   const de = locale === "de";
 
+  useEffect(() => {
+    setBadgeVisibility(true);
+    return () => setBadgeVisibility(false);
+  }, []);
+
   const markReady = () => {
     window.grecaptcha?.ready(() => {
+      setBadgeVisibility(true);
       setReady(true);
       setFailed(false);
     });
