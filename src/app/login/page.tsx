@@ -39,6 +39,7 @@ export default async function LoginPage({ searchParams }: { searchParams: LoginS
       initialMode={initialMode}
       initialPasswordUpdated={params.password === "updated"}
       initialAuthError={params.error === SOCIAL_AUTH_CALLBACK_ERROR}
+      initialSessionError={params.error === "admin-session-expired" || params.error === "admin-session-unavailable"}
       isBusinessSignup={isBusinessSignup}
       privacyHref={localizedPath(locale, "/datenschutz")}
       termsHref={localizedPath(locale, isBusinessSignup ? "/agb-geschaeftskunden" : "/agb-verbraucher")}

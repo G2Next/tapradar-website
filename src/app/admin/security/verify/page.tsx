@@ -1,0 +1,7 @@
+import { redirect } from "next/navigation";
+import { requirePlatformAdminSession } from "@/lib/admin";
+import { MfaVerifyClient } from "../MfaVerifyClient";
+import { safeAdminDestination } from "@/lib/admin-security";
+
+type SearchParams=Promise<{next?:string;error?:string}>;
+export default async function AdminMfaVerifyPage({searchParams}:{searchParams:SearchParams}){const[params,{supabase}]=await Promise.all([searchParams,requirePlatformAdminSession()]);const[{data:aal},{data:factors}]=await Promise.all([supabase.auth.mfa.getAuthenticatorAssuranceLevel(),supabase.auth.mfa.listFactors()]);if(aal?.currentLevel==="aal2")redirect(safeAdminDestination(params.next));const factor=factors?.totp?.find(item=>item.status==="verified");if(!factor)redirect("/admin/security/setup");return <main className="min-h-screen bg-slate-950 px-5 py-14 text-white sm:px-8"><section className="mx-auto max-w-xl rounded-[32px] border border-white/10 bg-white/[0.05] p-8"><p className="text-sm font-black uppercase tracking-[.2em] text-cyan-200">Zweiter Faktor</p><h1 className="mt-3 text-4xl font-black">Admin-Anmeldung bestätigen</h1><p className="mt-4 leading-7 text-slate-300">Öffne deine Authenticator-App und gib den aktuellen Code ein.</p>{params.error?<p className="mt-5 rounded-2xl bg-amber-300/10 p-4 text-amber-100">Die Sicherheitsprüfung war vorübergehend nicht verfügbar. Bitte erneut versuchen.</p>:null}<MfaVerifyClient factorId={factor.id} next={params.next}/></section></main>}
