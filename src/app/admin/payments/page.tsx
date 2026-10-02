@@ -6,7 +6,7 @@ type SearchParams = Promise<{ saved?: string; error?: string }>;
 
 export default async function AdminPaymentsPage({ searchParams }: { searchParams: SearchParams }) {
   const params = await searchParams;
-  const { supabase } = await requirePlatformAdmin();
+  const { supabase } = await requirePlatformAdmin("payments.view");
   const { data: providers } = await supabase
     .from("payment_provider_configs")
     .select("provider,display_name,is_enabled,mode,public_identifier,secret_ciphertext,webhook_ciphertext,status,capabilities,config,updated_at")

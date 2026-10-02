@@ -5,7 +5,7 @@ import { retryNotification, reviewPrivacyRequest } from "./actions";
 type SearchParams = Promise<{ saved?: string; error?: string }>;
 export default async function OperationsPage({ searchParams }: { searchParams: SearchParams }) {
   const params = await searchParams;
-  const { supabase } = await requirePlatformAdmin();
+  const { supabase } = await requirePlatformAdmin("operations.manage");
   const [events, notifications, webhooks, privacy] = await Promise.all([
     supabase.from("system_events").select("id, severity, source, message, correlation_id, created_at").order("created_at", { ascending: false }).limit(50),
     supabase.from("notification_outbox").select("id, recipient_email, template, status, attempts, last_error, next_attempt_at, created_at").in("status", ["failed", "processing"]).order("created_at", { ascending: false }).limit(50),

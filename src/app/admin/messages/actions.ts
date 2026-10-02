@@ -7,7 +7,7 @@ import { enqueueNotification } from "@/lib/notifications";
 import { isUuid, requiredText } from "@/lib/validation";
 
 export async function updateContactStatus(formData: FormData) {
-  const { supabase } = await requirePlatformAdmin();
+  const { supabase } = await requirePlatformAdmin("support.manage");
   const id = requiredText(formData.get("message_id"), 40);
   const status = requiredText(formData.get("status"), 20);
   if (!isUuid(id) || !["read", "closed"].includes(status)) redirect("/admin/messages?error=invalid");
@@ -18,7 +18,7 @@ export async function updateContactStatus(formData: FormData) {
 }
 
 export async function replyToContactMessage(formData: FormData) {
-  const { supabase, user } = await requirePlatformAdmin();
+  const { supabase, user } = await requirePlatformAdmin("support.manage");
   const id = requiredText(formData.get("message_id"), 40);
   const response = requiredText(formData.get("response"), 5000);
   if (!isUuid(id) || response.length < 2) redirect("/admin/messages?error=response");

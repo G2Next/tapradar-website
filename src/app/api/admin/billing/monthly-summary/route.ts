@@ -2,13 +2,14 @@ import JSZip from "jszip";
 import { NextResponse } from "next/server";
 import { getInvoiceDocumentData, getMonthlyRows, loadInvoiceLogo } from "@/lib/billing-documents";
 import { generateInvoicePdf, generateMonthlyCsv, generateMonthlySummaryPdf } from "@/lib/invoice-pdf";
+import { hasAdminPermission } from "@/lib/admin-permissions";
 import { createRequestClient } from "@/lib/supabase/request";
 
 export const runtime = "nodejs";
 
 export async function GET(request: Request) {
   const supabase = await createRequestClient(request); const { data: auth } = await supabase.auth.getUser(); if (!auth.user) return NextResponse.json({ error: "authentication_required" }, { status: 401 });
-  const { data: admin } = await supabase.from("platform_admins").select("user_id").eq("user_id", auth.user.id).eq("is_active", true).maybeSingle(); if (!admin) return NextResponse.json({ error: "admin_required" }, { status: 403 });
+  const { data: admin } = await supabase.from("platform_admins").select("role").eq("user_id", auth.user.id).eq("is_active", true).maybeSingle(); if (!admin || !hasAdminPermission(admin.role, "billing.view")) return NextResponse.json({ error: "admin_required" }, { status: 403 });
   const url = new URL(request.url); const month = url.searchParams.get("month") ?? ""; const format = url.searchParams.get("format") ?? "pdf"; if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(month)) return NextResponse.json({ error: "invalid_month" }, { status: 400 });
   const { rows, settings } = await getMonthlyRows(month); if (!settings) return NextResponse.json({ error: "settings_missing" }, { status: 503 });
   if (format === "csv") return new NextResponse(generateMonthlyCsv(month, rows), { headers: { "Content-Type": "text/csv; charset=utf-8", "Content-Disposition": `attachment; filename="TapRadar-Buchhaltung-${month}.csv"`, "Cache-Control": "private, no-store" } });

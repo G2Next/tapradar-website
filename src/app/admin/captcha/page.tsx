@@ -5,7 +5,7 @@ import { saveCaptchaSettings } from "./actions";
 type SearchParams = Promise<{ saved?: string; error?: string }>;
 
 export default async function CaptchaSettingsPage({ searchParams }: { searchParams: SearchParams }) {
-  const [{ supabase }, params] = await Promise.all([requirePlatformAdmin(), searchParams]);
+  const [{ supabase }, params] = await Promise.all([requirePlatformAdmin("captcha.manage"), searchParams]);
   const [{ data: settings }, { data: logs, count }] = await Promise.all([
     supabase.from("captcha_settings").select("*").eq("id", true).single(),
     supabase.from("captcha_attempt_logs").select("id,action,captcha_version,score,hostname,reason,created_at", { count: "exact" }).order("created_at", { ascending: false }).limit(50),
