@@ -9,6 +9,8 @@ export async function updateCustomerProfile(formData: FormData) {
   const supabase = await createClient();
   const { data } = await supabase.auth.getUser();
   if (!data.user) redirect("/login?next=/app");
+  const { data: customer } = await supabase.from("customer_profiles").select("approval_status,is_active").eq("user_id", data.user.id).maybeSingle();
+  if (!customer || customer.approval_status !== "approved" || !customer.is_active) redirect("/app?error=approval");
   const displayName = requiredText(formData.get("display_name"), 100);
   const marketingConsent = formData.get("marketing_consent") === "on";
   const { error } = await supabase.from("customer_profiles").upsert({

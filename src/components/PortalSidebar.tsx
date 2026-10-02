@@ -9,6 +9,7 @@ type Item = { href: string; label: string; icon: string; exact?: boolean };
 
 const adminItems: Item[] = [
   { href: "/admin", label: "Übersicht", icon: "⌂", exact: true },
+  { href: "/admin/customers", label: "Kunden", icon: "♙" },
   { href: "/admin/marketing", label: "Marketing-Freigaben", icon: "✓" },
   { href: "/admin/messages", label: "Nachrichten", icon: "✉" },
   { href: "/admin/email-templates", label: "E-Mail-Vorlagen", icon: "✉" },
@@ -16,6 +17,7 @@ const adminItems: Item[] = [
   { href: "/admin/payments", label: "Zahlungsanbieter", icon: "◉" },
   { href: "/admin/billing", label: "Rechnungen", icon: "▤" },
   { href: "/admin/api-keys", label: "API-Schlüssel", icon: "⌘" },
+  { href: "/admin/captcha", label: "reCAPTCHA", icon: "◫" },
   { href: "/admin/operations", label: "Betrieb & Datenschutz", icon: "⚙" },
   { href: "/admin/errors", label: "Fehlerzentrale", icon: "⚠" },
   { href: "/", label: "Website öffnen", icon: "↗" },
