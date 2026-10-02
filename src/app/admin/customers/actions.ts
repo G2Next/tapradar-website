@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requirePlatformAdmin } from "@/lib/admin";
+import { recordAdminAudit } from "@/lib/admin-audit";
 import { isUuid, requiredText } from "@/lib/validation";
 
 export async function setCustomerApproval(formData: FormData) {
@@ -22,6 +23,7 @@ export async function setCustomerApproval(formData: FormData) {
 
   const { error } = await supabase.from("customer_profiles").update(values).eq("user_id", customerId);
   if (error) redirect(`${returnTo}?error=save`);
+  await recordAdminAudit(supabase, { actorUserId: user.id, action: `admin.customer.${decision}`, entityType: "customer", entityId: customerId, metadata: reason ? { reason } : {} });
   revalidatePath("/admin/customers");
   revalidatePath(`/admin/customers/${customerId}`);
   redirect(`${returnTo}?saved=1`);

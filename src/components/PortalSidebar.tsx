@@ -29,6 +29,7 @@ const adminGroups: Group[] = [
   ] },
   { label: "System", items: [
     { href: "/admin/team", label: "Team & Rollen", icon: "♙", permission: "team.manage" },
+    { href: "/admin/audit-log", label: "Audit-Log", icon: "≡", permission: "audit.view" },
     { href: "/admin/api-keys", label: "API-Schlüssel", icon: "⌘", permission: "api_keys.manage" },
     { href: "/admin/captcha", label: "reCAPTCHA", icon: "◫", permission: "captcha.manage" },
     { href: "/admin/operations", label: "Datenschutz & Betrieb", icon: "◈", permission: "operations.manage" },

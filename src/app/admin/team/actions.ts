@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requirePlatformAdmin } from "@/lib/admin";
+import { recordAdminAudit } from "@/lib/admin-audit";
 import { isAdminRole } from "@/lib/admin-permissions";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { isUuid, requiredText } from "@/lib/validation";
@@ -17,7 +18,7 @@ export async function addPlatformAdmin(formData: FormData) {
   if (!profile) redirect("/admin/team?error=user-not-found");
   const { error } = await service.from("platform_admins").upsert({ user_id: profile.id, role, is_active: true }, { onConflict: "user_id" });
   if (error) redirect("/admin/team?error=save");
-  await service.from("audit_logs").insert({ actor_user_id: user.id, action: "admin.team.member_added", entity_type: "platform_admin", entity_id: profile.id, metadata: { role } });
+  await recordAdminAudit(service,{actorUserId:user.id,action:"admin.team.member_added",entityType:"platform_admin",entityId:profile.id,metadata:{role}});
   revalidatePath("/admin/team");
   redirect("/admin/team?saved=added");
 }
@@ -38,7 +39,7 @@ export async function updatePlatformAdmin(formData: FormData) {
   }
   const { error } = await service.from("platform_admins").update({ role, is_active: active }).eq("user_id", targetId);
   if (error) redirect("/admin/team?error=save");
-  await service.from("audit_logs").insert({ actor_user_id: user.id, action: "admin.team.member_updated", entity_type: "platform_admin", entity_id: targetId, metadata: { previous_role: current.role, role, active } });
+  await recordAdminAudit(service,{actorUserId:user.id,action:"admin.team.member_updated",entityType:"platform_admin",entityId:targetId,metadata:{previous_role:current.role,role,active}});
   revalidatePath("/admin/team");
   redirect("/admin/team?saved=updated");
 }
