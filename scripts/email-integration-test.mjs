@@ -28,6 +28,14 @@ async function user(name, locale, accountType = "customer") {
   return { ...data.user, email, client: session };
 }
 async function event(key) { return unwrap(await admin.from("notification_outbox").select("*").eq("event_key", key).single()); }
+async function enableAdminMfa(userId, session) {
+  unwrap(await admin.from("admin_mfa_factors").insert({ user_id: userId, secret_ciphertext: "ci-only-encrypted-secret", verified_at: new Date().toISOString() }));
+  const touched = unwrap(await session.rpc("touch_admin_session"));
+  check(touched?.[0]?.allowed === true, "Admin server session starts after MFA");
+  const authSession = unwrap(await session.auth.getSession()).session;
+  const claims = JSON.parse(Buffer.from(authSession.access_token.split(".")[1], "base64url").toString("utf8"));
+  unwrap(await admin.from("admin_sessions").update({ mfa_verified_at: new Date().toISOString() }).eq("session_id", claims.session_id).eq("user_id", userId));
+}
 const originalSettings = unwrap(await admin.from("email_settings").select("test_mode,test_recipient").eq("id", true).single());
 try {
   unwrap(await admin.from("email_settings").update({ test_mode: true, test_recipient: "sink@example.test" }).eq("id", true));
@@ -35,6 +43,7 @@ try {
   const customer = await user("customer", "tr");
   const operator = await user("admin", "en", "business");
   unwrap(await admin.from("platform_admins").insert({ user_id: operator.id, role: "super_admin", is_active: true }));
+  await enableAdminMfa(operator.id, operator.client);
   check((await event(`customer_registered:${customer.id}`)).locale === "en", "Unknown customer language falls back to English");
   const ownerWelcome = unwrap(await admin.from("notification_outbox").select("id").eq("event_key", `customer_registered:${owner.id}`));
   check(ownerWelcome.length === 0, "Business registration does not send a customer welcome");
