@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requirePlatformAdmin } from "@/lib/admin";
+import { recordAdminAudit } from "@/lib/admin-audit";
 import { encryptIntegrationSecret } from "@/lib/integration-secrets";
 import { requiredText } from "@/lib/validation";
 
@@ -43,6 +44,7 @@ export async function saveCaptchaSettings(formData: FormData) {
 
   const { error } = await supabase.from("captcha_settings").update(payload).eq("id", true);
   if (error) redirect("/admin/captcha?error=save");
+  await recordAdminAudit(supabase,{actorUserId:user.id,action:"admin.system.captcha.updated",entityType:"captcha_settings",entityId:"global",metadata:{mode,score_threshold:threshold,v2_theme:theme,protect_contact:payload.protect_contact,protect_registration:payload.protect_registration,protect_login:payload.protect_login,log_rejected:payload.log_rejected,v2_credentials_changed:Boolean(v2Secret),v3_credentials_changed:Boolean(v3Secret)}});
   revalidatePath("/admin/captcha");
   revalidatePath("/kontakt");
   revalidatePath("/login");

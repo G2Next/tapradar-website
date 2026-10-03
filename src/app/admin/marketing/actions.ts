@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requirePlatformAdmin } from "@/lib/admin";
+import { recordAdminAudit } from "@/lib/admin-audit";
 import { deliverApprovedMerchantPush } from "@/lib/marketing-push";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { isUuid, requiredText } from "@/lib/validation";
@@ -28,7 +29,7 @@ export async function reviewMarketingSubmission(formData: FormData) {
     : { moderation_status: "rejected", reviewed_by: user.id, reviewed_at: reviewedAt, rejection_reason: reason, ...(resourceType === "offer" ? { is_active: false } : { delivery_status: "cancelled" }) };
   const { error } = await db.from(table).update(values).eq("id", resourceId).eq("moderation_status", "pending_review");
   if (error) redirect("/admin/marketing?error=save");
-  await db.from("audit_logs").insert({ actor_user_id: user.id, organization_id: organizationId, action: `admin.marketing.${decision}`, entity_type: resourceType, entity_id: resourceId, metadata: reason ? { reason } : {} });
+  await recordAdminAudit(db,{actorUserId:user.id,organizationId,action:`admin.marketing.${decision}`,entityType:resourceType,entityId:resourceId,metadata:reason?{reason}:{}});
   await db.from("admin_notifications").update({ read_at: reviewedAt }).eq("resource_type", resourceType).eq("resource_id", resourceId).is("read_at", null);
 
   if (resourceType === "push_message" && decision === "approve") {
