@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import { ClientTranslator } from "@/components/ClientTranslator";
+import { CookieConsentBanner } from "@/components/CookieConsentBanner";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { getHtmlLang } from "@/i18n/config";
 import { getLocale } from "@/i18n/server";
 import { translateText } from "@/i18n/translate";
+import { COOKIE_CONSENT_NAME, parseConsent } from "@/lib/cookie-consent";
 import { PUBLIC_SITE_URL } from "@/lib/site";
 import "./globals.css";
 
@@ -36,7 +39,8 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const locale = await getLocale();
+  const [locale, cookieStore] = await Promise.all([getLocale(), cookies()]);
+  const cookieConsent = parseConsent(cookieStore.get(COOKIE_CONSENT_NAME)?.value);
   return (
     <html lang={getHtmlLang(locale)} className="h-full antialiased">
       <body className="min-h-full bg-slate-950 font-sans">
@@ -45,6 +49,7 @@ export default async function RootLayout({
         <SiteHeader />
         <div id="main-content" tabIndex={-1}>{children}</div>
         <SiteFooter />
+        <CookieConsentBanner initialConsent={cookieConsent} locale={locale} />
       </body>
     </html>
   );

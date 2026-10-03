@@ -5,7 +5,7 @@ export const privacyContent: { de: LegalDocument } & Partial<Record<Locale, Lega
   de: {
     title: "Datenschutzerklärung",
     subtitle: "TapRadar – TOY GmbH",
-    stand: "Stand: 9. August 2026 · Version 2026-08-09.2 (ausführliche Fassung)",
+    stand: "Stand: 2. Oktober 2026 · Version 2026-10-02.1 (ausführliche Fassung)",
     intro: [
       p("Der Schutz Ihrer personenbezogenen Daten ist der TOY GmbH ein zentrales Anliegen. Diese Datenschutzerklärung informiert Sie umfassend und im Detail darüber, welche personenbezogenen Daten wir im Zusammenhang mit der Nutzung der TapRadar-App mit ihren vier Funktionsbereichen Radar, Stempel, Karten und Home, der TapRadar-Website sowie des TapRadar-Geschäftskunden-Dashboards (gemeinsam „TapRadar\" oder die „Plattform\") erheben, zu welchen Zwecken und auf welcher Rechtsgrundlage wir diese verarbeiten, an wen wir Daten weitergeben, wie lange wir sie speichern und welche Rechte Ihnen als betroffene Person zustehen. Diese Erklärung gilt sowohl für Endkundinnen und Endkunden, die die kostenlose TapRadar-App nutzen, als auch für Geschäftskundinnen und Geschäftskunden, die einen der kostenpflichtigen TapRadar-Tarife Bronze, Gold oder Platinum abonniert haben. Sie basiert auf der Verordnung (EU) 2016/679 (Datenschutz-Grundverordnung, „DSGVO\") sowie den einschlägigen österreichischen Ausführungsbestimmungen, insbesondere dem Datenschutzgesetz (DSG) und dem Telekommunikationsgesetz 2021 (TKG 2021)."),
     ],
@@ -108,7 +108,7 @@ export const privacyContent: { de: LegalDocument } & Partial<Record<Locale, Lega
       },
       {
         heading: "13. Nutzung der Website, Server-Logfiles und Cookies", blocks: [
-          p("Beim Aufruf unserer Website www.tapradar.app verarbeitet unser Hosting-Anbieter automatisch technische Zugriffsdaten (IP-Adresse, Datum und Uhrzeit des Zugriffs, aufgerufene Seite, verwendeter Browser und Betriebssystem, Referrer-URL) in Server-Logfiles. Zweck: Gewährleistung eines störungsfreien Betriebs und der IT-Sicherheit. Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO. Die Website verwendet ausschließlich technisch notwendige Cookies, die für den Betrieb der Seite erforderlich sind; auf Tracking- oder Marketing-Cookies wird derzeit verzichtet. Sollte sich dies künftig ändern, werden wir Sie über ein Cookie-Consent-Banner um Ihre Einwilligung ersuchen."),
+          p("Beim Aufruf unserer Website www.tapradar.app verarbeitet unser Hosting-Anbieter automatisch technische Zugriffsdaten (IP-Adresse, Datum und Uhrzeit des Zugriffs, aufgerufene Seite, verwendeter Browser und Betriebssystem, Referrer-URL) in Server-Logfiles. Zweck: Gewährleistung eines störungsfreien Betriebs und der IT-Sicherheit. Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO. Unser Cookie-Consent-Banner unterscheidet zwischen technisch notwendigen Cookies für Sprache, Anmeldung, Sicherheit und die Speicherung Ihrer Cookie-Auswahl sowie den optionalen Kategorien Analyse und Marketing. Optionale Analyse- oder Marketing-Cookies und damit verbundene Dienste werden erst nach Ihrer freiwilligen Einwilligung eingesetzt. Sie können Ihre Auswahl jederzeit über „Cookie-Einstellungen“ im Footer ändern oder Ihre Einwilligung mit Wirkung für die Zukunft widerrufen."),
         ],
       },
       {
@@ -199,7 +199,7 @@ export const privacyContent: { de: LegalDocument } & Partial<Record<Locale, Lega
   en: {
     title: "Privacy Policy",
     subtitle: "TapRadar – TOY GmbH",
-    stand: "Last updated: 9 August 2026 · Version 2026-08-09.2 (detailed version)",
+    stand: "Last updated: 2 October 2026 · Version 2026-10-02.1 (detailed version)",
     intro: [
       p("Protecting your personal data is a central concern for TOY GmbH. This privacy policy informs you comprehensively and in detail about which personal data we collect in connection with your use of the TapRadar app and its four functional areas Radar, Stamp, Cards and Home, the TapRadar website, and the TapRadar business-customer dashboard (together \"TapRadar\" or the \"Platform\"), for which purposes and on which legal basis we process this data, to whom we disclose data, how long we store it, and what rights you have as a data subject. This policy applies both to end customers using the free TapRadar app and to business customers who have subscribed to one of the paid TapRadar plans Bronze, Gold or Platinum. It is based on Regulation (EU) 2016/679 (General Data Protection Regulation, \"GDPR\") and the relevant Austrian implementing provisions, in particular the Data Protection Act (DSG) and the Telecommunications Act 2021 (TKG 2021)."),
     ],
@@ -302,7 +302,7 @@ export const privacyContent: { de: LegalDocument } & Partial<Record<Locale, Lega
       },
       {
         heading: "13. Use of the website, server log files and cookies", blocks: [
-          p("When you access our website www.tapradar.app, our hosting provider automatically processes technical access data (IP address, date and time of access, page accessed, browser and operating system used, referrer URL) in server log files. Purpose: ensuring smooth operation and IT security. Legal basis: Art. 6(1)(f) GDPR. The website uses only technically necessary cookies required for the site to function; we currently do not use tracking or marketing cookies. Should this change in future, we will ask for your consent via a cookie consent banner."),
+          p("When you access our website www.tapradar.app, our hosting provider automatically processes technical access data (IP address, date and time of access, page accessed, browser and operating system used, referrer URL) in server log files. Purpose: ensuring smooth operation and IT security. Legal basis: Art. 6(1)(f) GDPR. Our cookie consent banner distinguishes between technically necessary cookies for language, login, security and storing your cookie selection, and the optional analytics and marketing categories. Optional analytics or marketing cookies and associated services are used only after you have given your voluntary consent. You can change your selection at any time via “Cookie settings” in the footer or withdraw your consent with effect for the future."),
         ],
       },
       {
@@ -393,7 +393,7 @@ export const privacyContent: { de: LegalDocument } & Partial<Record<Locale, Lega
   tr: {
     title: "Gizlilik Politikası",
     subtitle: "TapRadar – TOY GmbH",
-    stand: "Güncelleme: 9 Ağustos 2026 · Sürüm 2026-08-09.2 (ayrıntılı sürüm)",
+    stand: "Güncelleme: 2 Ekim 2026 · Sürüm 2026-10-02.1 (ayrıntılı sürüm)",
     intro: [
       p("Kişisel verilerinizin korunması TOY GmbH için önemli bir konudur. Bu gizlilik politikası; Radar, Stempel (Damga), Kartlar ve Home olmak üzere dört işlev alanına sahip TapRadar uygulamasını, TapRadar web sitesini ve TapRadar işletme müşterisi panelini (birlikte \"TapRadar\" veya \"Platform\") kullanmanızla bağlantılı olarak hangi kişisel verileri topladığımızı, bunları hangi amaçlarla ve hangi hukuki dayanakla işlediğimizi, verileri kime aktardığımızı, ne kadar süreyle sakladığımızı ve ilgili kişi olarak size hangi hakların tanındığını ayrıntılı olarak açıklar. Bu politika, hem ücretsiz TapRadar uygulamasını kullanan son kullanıcılar için hem de Bronze, Gold veya Platinum ücretli TapRadar planlarından birine abone olan işletme müşterileri için geçerlidir. Politika, (AB) 2016/679 sayılı Tüzük (Genel Veri Koruma Tüzüğü, \"GDPR\") ile ilgili Avusturya uygulama hükümlerine, özellikle Veri Koruma Kanunu (DSG) ve 2021 Telekomünikasyon Kanunu'na (TKG 2021) dayanmaktadır."),
     ],
@@ -496,7 +496,7 @@ export const privacyContent: { de: LegalDocument } & Partial<Record<Locale, Lega
       },
       {
         heading: "13. Web sitesinin kullanımı, sunucu günlük dosyaları ve çerezler", blocks: [
-          p("www.tapradar.app web sitemize erişildiğinde, barındırma sağlayıcımız teknik erişim verilerini (IP adresi, erişim tarihi ve saati, erişilen sayfa, kullanılan tarayıcı ve işletim sistemi, yönlendiren URL) otomatik olarak sunucu günlük dosyalarında işler. Amaç: kesintisiz işletim ve BT güvenliğinin sağlanması. Hukuki dayanak: GDPR md. 6/1(f). Web sitesi yalnızca sitenin çalışması için gerekli olan teknik olarak zorunlu çerezleri kullanır; şu anda izleme veya pazarlama çerezleri kullanılmamaktadır. Bu durum ileride değişirse, bir çerez onay banner'ı aracılığıyla rızanızı talep edeceğiz."),
+          p("www.tapradar.app web sitemize erişildiğinde, barındırma sağlayıcımız teknik erişim verilerini (IP adresi, erişim tarihi ve saati, erişilen sayfa, kullanılan tarayıcı ve işletim sistemi, yönlendiren URL) otomatik olarak sunucu günlük dosyalarında işler. Amaç: kesintisiz işletim ve BT güvenliğinin sağlanması. Hukuki dayanak: GDPR md. 6/1(f). Çerez onay banner'ımız; dil, oturum açma, güvenlik ve çerez seçiminizin saklanması için teknik olarak zorunlu çerezler ile isteğe bağlı analiz ve pazarlama kategorilerini birbirinden ayırır. İsteğe bağlı analiz veya pazarlama çerezleri ve bunlarla bağlantılı hizmetler yalnızca gönüllü onayınızdan sonra kullanılır. Seçiminizi footer bölümündeki “Çerez ayarları” üzerinden istediğiniz zaman değiştirebilir veya onayınızı gelecek için geri çekebilirsiniz."),
         ],
       },
       {
@@ -587,7 +587,7 @@ export const privacyContent: { de: LegalDocument } & Partial<Record<Locale, Lega
   fr: {
     title: "Politique de confidentialité",
     subtitle: "TapRadar – TOY GmbH",
-    stand: "Mise à jour : 9 août 2026 · Version 2026-08-09.2 (version détaillée)",
+    stand: "Mise à jour : 2 octobre 2026 · Version 2026-10-02.1 (version détaillée)",
     intro: [
       p("La protection de vos données à caractère personnel est une priorité pour TOY GmbH. Cette politique de confidentialité vous informe de manière complète et détaillée sur les données à caractère personnel que nous collectons dans le cadre de l'utilisation de l'application TapRadar et de ses quatre domaines fonctionnels Radar, Tampon, Cartes et Home, du site web TapRadar ainsi que du tableau de bord TapRadar pour clients professionnels (ensemble « TapRadar » ou la « Plateforme »), les finalités et la base juridique de ce traitement, les destinataires auxquels nous transmettons des données, la durée de conservation et les droits dont vous disposez en tant que personne concernée. Cette politique s'applique tant aux clients finaux utilisant l'application gratuite TapRadar qu'aux clients professionnels ayant souscrit à l'une des formules payantes Bronze, Gold ou Platinum. Elle repose sur le règlement (UE) 2016/679 (règlement général sur la protection des données, « RGPD ») ainsi que sur les dispositions d'application autrichiennes pertinentes, notamment la loi sur la protection des données (DSG) et la loi de 2021 sur les télécommunications (TKG 2021)."),
     ],
@@ -690,7 +690,7 @@ export const privacyContent: { de: LegalDocument } & Partial<Record<Locale, Lega
       },
       {
         heading: "13. Utilisation du site web, fichiers journaux du serveur et cookies", blocks: [
-          p("Lors de la consultation de notre site web www.tapradar.app, notre hébergeur traite automatiquement des données d'accès techniques (adresse IP, date et heure d'accès, page consultée, navigateur et système d'exploitation utilisés, URL de référence) dans des fichiers journaux du serveur. Finalité : garantir un fonctionnement sans incident et la sécurité informatique. Base juridique : art. 6, § 1, point f) du RGPD. Le site web utilise uniquement des cookies techniquement nécessaires au fonctionnement du site ; nous n'utilisons actuellement pas de cookies de suivi ou marketing. Si cela devait changer à l'avenir, nous solliciterons votre consentement via une bannière de consentement aux cookies."),
+          p("Lors de la consultation de notre site web www.tapradar.app, notre hébergeur traite automatiquement des données d'accès techniques (adresse IP, date et heure d'accès, page consultée, navigateur et système d'exploitation utilisés, URL de référence) dans des fichiers journaux du serveur. Finalité : garantir un fonctionnement sans incident et la sécurité informatique. Base juridique : art. 6, § 1, point f) du RGPD. Notre bannière de consentement distingue les cookies techniquement nécessaires à la langue, à la connexion, à la sécurité et à l'enregistrement de votre choix, des catégories facultatives Analyse et Marketing. Les cookies facultatifs d'analyse ou de marketing et les services associés ne sont utilisés qu'après votre consentement volontaire. Vous pouvez modifier votre choix à tout moment via « Paramètres des cookies » dans le pied de page ou retirer votre consentement pour l'avenir."),
         ],
       },
       {
@@ -781,7 +781,7 @@ export const privacyContent: { de: LegalDocument } & Partial<Record<Locale, Lega
   it: {
     title: "Informativa sulla privacy",
     subtitle: "TapRadar – TOY GmbH",
-    stand: "Aggiornamento: 9 agosto 2026 · Versione 2026-08-09.2 (versione dettagliata)",
+    stand: "Aggiornamento: 2 ottobre 2026 · Versione 2026-10-02.1 (versione dettagliata)",
     intro: [
       p("La tutela dei tuoi dati personali è un aspetto centrale per TOY GmbH. La presente informativa sulla privacy ti informa in modo completo e dettagliato su quali dati personali raccogliamo in relazione all'utilizzo dell'app TapRadar con le sue quattro aree funzionali Radar, Timbro, Carte e Home, del sito web TapRadar nonché della dashboard TapRadar per clienti commerciali (congiuntamente \"TapRadar\" o la \"Piattaforma\"), per quali finalità e su quale base giuridica li trattiamo, a chi trasmettiamo i dati, per quanto tempo li conserviamo e quali diritti ti spettano in qualità di interessato. La presente informativa si applica sia ai clienti finali che utilizzano l'app gratuita TapRadar, sia ai clienti commerciali che hanno sottoscritto uno dei piani a pagamento Bronze, Gold o Platinum. Si basa sul Regolamento (UE) 2016/679 (Regolamento generale sulla protezione dei dati, \"GDPR\") nonché sulle relative disposizioni di attuazione austriache, in particolare la legge sulla protezione dei dati (DSG) e la legge sulle telecomunicazioni 2021 (TKG 2021)."),
     ],
@@ -884,7 +884,7 @@ export const privacyContent: { de: LegalDocument } & Partial<Record<Locale, Lega
       },
       {
         heading: "13. Utilizzo del sito web, file di log del server e cookie", blocks: [
-          p("Quando visiti il nostro sito web www.tapradar.app, il nostro provider di hosting elabora automaticamente dati di accesso tecnici (indirizzo IP, data e ora dell'accesso, pagina visitata, browser e sistema operativo utilizzati, URL di riferimento) in file di log del server. Finalità: garantire un funzionamento privo di interruzioni e la sicurezza informatica. Base giuridica: art. 6, par. 1, lett. f) del GDPR. Il sito web utilizza esclusivamente cookie tecnicamente necessari per il funzionamento del sito; attualmente non vengono utilizzati cookie di tracciamento o marketing. Qualora ciò dovesse cambiare in futuro, richiederemo il tuo consenso tramite un banner di consenso ai cookie."),
+          p("Quando visiti il nostro sito web www.tapradar.app, il nostro provider di hosting elabora automaticamente dati di accesso tecnici (indirizzo IP, data e ora dell'accesso, pagina visitata, browser e sistema operativo utilizzati, URL di riferimento) in file di log del server. Finalità: garantire un funzionamento privo di interruzioni e la sicurezza informatica. Base giuridica: art. 6, par. 1, lett. f) del GDPR. Il nostro banner distingue tra cookie tecnicamente necessari per lingua, accesso, sicurezza e memorizzazione della scelta, e le categorie facoltative Analisi e Marketing. I cookie facoltativi di analisi o marketing e i servizi associati vengono utilizzati solo dopo il tuo consenso volontario. Puoi modificare la scelta in qualsiasi momento tramite «Impostazioni cookie» nel footer o revocare il consenso con effetto per il futuro."),
         ],
       },
       {
@@ -975,7 +975,7 @@ export const privacyContent: { de: LegalDocument } & Partial<Record<Locale, Lega
   es: {
     title: "Política de privacidad",
     subtitle: "TapRadar – TOY GmbH",
-    stand: "Actualizado: 9 de agosto de 2026 · Versión 2026-08-09.2 (versión detallada)",
+    stand: "Actualizado: 2 de octubre de 2026 · Versión 2026-10-02.1 (versión detallada)",
     intro: [
       p("La protección de sus datos personales es una prioridad para TOY GmbH. Esta política de privacidad le informa de manera completa y detallada sobre qué datos personales recopilamos en relación con el uso de la aplicación TapRadar y sus cuatro áreas funcionales Radar, Sello, Tarjetas y Home, del sitio web de TapRadar y del panel de TapRadar para clientes comerciales (conjuntamente \"TapRadar\" o la \"Plataforma\"), con qué finalidades y sobre qué base jurídica los tratamos, a quién transmitimos los datos, cuánto tiempo los conservamos y qué derechos le corresponden como interesado. Esta política se aplica tanto a los clientes finales que utilizan la aplicación gratuita TapRadar como a los clientes comerciales que se han suscrito a uno de los planes de pago Bronze, Gold o Platinum. Se basa en el Reglamento (UE) 2016/679 (Reglamento General de Protección de Datos, «RGPD») así como en las disposiciones de aplicación austriacas pertinentes, en particular la Ley de Protección de Datos (DSG) y la Ley de Telecomunicaciones de 2021 (TKG 2021)."),
     ],
@@ -1078,7 +1078,7 @@ export const privacyContent: { de: LegalDocument } & Partial<Record<Locale, Lega
       },
       {
         heading: "13. Uso del sitio web, archivos de registro del servidor y cookies", blocks: [
-          p("Al acceder a nuestro sitio web www.tapradar.app, nuestro proveedor de alojamiento procesa automáticamente datos de acceso técnicos (dirección IP, fecha y hora del acceso, página consultada, navegador y sistema operativo utilizados, URL de referencia) en archivos de registro del servidor. Finalidad: garantizar un funcionamiento sin incidencias y la seguridad informática. Base jurídica: art. 6, apartado 1, letra f) del RGPD. El sitio web utiliza exclusivamente cookies técnicamente necesarias para su funcionamiento; actualmente no se utilizan cookies de seguimiento ni de marketing. Si esto cambiara en el futuro, le solicitaremos su consentimiento a través de un banner de consentimiento de cookies."),
+          p("Al acceder a nuestro sitio web www.tapradar.app, nuestro proveedor de alojamiento procesa automáticamente datos de acceso técnicos (dirección IP, fecha y hora del acceso, página consultada, navegador y sistema operativo utilizados, URL de referencia) en archivos de registro del servidor. Finalidad: garantizar un funcionamiento sin incidencias y la seguridad informática. Base jurídica: art. 6, apartado 1, letra f) del RGPD. Nuestro banner distingue entre cookies técnicamente necesarias para el idioma, el inicio de sesión, la seguridad y el almacenamiento de su selección, y las categorías opcionales Análisis y Marketing. Las cookies opcionales de análisis o marketing y los servicios asociados solo se utilizan tras su consentimiento voluntario. Puede modificar su selección en cualquier momento mediante «Configuración de cookies» en el pie de página o retirar su consentimiento con efecto futuro."),
         ],
       },
       {
@@ -1169,7 +1169,7 @@ export const privacyContent: { de: LegalDocument } & Partial<Record<Locale, Lega
   pl: {
     title: "Polityka prywatności",
     subtitle: "TapRadar – TOY GmbH",
-    stand: "Stan na: 9 sierpnia 2026 r. · Wersja 2026-08-09.2 (wersja szczegółowa)",
+    stand: "Stan na: 2 października 2026 r. · Wersja 2026-10-02.1 (wersja szczegółowa)",
     intro: [
       p("Ochrona Państwa danych osobowych jest dla TOY GmbH sprawą priorytetową. Niniejsza polityka prywatności informuje Państwa w sposób wyczerpujący i szczegółowy o tym, jakie dane osobowe gromadzimy w związku z korzystaniem z aplikacji TapRadar wraz z jej czterema obszarami funkcjonalnymi Radar, Pieczątka, Karty i Home, ze strony internetowej TapRadar oraz z panelu TapRadar dla klientów biznesowych (łącznie „TapRadar” lub „Platforma”), w jakich celach i na jakiej podstawie prawnej je przetwarzamy, komu przekazujemy dane, jak długo je przechowujemy oraz jakie prawa przysługują Państwu jako osobie, której dane dotyczą. Niniejsza polityka dotyczy zarówno klientów końcowych korzystających z bezpłatnej aplikacji TapRadar, jak i klientów biznesowych, którzy wykupili jeden z płatnych planów TapRadar: Bronze, Gold lub Platinum. Opiera się ona na rozporządzeniu (UE) 2016/679 (ogólne rozporządzenie o ochronie danych, „RODO”) oraz na odpowiednich austriackich przepisach wykonawczych, w szczególności na ustawie o ochronie danych (DSG) oraz ustawie o telekomunikacji z 2021 r. (TKG 2021)."),
     ],
@@ -1272,7 +1272,7 @@ export const privacyContent: { de: LegalDocument } & Partial<Record<Locale, Lega
       },
       {
         heading: "13. Korzystanie ze strony internetowej, pliki dziennika serwera i pliki cookie", blocks: [
-          p("Podczas wejścia na naszą stronę internetową www.tapradar.app nasz dostawca hostingu automatycznie przetwarza techniczne dane dostępu (adres IP, data i godzina dostępu, wyświetlona strona, użyta przeglądarka i system operacyjny, adres URL strony odsyłającej) w plikach dziennika serwera. Cel: zapewnienie bezawaryjnego działania oraz bezpieczeństwa IT. Podstawa prawna: art. 6 ust. 1 lit. f) RODO. Strona internetowa wykorzystuje wyłącznie technicznie niezbędne pliki cookie, konieczne do jej działania; obecnie nie stosujemy plików cookie do celów śledzenia ani marketingowych. Gdyby miało się to zmienić w przyszłości, poprosimy Państwa o zgodę za pomocą banera zgody na pliki cookie."),
+          p("Podczas wejścia na naszą stronę internetową www.tapradar.app nasz dostawca hostingu automatycznie przetwarza techniczne dane dostępu (adres IP, data i godzina dostępu, wyświetlona strona, użyta przeglądarka i system operacyjny, adres URL strony odsyłającej) w plikach dziennika serwera. Cel: zapewnienie bezawaryjnego działania oraz bezpieczeństwa IT. Podstawa prawna: art. 6 ust. 1 lit. f) RODO. Nasz baner rozróżnia technicznie niezbędne pliki cookie służące do obsługi języka, logowania, bezpieczeństwa i zapisania Państwa wyboru oraz opcjonalne kategorie Analityka i Marketing. Opcjonalne pliki cookie analityczne lub marketingowe i powiązane usługi są używane dopiero po dobrowolnym wyrażeniu zgody. Wybór można w każdej chwili zmienić poprzez „Ustawienia plików cookie” w stopce lub wycofać zgodę ze skutkiem na przyszłość."),
         ],
       },
       {
@@ -1363,7 +1363,7 @@ export const privacyContent: { de: LegalDocument } & Partial<Record<Locale, Lega
   cs: {
     title: "Zásady ochrany osobních údajů",
     subtitle: "TapRadar – TOY GmbH",
-    stand: "Aktualizováno: 9. srpna 2026 · Verze 2026-08-09.2 (podrobná verze)",
+    stand: "Aktualizováno: 2. října 2026 · Verze 2026-10-02.1 (podrobná verze)",
     intro: [
       p("Ochrana vašich osobních údajů je pro společnost TOY GmbH zásadní záležitostí. Tyto zásady ochrany osobních údajů vás komplexně a podrobně informují o tom, jaké osobní údaje shromažďujeme v souvislosti s používáním aplikace TapRadar a jejích čtyř funkčních oblastí Radar, Razítko, Karty a Home, webových stránek TapRadar a dashboardu TapRadar pro obchodní zákazníky (společně „TapRadar“ nebo „Platforma“), za jakými účely a na jakém právním základě je zpracováváme, komu údaje předáváme, jak dlouho je uchováváme a jaká práva vám jako subjektu údajů náleží. Tyto zásady se vztahují jak na koncové zákazníky, kteří používají bezplatnou aplikaci TapRadar, tak na obchodní zákazníky, kteří si předplatili některý z placených tarifů TapRadar Bronze, Gold nebo Platinum. Vycházejí z nařízení (EU) 2016/679 (obecné nařízení o ochraně osobních údajů, „GDPR“) a příslušných rakouských prováděcích předpisů, zejména zákona o ochraně osobních údajů (DSG) a zákona o telekomunikacích 2021 (TKG 2021)."),
     ],
@@ -1466,7 +1466,7 @@ export const privacyContent: { de: LegalDocument } & Partial<Record<Locale, Lega
       },
       {
         heading: "13. Používání webových stránek, serverové log soubory a cookies", blocks: [
-          p("Při návštěvě našich webových stránek www.tapradar.app náš poskytovatel hostingu automaticky zpracovává technické přístupové údaje (IP adresa, datum a čas přístupu, navštívená stránka, použitý prohlížeč a operační systém, referrer URL) v serverových log souborech. Účel: zajištění bezporuchového provozu a bezpečnosti IT. Právní základ: čl. 6 odst. 1 písm. f) GDPR. Webové stránky používají výhradně technicky nezbytné cookies potřebné pro provoz stránky; sledovací nebo marketingové cookies v současné době nepoužíváme. Pokud by se to v budoucnu změnilo, požádáme vás o souhlas prostřednictvím banneru pro souhlas s cookies."),
+          p("Při návštěvě našich webových stránek www.tapradar.app náš poskytovatel hostingu automaticky zpracovává technické přístupové údaje (IP adresa, datum a čas přístupu, navštívená stránka, použitý prohlížeč a operační systém, referrer URL) v serverových log souborech. Účel: zajištění bezporuchového provozu a bezpečnosti IT. Právní základ: čl. 6 odst. 1 písm. f) GDPR. Náš banner rozlišuje technicky nezbytné cookies pro jazyk, přihlášení, bezpečnost a uložení vaší volby a volitelné kategorie Analytika a Marketing. Volitelné analytické nebo marketingové cookies a související služby se použijí až po vašem dobrovolném souhlasu. Svou volbu můžete kdykoli změnit přes „Nastavení cookies“ v zápatí nebo souhlas odvolat s účinkem do budoucna."),
         ],
       },
       {
@@ -1557,7 +1557,7 @@ export const privacyContent: { de: LegalDocument } & Partial<Record<Locale, Lega
   hu: {
     title: "Adatvédelmi tájékoztató",
     subtitle: "TapRadar – TOY GmbH",
-    stand: "Frissítve: 2026. augusztus 9. · 2026-08-09.2 verzió (részletes változat)",
+    stand: "Frissítve: 2026. október 2. · 2026-10-02.1 verzió (részletes változat)",
     intro: [
       p("Személyes adatainak védelme kiemelten fontos a TOY GmbH számára. Ez az adatvédelmi tájékoztató átfogóan és részletesen tájékoztatja Önt arról, hogy a TapRadar alkalmazás – Radar, Bélyegző, Kártyák és Home négy funkcionális területével –, a TapRadar weboldal, valamint a TapRadar üzleti ügyfél irányítópult (együttesen „TapRadar” vagy a „Platform”) használatával összefüggésben milyen személyes adatokat gyűjtünk, milyen célból és milyen jogalapon kezeljük azokat, kinek adjuk tovább az adatokat, meddig tároljuk azokat, és milyen jogok illetik meg Önt érintettként. Ez a tájékoztató mind az ingyenes TapRadar alkalmazást használó végfelhasználókra, mind a Bronze, Gold vagy Platinum fizetős TapRadar csomagok valamelyikére előfizető üzleti ügyfelekre vonatkozik. Az (EU) 2016/679 rendeleten (általános adatvédelmi rendelet, „GDPR”), valamint a vonatkozó osztrák végrehajtási rendelkezéseken, különösen az adatvédelmi törvényen (DSG) és a 2021. évi távközlési törvényen (TKG 2021) alapul."),
     ],
@@ -1660,7 +1660,7 @@ export const privacyContent: { de: LegalDocument } & Partial<Record<Locale, Lega
       },
       {
         heading: "13. A weboldal használata, szerver naplófájlok és sütik", blocks: [
-          p("A www.tapradar.app weboldalunk meglátogatásakor tárhelyszolgáltatónk automatikusan feldolgozza a technikai hozzáférési adatokat (IP-cím, a hozzáférés dátuma és időpontja, a megtekintett oldal, a használt böngésző és operációs rendszer, a hivatkozó URL) szerver naplófájlokban. Cél: a zavartalan üzemeltetés és az informatikai biztonság biztosítása. Jogalap: GDPR 6. cikk (1) bekezdés f) pont. A weboldal kizárólag a működéséhez szükséges, technikailag elengedhetetlen sütiket használ; jelenleg nem alkalmazunk követési vagy marketingsütiket. Amennyiben ez a jövőben megváltozna, sütikre vonatkozó hozzájárulási bannerrel kérjük az Ön hozzájárulását."),
+          p("A www.tapradar.app weboldalunk meglátogatásakor tárhelyszolgáltatónk automatikusan feldolgozza a technikai hozzáférési adatokat (IP-cím, a hozzáférés dátuma és időpontja, a megtekintett oldal, a használt böngésző és operációs rendszer, a hivatkozó URL) szerver naplófájlokban. Cél: a zavartalan üzemeltetés és az informatikai biztonság biztosítása. Jogalap: GDPR 6. cikk (1) bekezdés f) pont. Sütibannerünk megkülönbözteti a nyelvhez, bejelentkezéshez, biztonsághoz és a választás tárolásához technikailag szükséges sütiket, valamint az opcionális Elemzés és Marketing kategóriákat. Az opcionális elemzési vagy marketingsütiket és a kapcsolódó szolgáltatásokat csak önkéntes hozzájárulása után használjuk. Választását bármikor módosíthatja a lábléc „Sütibeállítások” pontjában, vagy a hozzájárulását a jövőre nézve visszavonhatja."),
         ],
       },
       {
@@ -1751,7 +1751,7 @@ export const privacyContent: { de: LegalDocument } & Partial<Record<Locale, Lega
   sk: {
     title: "Zásady ochrany osobných údajov",
     subtitle: "TapRadar – TOY GmbH",
-    stand: "Aktualizované: 9. augusta 2026 · Verzia 2026-08-09.2 (podrobná verzia)",
+    stand: "Aktualizované: 2. októbra 2026 · Verzia 2026-10-02.1 (podrobná verzia)",
     intro: [
       p("Ochrana vašich osobných údajov je pre spoločnosť TOY GmbH kľúčovou záležitosťou. Tieto zásady ochrany osobných údajov vás komplexne a podrobne informujú o tom, aké osobné údaje zhromažďujeme v súvislosti s používaním aplikácie TapRadar a jej štyroch funkčných oblastí Radar, Pečiatka, Karty a Home, webovej stránky TapRadar, ako aj dashboardu TapRadar pre obchodných zákazníkov (spoločne „TapRadar“ alebo „Platforma“), na aké účely a na akom právnom základe ich spracúvame, komu údaje odovzdávame, ako dlho ich uchovávame a aké práva vám ako dotknutej osobe prináležia. Tieto zásady sa vzťahujú tak na koncových zákazníkov, ktorí používajú bezplatnú aplikáciu TapRadar, ako aj na obchodných zákazníkov, ktorí si predplatili niektorý z platených tarifov TapRadar Bronze, Gold alebo Platinum. Vychádzajú z nariadenia (EÚ) 2016/679 (všeobecné nariadenie o ochrane údajov, „GDPR“), ako aj z príslušných rakúskych vykonávacích predpisov, najmä zákona o ochrane osobných údajov (DSG) a zákona o telekomunikáciách 2021 (TKG 2021)."),
     ],
@@ -1854,7 +1854,7 @@ export const privacyContent: { de: LegalDocument } & Partial<Record<Locale, Lega
       },
       {
         heading: "13. Používanie webovej stránky, serverové log súbory a cookies", blocks: [
-          p("Pri návšteve našej webovej stránky www.tapradar.app náš poskytovateľ hostingu automaticky spracúva technické prístupové údaje (IP adresa, dátum a čas prístupu, navštívená stránka, použitý prehliadač a operačný systém, referrer URL) v serverových log súboroch. Účel: zaistenie bezporuchovej prevádzky a bezpečnosti IT. Právny základ: čl. 6 ods. 1 písm. f) GDPR. Webová stránka používa výlučne technicky nevyhnutné cookies potrebné na prevádzku stránky; sledovacie alebo marketingové cookies v súčasnosti nepoužívame. Ak by sa to v budúcnosti zmenilo, požiadame vás o súhlas prostredníctvom bannera pre súhlas s cookies."),
+          p("Pri návšteve našej webovej stránky www.tapradar.app náš poskytovateľ hostingu automaticky spracúva technické prístupové údaje (IP adresa, dátum a čas prístupu, navštívená stránka, použitý prehliadač a operačný systém, referrer URL) v serverových log súboroch. Účel: zaistenie bezporuchovej prevádzky a bezpečnosti IT. Právny základ: čl. 6 ods. 1 písm. f) GDPR. Náš banner rozlišuje technicky nevyhnutné cookies pre jazyk, prihlásenie, bezpečnosť a uloženie vašej voľby a voliteľné kategórie Analytika a Marketing. Voliteľné analytické alebo marketingové cookies a súvisiace služby sa použijú až po vašom dobrovoľnom súhlase. Svoju voľbu môžete kedykoľvek zmeniť cez „Nastavenia cookies“ v päte alebo súhlas odvolať s účinkom do budúcna."),
         ],
       },
       {
@@ -1945,7 +1945,7 @@ export const privacyContent: { de: LegalDocument } & Partial<Record<Locale, Lega
   "sr-Latn": {
     title: "Politika privatnosti",
     subtitle: "TapRadar – TOY GmbH",
-    stand: "Ažurirano: 9. avgust 2026 · Verzija 2026-08-09.2 (detaljna verzija)",
+    stand: "Ažurirano: 2. oktobar 2026 · Verzija 2026-10-02.1 (detaljna verzija)",
     intro: [
       p("Zaštita vaših ličnih podataka je od centralnog značaja za TOY GmbH. Ova politika privatnosti vas sveobuhvatno i detaljno informiše o tome koje lične podatke prikupljamo u vezi sa korišćenjem aplikacije TapRadar sa njena četiri funkcionalna dela Radar, Pečat, Kartice i Home, veb-sajta TapRadar, kao i kontrolne table TapRadar za poslovne korisnike (zajedno „TapRadar“ ili „Platforma“), u koje svrhe i na kom pravnom osnovu ih obrađujemo, kome podatke prosleđujemo, koliko dugo ih čuvamo i koja prava vam pripadaju kao licu na koje se podaci odnose. Ova izjava važi i za krajnje korisnike koji koriste besplatnu aplikaciju TapRadar, kao i za poslovne korisnike koji su se pretplatili na neki od plaćenih paketa TapRadar Bronze, Gold ili Platinum. Zasniva se na Uredbi (EU) 2016/679 (Opšta uredba o zaštiti podataka, „GDPR“), kao i na relevantnim austrijskim sprovedbenim propisima, posebno Zakonu o zaštiti podataka (DSG) i Zakonu o telekomunikacijama 2021 (TKG 2021)."),
     ],
@@ -2048,7 +2048,7 @@ export const privacyContent: { de: LegalDocument } & Partial<Record<Locale, Lega
       },
       {
         heading: "13. Korišćenje veb-sajta, log fajlovi servera i kolačići", blocks: [
-          p("Prilikom posete našem veb-sajtu www.tapradar.app, naš pružalac hostinga automatski obrađuje tehničke podatke o pristupu (IP adresa, datum i vreme pristupa, posećena stranica, korišćeni pregledač i operativni sistem, referentni URL) u log fajlovima servera. Svrha: obezbeđivanje neometanog rada i IT bezbednosti. Pravni osnov: član 6. stav 1. tačka f) GDPR. Veb-sajt koristi isključivo tehnički neophodne kolačiće potrebne za rad sajta; trenutno se ne koriste kolačići za praćenje ili marketing. Ako se to u budućnosti promeni, tražićemo vašu saglasnost putem baner obaveštenja o saglasnosti na kolačiće."),
+          p("Prilikom posete našem veb-sajtu www.tapradar.app, naš pružalac hostinga automatski obrađuje tehničke podatke o pristupu (IP adresa, datum i vreme pristupa, posećena stranica, korišćeni pregledač i operativni sistem, referentni URL) u log fajlovima servera. Svrha: obezbeđivanje neometanog rada i IT bezbednosti. Pravni osnov: član 6. stav 1. tačka f) GDPR. Naš baner razlikuje tehnički neophodne kolačiće za jezik, prijavu, bezbednost i čuvanje vašeg izbora od opcionih kategorija Analitika i Marketing. Opcioni analitički ili marketinški kolačići i povezane usluge koriste se tek nakon vaše dobrovoljne saglasnosti. Izbor možete u svakom trenutku promeniti putem „Podešavanja kolačića“ u podnožju ili povući saglasnost za budućnost."),
         ],
       },
       {
@@ -2139,7 +2139,7 @@ export const privacyContent: { de: LegalDocument } & Partial<Record<Locale, Lega
   bs: {
     title: "Politika privatnosti",
     subtitle: "TapRadar – TOY GmbH",
-    stand: "Ažurirano: 9. august 2026 · Verzija 2026-08-09.2 (detaljna verzija)",
+    stand: "Ažurirano: 2. oktobar 2026 · Verzija 2026-10-02.1 (detaljna verzija)",
     intro: [
       p("Zaštita vaših ličnih podataka je od centralnog značaja za TOY GmbH. Ova politika privatnosti vas sveobuhvatno i detaljno informiše o tome koje lične podatke prikupljamo u vezi sa korištenjem aplikacije TapRadar sa njena četiri funkcionalna dijela Radar, Pečat, Kartice i Home, web stranice TapRadar, kao i kontrolne table TapRadar za poslovne korisnike (zajedno „TapRadar“ ili „Platforma“), u koje svrhe i na kojoj pravnoj osnovi ih obrađujemo, kome podatke prosljeđujemo, koliko dugo ih čuvamo i koja prava vam pripadaju kao licu na koje se podaci odnose. Ova izjava vrijedi i za krajnje korisnike koji koriste besplatnu aplikaciju TapRadar, kao i za poslovne korisnike koji su se pretplatili na neki od plaćenih paketa TapRadar Bronze, Gold ili Platinum. Zasniva se na Uredbi (EU) 2016/679 (Opća uredba o zaštiti podataka, „GDPR“), kao i na relevantnim austrijskim provedbenim propisima, posebno Zakonu o zaštiti podataka (DSG) i Zakonu o telekomunikacijama 2021 (TKG 2021)."),
     ],
@@ -2242,7 +2242,7 @@ export const privacyContent: { de: LegalDocument } & Partial<Record<Locale, Lega
       },
       {
         heading: "13. Korištenje web stranice, log fajlovi servera i kolačići", blocks: [
-          p("Prilikom posjete našoj web stranici www.tapradar.app, naš pružalac hostinga automatski obrađuje tehničke podatke o pristupu (IP adresa, datum i vrijeme pristupa, posjećena stranica, korišteni preglednik i operativni sistem, referentni URL) u log fajlovima servera. Svrha: osiguravanje neometanog rada i IT sigurnosti. Pravna osnova: član 6. stav 1. tačka f) GDPR. Web stranica koristi isključivo tehnički neophodne kolačiće potrebne za rad stranice; trenutno se ne koriste kolačići za praćenje ili marketing. Ako se to u budućnosti promijeni, tražit ćemo vašu saglasnost putem baner obavještenja o saglasnosti na kolačiće."),
+          p("Prilikom posjete našoj web stranici www.tapradar.app, naš pružalac hostinga automatski obrađuje tehničke podatke o pristupu (IP adresa, datum i vrijeme pristupa, posjećena stranica, korišteni preglednik i operativni sistem, referentni URL) u log fajlovima servera. Svrha: osiguravanje neometanog rada i IT sigurnosti. Pravna osnova: član 6. stav 1. tačka f) GDPR. Naš baner razlikuje tehnički neophodne kolačiće za jezik, prijavu, sigurnost i čuvanje vašeg izbora od opcionalnih kategorija Analitika i Marketing. Opcionalni analitički ili marketinški kolačići i povezane usluge koriste se tek nakon vaše dobrovoljne saglasnosti. Izbor možete u svakom trenutku promijeniti putem „Postavki kolačića“ u podnožju ili povući saglasnost za budućnost."),
         ],
       },
       {
@@ -2333,7 +2333,7 @@ export const privacyContent: { de: LegalDocument } & Partial<Record<Locale, Lega
   hr: {
     title: "Politika privatnosti",
     subtitle: "TapRadar – TOY GmbH",
-    stand: "Ažurirano: 9. kolovoza 2026. · Verzija 2026-08-09.2 (detaljna verzija)",
+    stand: "Ažurirano: 2. listopada 2026. · Verzija 2026-10-02.1 (detaljna verzija)",
     intro: [
       p("Zaštita vaših osobnih podataka od središnje je važnosti za TOY GmbH. Ova politika privatnosti sveobuhvatno vas i detaljno informira o tome koje osobne podatke prikupljamo u vezi s korištenjem aplikacije TapRadar s njezina četiri funkcionalna dijela Radar, Pečat, Kartice i Home, web-stranice TapRadar te nadzorne ploče TapRadar za poslovne korisnike (zajedno „TapRadar” ili „Platforma”), u koje svrhe i na kojoj pravnoj osnovi ih obrađujemo, kome podatke prosljeđujemo, koliko dugo ih čuvamo te koja vam prava pripadaju kao ispitaniku. Ova izjava vrijedi i za krajnje korisnike koji koriste besplatnu aplikaciju TapRadar te za poslovne korisnike koji su se pretplatili na neki od plaćenih paketa TapRadar Bronze, Gold ili Platinum. Temelji se na Uredbi (EU) 2016/679 (Opća uredba o zaštiti podataka, „GDPR”) te relevantnim austrijskim provedbenim propisima, posebice Zakonu o zaštiti podataka (DSG) i Zakonu o telekomunikacijama 2021 (TKG 2021)."),
     ],
@@ -2436,7 +2436,7 @@ export const privacyContent: { de: LegalDocument } & Partial<Record<Locale, Lega
       },
       {
         heading: "13. Korištenje web-stranice, log datoteke poslužitelja i kolačići", blocks: [
-          p("Prilikom posjeta našoj web-stranici www.tapradar.app naš pružatelj hostinga automatski obrađuje tehničke podatke o pristupu (IP adresa, datum i vrijeme pristupa, posjećena stranica, korišteni preglednik i operacijski sustav, referentni URL) u log datotekama poslužitelja. Svrha: osiguravanje neometanog rada i IT sigurnosti. Pravna osnova: čl. 6. st. 1. t. f) GDPR-a. Web-stranica koristi isključivo tehnički nužne kolačiće potrebne za rad stranice; trenutačno se ne koriste kolačići za praćenje ili marketing. Ako se to u budućnosti promijeni, zatražit ćemo vašu privolu putem banera za privolu na kolačiće."),
+          p("Prilikom posjeta našoj web-stranici www.tapradar.app naš pružatelj hostinga automatski obrađuje tehničke podatke o pristupu (IP adresa, datum i vrijeme pristupa, posjećena stranica, korišteni preglednik i operacijski sustav, referentni URL) u log datotekama poslužitelja. Svrha: osiguravanje neometanog rada i IT sigurnosti. Pravna osnova: čl. 6. st. 1. t. f) GDPR-a. Naš banner razlikuje tehnički nužne kolačiće za jezik, prijavu, sigurnost i spremanje vašeg odabira od neobaveznih kategorija Analitika i Marketing. Neobavezni analitički ili marketinški kolačići i povezane usluge koriste se tek nakon vaše dobrovoljne privole. Odabir možete u svakom trenutku promijeniti putem „Postavki kolačića“ u podnožju ili povući privolu s učinkom za budućnost."),
         ],
       },
       {
@@ -2527,7 +2527,7 @@ export const privacyContent: { de: LegalDocument } & Partial<Record<Locale, Lega
   ro: {
     title: "Politica de confidențialitate",
     subtitle: "TapRadar – TOY GmbH",
-    stand: "Actualizat: 9 august 2026 · Versiunea 2026-08-09.2 (versiune detaliată)",
+    stand: "Actualizat: 2 octombrie 2026 · Versiunea 2026-10-02.1 (versiune detaliată)",
     intro: [
       p("Protecția datelor dumneavoastră cu caracter personal este o preocupare centrală pentru TOY GmbH. Prezenta politică de confidențialitate vă informează în mod cuprinzător și detaliat despre ce date cu caracter personal colectăm în legătură cu utilizarea aplicației TapRadar, cu cele patru domenii funcționale ale sale Radar, Ștampilă, Carduri și Home, a site-ului web TapRadar, precum și a panoului de control TapRadar pentru clienți comerciali (denumite împreună „TapRadar” sau „Platforma”), în ce scopuri și pe ce temei juridic le prelucrăm, cui transmitem datele, cât timp le păstrăm și ce drepturi vă revin în calitate de persoană vizată. Prezenta declarație se aplică atât clienților finali care utilizează aplicația gratuită TapRadar, cât și clienților comerciali care s-au abonat la unul dintre planurile plătite TapRadar Bronze, Gold sau Platinum. Aceasta se bazează pe Regulamentul (UE) 2016/679 (Regulamentul general privind protecția datelor, „GDPR”), precum și pe dispozițiile de punere în aplicare austriece relevante, în special Legea privind protecția datelor (DSG) și Legea telecomunicațiilor 2021 (TKG 2021)."),
     ],
@@ -2630,7 +2630,7 @@ export const privacyContent: { de: LegalDocument } & Partial<Record<Locale, Lega
       },
       {
         heading: "13. Utilizarea site-ului web, fișiere jurnal ale serverului și module cookie", blocks: [
-          p("La accesarea site-ului nostru web www.tapradar.app, furnizorul nostru de găzduire prelucrează automat date tehnice de acces (adresa IP, data și ora accesării, pagina accesată, browserul și sistemul de operare utilizate, URL-ul de referință) în fișiere jurnal ale serverului. Scop: asigurarea unei funcționări fără probleme și a securității IT. Temei juridic: art. 6 alin. (1) lit. f) din GDPR. Site-ul web utilizează exclusiv module cookie strict necesare din punct de vedere tehnic pentru funcționarea site-ului; în prezent nu utilizăm module cookie de urmărire sau marketing. Dacă acest lucru se va schimba în viitor, vă vom solicita consimțământul printr-un banner de consimțământ pentru module cookie."),
+          p("La accesarea site-ului nostru web www.tapradar.app, furnizorul nostru de găzduire prelucrează automat date tehnice de acces (adresa IP, data și ora accesării, pagina accesată, browserul și sistemul de operare utilizate, URL-ul de referință) în fișiere jurnal ale serverului. Scop: asigurarea unei funcționări fără probleme și a securității IT. Temei juridic: art. 6 alin. (1) lit. f) din GDPR. Bannerul nostru distinge modulele cookie strict necesare pentru limbă, autentificare, securitate și memorarea alegerii dumneavoastră de categoriile opționale Analiză și Marketing. Modulele cookie opționale de analiză sau marketing și serviciile asociate sunt utilizate numai după consimțământul dumneavoastră voluntar. Puteți modifica oricând alegerea prin „Setări cookie” din subsol sau vă puteți retrage consimțământul pentru viitor."),
         ],
       },
       {
@@ -2721,7 +2721,7 @@ export const privacyContent: { de: LegalDocument } & Partial<Record<Locale, Lega
   bg: {
     title: "Политика за поверителност",
     subtitle: "TapRadar – TOY GmbH",
-    stand: "Актуализирано на: 9 август 2026 г. · Версия 2026-08-09.2 (подробна версия)",
+    stand: "Актуализирано на: 2 октомври 2026 г. · Версия 2026-10-02.1 (подробна версия)",
     intro: [
       p("Защитата на Вашите лични данни е от централно значение за TOY GmbH. Настоящата политика за поверителност Ви информира изчерпателно и подробно за това какви лични данни събираме във връзка с използването на приложението TapRadar с неговите четири функционални области Радар, Печат, Карти и Home, уебсайта TapRadar, както и таблото за бизнес клиенти на TapRadar (заедно „TapRadar“ или „Платформата“), за какви цели и на какво правно основание ги обработваме, на кого предаваме данни, колко дълго ги съхраняваме и какви права Ви се полагат като субект на данни. Настоящата декларация важи както за крайните клиенти, използващи безплатното приложение TapRadar, така и за бизнес клиентите, абонирали се за някой от платените тарифни планове на TapRadar – Bronze, Gold или Platinum. Тя се основава на Регламент (ЕС) 2016/679 (Общ регламент относно защитата на данните, „GDPR“), както и на съответните австрийски разпоредби за прилагане, по-специално Закона за защита на данните (DSG) и Закона за далекосъобщенията 2021 (TKG 2021)."),
     ],
@@ -2824,7 +2824,7 @@ export const privacyContent: { de: LegalDocument } & Partial<Record<Locale, Lega
       },
       {
         heading: "13. Използване на уебсайта, лог файлове на сървъра и бисквитки", blocks: [
-          p("При посещение на нашия уебсайт www.tapradar.app доставчикът ни на хостинг автоматично обработва технически данни за достъп (IP адрес, дата и час на достъпа, посетената страница, използваният браузър и операционна система, реферер URL) в лог файлове на сървъра. Цел: осигуряване на безпроблемна работа и ИТ сигурност. Правно основание: чл. 6, параграф 1, буква е) от GDPR. Уебсайтът използва изключително технически необходими бисквитки, необходими за работата на сайта; понастоящем не използваме проследяващи или маркетингови бисквитки. Ако това се промени в бъдеще, ще поискаме Вашето съгласие чрез банер за съгласие с бисквитки."),
+          p("При посещение на нашия уебсайт www.tapradar.app доставчикът ни на хостинг автоматично обработва технически данни за достъп (IP адрес, дата и час на достъпа, посетената страница, използваният браузър и операционна система, реферер URL) в лог файлове на сървъра. Цел: осигуряване на безпроблемна работа и ИТ сигурност. Правно основание: чл. 6, параграф 1, буква е) от GDPR. Нашият банер разграничава технически необходимите бисквитки за език, вход, сигурност и запазване на Вашия избор от незадължителните категории Анализ и Маркетинг. Незадължителните аналитични или маркетингови бисквитки и свързаните услуги се използват само след Вашето доброволно съгласие. Можете по всяко време да промените избора си чрез „Настройки за бисквитки“ във футъра или да оттеглите съгласието си за в бъдеще."),
         ],
       },
       {
