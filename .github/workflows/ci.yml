@@ -75,4 +75,4 @@ jobs:
         run: npm run test:email
       - name: Stop local Supabase
         if: always()
-        run: npx --yes supabase@latest stop --no-backup
+        run: timeout 60s npx --yes supabase@latest stop --no-backup || true
