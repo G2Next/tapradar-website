@@ -17,6 +17,8 @@ const adminGroups: Group[] = [
   ] },
   { label: "Inhalte", items: [
     { href: "/admin/marketing", label: "Freigaben", icon: "✓", permission: "marketing.view" },
+    { href: "/admin/campaigns", label: "Kampagnen-Planer", icon: "◷", permission: "campaigns.manage" },
+    { href: "/admin/trust", label: "Missbrauch & Bewertungen", icon: "⚑", permission: "trust.view" },
   ] },
   { label: "Umsatz", items: [
     { href: "/admin/products", label: "Abos & Preise", icon: "◆", permission: "billing.view" },
@@ -25,12 +27,14 @@ const adminGroups: Group[] = [
   ] },
   { label: "Kommunikation", items: [
     { href: "/admin/messages", label: "Nachrichten & Support", icon: "✉", permission: "support.view" },
+    { href: "/admin/support-tickets", label: "Support-Tickets", icon: "◎", permission: "support.view" },
     { href: "/admin/email-templates", label: "E-Mail-Vorlagen", icon: "▧", permission: "email_templates.view" },
   ] },
   { label: "System", items: [
     { href: "/admin/team", label: "Team & Rollen", icon: "♙", permission: "team.manage" },
     { href: "/admin/security", label: "2FA & Sitzung", icon: "◇" },
     { href: "/admin/audit-log", label: "Audit-Log", icon: "≡", permission: "audit.view" },
+    { href: "/admin/feature-flags", label: "Feature-Flags", icon: "⚐", permission: "feature_flags.manage" },
     { href: "/admin/api-keys", label: "API-Schlüssel", icon: "⌘", permission: "api_keys.manage" },
     { href: "/admin/captcha", label: "reCAPTCHA", icon: "◫", permission: "captcha.manage" },
     { href: "/admin/operations", label: "Datenschutz & Betrieb", icon: "◈", permission: "operations.manage" },

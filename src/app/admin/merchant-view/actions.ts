@@ -1,0 +1,9 @@
+"use server";
+import { redirect } from "next/navigation";
+import { requirePlatformAdmin } from "@/lib/admin";
+import { recordAdminAudit } from "@/lib/admin-audit";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { isUuid, requiredText } from "@/lib/validation";
+
+export async function startMerchantView(formData:FormData){const{user}=await requirePlatformAdmin("impersonation.manage");const organizationId=requiredText(formData.get("organization_id"),40),reason=requiredText(formData.get("reason"),500);if(!isUuid(organizationId)||reason.length<5)redirect(`/admin/organizations/${organizationId}?error=merchant-view-reason`);const db=createAdminClient();await db.from("admin_merchant_views").update({ended_at:new Date().toISOString()}).eq("admin_user_id",user.id).is("ended_at",null);const{data,error}=await db.from("admin_merchant_views").insert({admin_user_id:user.id,organization_id:organizationId,reason}).select("id").single();if(error)redirect(`/admin/organizations/${organizationId}?error=merchant-view`);await recordAdminAudit(db,{actorUserId:user.id,organizationId,action:"admin.merchant_view.started",entityType:"admin_merchant_view",entityId:data.id,metadata:{reason,expires_in_minutes:30}});redirect(`/admin/merchant-view/${data.id}`)}
+export async function endMerchantView(formData:FormData){const{user}=await requirePlatformAdmin("impersonation.manage");const id=requiredText(formData.get("id"),40);if(!isUuid(id))redirect("/admin");const db=createAdminClient();const{data}=await db.from("admin_merchant_views").update({ended_at:new Date().toISOString()}).eq("id",id).eq("admin_user_id",user.id).is("ended_at",null).select("organization_id").maybeSingle();if(data)await recordAdminAudit(db,{actorUserId:user.id,organizationId:data.organization_id,action:"admin.merchant_view.ended",entityType:"admin_merchant_view",entityId:id});redirect(data?.organization_id?`/admin/organizations/${data.organization_id}`:"/admin")}

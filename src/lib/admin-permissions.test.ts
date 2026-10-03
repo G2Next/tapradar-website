@@ -12,6 +12,10 @@ describe("admin permissions", () => {
     expect(hasAdminPermission("support", "payments.view")).toBe(false);
     expect(hasAdminPermission("finance", "billing.manage")).toBe(true);
     expect(hasAdminPermission("finance", "customers.manage")).toBe(false);
+    expect(hasAdminPermission("support", "trust.manage")).toBe(true);
+    expect(hasAdminPermission("support", "feature_flags.manage")).toBe(false);
+    expect(hasAdminPermission("operations", "campaigns.manage")).toBe(true);
+    expect(hasAdminPermission("finance", "impersonation.manage")).toBe(false);
   });
 
   it("rejects unknown roles", () => {
