@@ -4,6 +4,7 @@ import { chromeMessages } from "@/i18n/chrome";
 import { localizedPath } from "@/i18n/config";
 import { getLocale } from "@/i18n/server";
 import { translateTree } from "@/i18n/translate";
+import { CookieSettingsLink } from "@/components/CookieSettingsLink";
 
 export async function SiteFooter() {
   const locale = await getLocale();
@@ -56,10 +57,11 @@ export async function SiteFooter() {
       </div>
       <div className="mx-auto mt-10 flex max-w-7xl flex-wrap items-center justify-between gap-4 border-t border-white/10 pt-6 text-xs text-slate-500">
         <p>© 2026 TapRadar. Alle Rechte vorbehalten.</p>
-        <div className="flex gap-5">
+        <div className="flex flex-wrap gap-5">
           <Link href={localizedPath(locale, "/datenschutz")} className="hover:text-cyan-300">Datenschutz</Link>
           <Link href={localizedPath(locale, "/agb")} className="hover:text-cyan-300">AGB</Link>
           <Link href={localizedPath(locale, "/widerrufsbelehrung")} className="hover:text-cyan-300">Widerruf</Link>
+          <CookieSettingsLink>Cookie-Einstellungen</CookieSettingsLink>
         </div>
       </div>
     </footer>,
