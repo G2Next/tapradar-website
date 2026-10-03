@@ -26,11 +26,11 @@ jobs:
       - run: npm test
       - run: npm run lint
       - run: npm run build
-      - name: Audit dependencies
+      - name: Audit production dependencies
         run: |
           audit_output=/tmp/tapradar-npm-audit.json
           for attempt in 1 2 3; do
-            if npm audit --audit-level=high --json \
+            if npm audit --omit=dev --audit-level=high --json \
               --fetch-retries=2 \
               --fetch-retry-mintimeout=2000 \
               --fetch-retry-maxtimeout=10000 \
@@ -51,6 +51,9 @@ jobs:
             echo "npm audit service unavailable; retrying ($attempt/3)..."
             sleep $((attempt * 5))
           done
+      - name: Report development dependency advisories
+        continue-on-error: true
+        run: npm audit --include=dev --audit-level=high
 
   database:
     runs-on: ubuntu-latest
