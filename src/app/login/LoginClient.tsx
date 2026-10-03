@@ -10,18 +10,21 @@ import { AUTH_PERSISTENCE_COOKIE, AUTH_PERSISTENCE_MAX_AGE } from "@/lib/auth-se
 import { SOCIAL_AUTH_PROVIDERS, type SocialAuthProvider } from "@/lib/social-auth";
 import { createClient } from "@/lib/supabase/client";
 import type { PublicCaptchaConfig } from "@/lib/captcha";
+import { translateText } from "@/i18n/translate";
+import type { Locale } from "@/i18n/config";
 import styles from "./login.module.css";
 
 export type LoginMode = "signin" | "signup";
 
 type LoginClientProps = {
-  locale: string;
+  locale: Locale;
   messages: AuthMessages;
   socialMessages: SocialAuthMessages;
   enabledProviders: { google: boolean; apple: boolean };
   initialMode: LoginMode;
   initialPasswordUpdated: boolean;
   initialAuthError: boolean;
+  initialSessionError: boolean;
   isBusinessSignup: boolean;
   privacyHref: string;
   termsHref: string;
@@ -36,6 +39,7 @@ export function LoginClient({
   initialMode,
   initialPasswordUpdated,
   initialAuthError,
+  initialSessionError,
   isBusinessSignup,
   privacyHref,
   termsHref,
@@ -45,7 +49,7 @@ export function LoginClient({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [mode, setMode] = useState<LoginMode>(initialMode);
-  const [message, setMessage] = useState(initialPasswordUpdated ? messages.passwordUpdated : initialAuthError ? socialMessages.socialFailed : "");
+  const [message, setMessage] = useState(initialPasswordUpdated ? messages.passwordUpdated : initialSessionError ? translateText(locale,"Deine Admin-Sitzung ist abgelaufen. Bitte melde dich erneut an.") : initialAuthError ? socialMessages.socialFailed : "");
   const [isLoading, setIsLoading] = useState(false);
   const [legalConfirmed, setLegalConfirmed] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
