@@ -31,7 +31,7 @@ export async function setBusinessApproval(formData:FormData) {
   const{error}=await supabase.from("organizations").update(values).eq("id",organizationId);if(error)redirect(`${returnTo}?error=save`);
   await supabase.from("audit_logs").insert({actor_user_id:user.id,organization_id:organizationId,action:`admin.organization.${decision}`,entity_type:"organization",entity_id:organizationId,metadata:decision==="reject"?{reason:rejectionReason}:{}});
   if(["approve","reject"].includes(decision)){const{data:organization}=await supabase.from("organizations").select("name,billing_email").eq("id",organizationId).single();if(organization?.billing_email){try{await enqueueNotification({organizationId,email:organization.billing_email,template:decision==="approve"?"organization_approved":"organization_rejected",payload:{organization_name:organization.name,reason:rejectionReason}});}catch(notificationError){await recordSystemEvent({severity:"warning",source:"admin-approval",message:notificationError instanceof Error?notificationError.message:"Approval email could not be queued",organizationId});}}}
-  revalidatePath("/admin");revalidatePath(`/admin/organizations/${organizationId}`);redirect(`${returnTo}${returnTo.includes("?")?"&":"?"}saved=status`);
+  revalidatePath("/admin");revalidatePath("/admin/organizations");revalidatePath(`/admin/organizations/${organizationId}`);redirect(`${returnTo}${returnTo.includes("?")?"&":"?"}saved=status`);
 }
 
 export async function updateOrganizationAsAdmin(formData:FormData) {
