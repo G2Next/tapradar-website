@@ -10,7 +10,7 @@ export const metadata = { title: "E-Mail-Vorlagen | TapRadar Administration", ro
 const statusLabels: Record<string, string> = { pending: "Wartet", processing: "Wird gesendet", sent: "An Versanddienst übergeben", failed: "Fehlgeschlagen", cancelled: "Deaktiviert" };
 
 export default async function EmailTemplatesPage({ searchParams }: { searchParams: Promise<{ saved?: string; error?: string }> }) {
-  const { supabase } = await requirePlatformAdmin();
+  const { supabase } = await requirePlatformAdmin("email_templates.view");
   const [params, templates, settings, logs] = await Promise.all([
     searchParams,
     supabase.from("email_templates").select("event_id,locale,subject,body,enabled,revision").order("event_id"),

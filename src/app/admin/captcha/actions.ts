@@ -7,7 +7,7 @@ import { encryptIntegrationSecret } from "@/lib/integration-secrets";
 import { requiredText } from "@/lib/validation";
 
 export async function saveCaptchaSettings(formData: FormData) {
-  const { supabase, user } = await requirePlatformAdmin();
+  const { supabase, user } = await requirePlatformAdmin("captcha.manage");
   const mode = requiredText(formData.get("mode"), 2);
   const theme = requiredText(formData.get("v2_theme"), 5);
   const threshold = Number(formData.get("score_threshold"));

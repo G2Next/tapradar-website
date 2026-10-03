@@ -8,7 +8,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { isUuid, requiredText } from "@/lib/validation";
 
 export async function reviewMarketingSubmission(formData: FormData) {
-  const { user, admin: reviewer } = await requirePlatformAdmin();
+  const { user, admin: reviewer } = await requirePlatformAdmin("marketing.manage");
   if (!["super_admin", "operations"].includes(reviewer.role)) redirect("/admin/marketing?error=role");
   const resourceType = requiredText(formData.get("resource_type"), 30);
   const resourceId = requiredText(formData.get("resource_id"), 40);
@@ -41,7 +41,7 @@ export async function reviewMarketingSubmission(formData: FormData) {
 }
 
 export async function markAdminNotificationRead(formData: FormData) {
-  const { supabase, user } = await requirePlatformAdmin();
+  const { supabase, user } = await requirePlatformAdmin("marketing.manage");
   const id = Number(formData.get("notification_id"));
   if (Number.isInteger(id) && id > 0) await supabase.from("admin_notifications").update({ read_at: new Date().toISOString() }).eq("id", id).eq("recipient_user_id", user.id);
   revalidatePath("/admin/marketing");

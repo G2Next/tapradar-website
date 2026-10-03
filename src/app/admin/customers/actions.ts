@@ -6,7 +6,7 @@ import { requirePlatformAdmin } from "@/lib/admin";
 import { isUuid, requiredText } from "@/lib/validation";
 
 export async function setCustomerApproval(formData: FormData) {
-  const { supabase, user } = await requirePlatformAdmin();
+  const { supabase, user } = await requirePlatformAdmin("customers.manage");
   const customerId = requiredText(formData.get("customer_id"), 40);
   const decision = requiredText(formData.get("decision"), 20);
   const reason = requiredText(formData.get("reason"), 500);

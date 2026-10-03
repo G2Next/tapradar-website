@@ -25,7 +25,7 @@ type ErrorRow = {
 
 export default async function AdminErrorsPage({ searchParams }: { searchParams: SearchParams }) {
   const params = await searchParams;
-  const { supabase, admin } = await requirePlatformAdmin();
+  const { supabase, admin } = await requirePlatformAdmin("errors.manage");
   const selectedStatus = ["all", "open", "acknowledged", "resolved"].includes(params.status ?? "") ? params.status! : "open";
   const selectedSeverity = ["warning", "error", "critical"].includes(params.severity ?? "") ? params.severity! : "";
   const selectedSource = (params.source ?? "").trim().replace(/[%(),]/g, "").slice(0, 100);

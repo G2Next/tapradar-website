@@ -5,7 +5,7 @@ type Params = Promise<{ saved?: string; error?: string }>;
 
 export default async function MarketingReviewPage({ searchParams }: { searchParams: Params }) {
   const params = await searchParams;
-  const { supabase, admin } = await requirePlatformAdmin();
+  const { supabase, admin } = await requirePlatformAdmin("marketing.view");
   const [offers, pushes, unread] = await Promise.all([
     supabase.from("offers").select("id,organization_id,title,description,offer_type,starts_at,ends_at,submitted_at,review_version,organizations(name)").eq("moderation_status", "pending_review").order("submitted_at", { ascending: true }).limit(200),
     supabase.from("push_messages").select("id,business_id,title,body,target_type,segment_name,submitted_at,review_version,organizations!push_messages_business_id_fkey(name)").eq("moderation_status", "pending_review").order("submitted_at", { ascending: true }).limit(200),

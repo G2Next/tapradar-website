@@ -6,7 +6,7 @@ import { requirePlatformAdmin } from "@/lib/admin";
 import { isUuid, requiredText } from "@/lib/validation";
 
 export async function updateErrorStatus(formData: FormData) {
-  const { supabase, user } = await requirePlatformAdmin();
+  const { supabase, user } = await requirePlatformAdmin("errors.manage");
   const id = requiredText(formData.get("error_id"), 40);
   const status = requiredText(formData.get("status"), 20);
   const returnTo = requiredText(formData.get("return_to"), 500);

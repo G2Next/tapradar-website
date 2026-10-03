@@ -8,7 +8,7 @@ type SearchParams = Promise<{ q?: string; status?: string; saved?: string; error
 type Customer = { user_id: string; customer_number: string; display_name: string | null; approval_status: string; is_active: boolean; marketing_consent: boolean; approved_at: string | null; rejection_reason: string | null; created_at: string };
 
 export default async function CustomersPage({ searchParams }: { searchParams: SearchParams }) {
-  const [params, { supabase }] = await Promise.all([searchParams, requirePlatformAdmin()]);
+  const [params, { supabase }] = await Promise.all([searchParams, requirePlatformAdmin("customers.view")]);
   let query = supabase.from("customer_profiles").select("user_id,customer_number,display_name,approval_status,is_active,marketing_consent,approved_at,rejection_reason,created_at").order("created_at", { ascending: false }).limit(500);
   if (["pending", "approved", "rejected", "suspended"].includes(params.status ?? "")) query = query.eq("approval_status", params.status);
   const { data } = await query;
@@ -36,5 +36,5 @@ export default async function CustomersPage({ searchParams }: { searchParams: Se
 const inputClass="rounded-xl border border-white/10 bg-slate-900 px-4 py-3 text-base font-normal normal-case text-white";
 function Metric({label,value}:{label:string;value:number}){return <div className="rounded-3xl border border-white/10 bg-white/[0.05] p-5"><p className="text-sm text-slate-400">{label}</p><p className="mt-2 text-4xl font-black">{value}</p></div>}
 function Status({value}:{value:string}){const style=value==="approved"?"bg-emerald-300/15 text-emerald-100":value==="pending"?"bg-amber-300/15 text-amber-100":"bg-red-300/15 text-red-100";const label=value==="approved"?"Freigegeben":value==="pending"?"In Prüfung":value==="rejected"?"Abgelehnt":"Gesperrt";return <span className={`rounded-full px-3 py-1 text-xs font-black ${style}`}>{label}</span>}
-function Decision({customerId,decision,label,tone="default"}:{customerId:string;decision:string;label:string;tone?:"default"|"danger"|"warning"}){return <form action={setCustomerApproval}><input type="hidden" name="customer_id" value={customerId}/><input type="hidden" name="decision" value={decision}/><input type="hidden" name="return_to" value="/admin/customers"/><AdminDecisionButton label={label} tone={tone}/></form>}
+function Decision({customerId,decision,label,tone="default"}:{customerId:string;decision:string;label:string;tone?:"default"|"danger"|"warning"}){return <form action={setCustomerApproval}><input type="hidden" name="customer_id" value={customerId}/><input type="hidden" name="decision" value={decision}/><input type="hidden" name="return_to" value="/admin/customers"/><AdminDecisionButton label={label} tone={tone} confirmation={decision==="suspend"?"Dieses Kundenkonto wirklich sperren? Wallet und Stempelfunktion werden deaktiviert.":undefined}/></form>}
 function Notice({tone,children}:{tone:"success"|"error";children:React.ReactNode}){return <p className={`mt-6 rounded-2xl p-4 ${tone==="success"?"bg-emerald-300/10 text-emerald-100":"bg-red-300/10 text-red-100"}`}>{children}</p>}

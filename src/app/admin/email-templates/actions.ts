@@ -10,7 +10,7 @@ export type TemplateSaveState = { error?: string; success?: string; revision?: n
 const path = "/admin/email-templates";
 
 export async function saveEmailTemplate(_: TemplateSaveState, form: FormData): Promise<TemplateSaveState> {
-  const { supabase } = await requirePlatformAdmin();
+  const { supabase } = await requirePlatformAdmin("email_templates.manage");
   const event = String(form.get("event_id") ?? "");
   const locale = String(form.get("locale") ?? "");
   const subject = String(form.get("subject") ?? "").trim();
@@ -27,7 +27,7 @@ export async function saveEmailTemplate(_: TemplateSaveState, form: FormData): P
 }
 
 export async function saveEmailSettings(form: FormData) {
-  const { supabase, user } = await requirePlatformAdmin();
+  const { supabase, user } = await requirePlatformAdmin("email_templates.manage");
   const testRecipient = String(form.get("test_recipient") ?? "").trim().toLowerCase();
   if (testRecipient.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(testRecipient)) redirect(`${path}?error=recipient`);
   const { data, error } = await supabase.from("email_settings").update({ test_recipient: testRecipient, test_mode: form.get("test_mode") === "on", updated_by: user.id }).eq("id", true).select("id").maybeSingle();
@@ -37,7 +37,7 @@ export async function saveEmailSettings(form: FormData) {
 }
 
 export async function queueTemplateTest(form: FormData) {
-  const { supabase, user } = await requirePlatformAdmin();
+  const { supabase, user } = await requirePlatformAdmin("email_templates.manage");
   const event = String(form.get("event_id") ?? "");
   const locale = String(form.get("locale") ?? "");
   if (!isEmailEvent(event) || !["de", "en"].includes(locale)) redirect(`${path}?error=template`);
