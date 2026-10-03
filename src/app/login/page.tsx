@@ -5,6 +5,7 @@ import { socialAuthMessages } from "@/i18n/social-auth";
 import { localizedPath } from "@/i18n/config";
 import { getLocale } from "@/i18n/server";
 import { SOCIAL_AUTH_CALLBACK_ERROR } from "@/lib/social-auth";
+import { getPublicCaptchaConfig } from "@/lib/captcha";
 
 type LoginSearchParams = Promise<{
   mode?: string | string[];
@@ -20,11 +21,11 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function LoginPage({ searchParams }: { searchParams: LoginSearchParams }) {
-  const [locale, params] = await Promise.all([getLocale(), searchParams]);
+  const [locale, params, loginCaptcha, registrationCaptcha] = await Promise.all([getLocale(), searchParams, getPublicCaptchaConfig("login"), getPublicCaptchaConfig("registration")]);
   const messages = authMessages[locale];
   const socialMessages = socialAuthMessages[locale];
   const initialMode: LoginMode = params.mode === "signup" ? "signup" : "signin";
-  const isBusinessSignup = initialMode === "signup";
+  const isBusinessSignup = initialMode === "signup" && params.account === "business";
 
   return (
     <LoginClient
@@ -41,6 +42,7 @@ export default async function LoginPage({ searchParams }: { searchParams: LoginS
       isBusinessSignup={isBusinessSignup}
       privacyHref={localizedPath(locale, "/datenschutz")}
       termsHref={localizedPath(locale, isBusinessSignup ? "/agb-geschaeftskunden" : "/agb-verbraucher")}
+      captcha={{ login: loginCaptcha, registration: registrationCaptcha }}
     />
   );
 }

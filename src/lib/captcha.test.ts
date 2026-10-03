@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { verifyContactCaptcha } from "./captcha";
+import { verifyCaptcha, verifyContactCaptcha } from "./captcha";
 
 afterEach(() => { vi.unstubAllEnvs(); vi.unstubAllGlobals(); });
 function configured(result: unknown) {
@@ -36,5 +36,17 @@ describe("contact CAPTCHA", () => {
     vi.stubEnv("RECAPTCHA_SECRET_KEY", "secret");
     fetch.mockRejectedValue(new Error("network"));
     expect(await verifyContactCaptcha("token")).toBe(false);
+  });
+  it("accepts a valid visible v2 challenge without a score or action", async () => {
+    vi.stubEnv("RECAPTCHA_MODE", "v2");
+    vi.stubEnv("RECAPTCHA_V2_SECRET_KEY", "v2-secret");
+    vi.stubEnv("RECAPTCHA_PROTECT_LOGIN", "true");
+    vi.stubEnv("NEXT_PUBLIC_SITE_URL", "https://www.tapradar.app");
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, json: async () => ({ success: true, hostname: "tapradar.app" }) }));
+    expect(await verifyCaptcha("v2-token", "login")).toBe(true);
+  });
+  it("does not demand a token for a disabled protection scope", async () => {
+    vi.stubEnv("RECAPTCHA_PROTECT_LOGIN", "false");
+    expect(await verifyCaptcha(null, "login")).toBe(true);
   });
 });

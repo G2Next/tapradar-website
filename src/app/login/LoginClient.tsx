@@ -2,12 +2,14 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { CaptchaChallenge, type CaptchaChallengeHandle } from "@/components/CaptchaChallenge";
 import type { AuthMessages } from "@/i18n/auth";
 import type { SocialAuthMessages } from "@/i18n/social-auth";
 import { AUTH_PERSISTENCE_COOKIE, AUTH_PERSISTENCE_MAX_AGE } from "@/lib/auth-session";
 import { SOCIAL_AUTH_PROVIDERS, type SocialAuthProvider } from "@/lib/social-auth";
 import { createClient } from "@/lib/supabase/client";
+import type { PublicCaptchaConfig } from "@/lib/captcha";
 import styles from "./login.module.css";
 
 export type LoginMode = "signin" | "signup";
@@ -23,6 +25,7 @@ type LoginClientProps = {
   isBusinessSignup: boolean;
   privacyHref: string;
   termsHref: string;
+  captcha: { login: PublicCaptchaConfig; registration: PublicCaptchaConfig };
 };
 
 export function LoginClient({
@@ -36,6 +39,7 @@ export function LoginClient({
   isBusinessSignup,
   privacyHref,
   termsHref,
+  captcha,
 }: LoginClientProps) {
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -46,14 +50,18 @@ export function LoginClient({
   const [legalConfirmed, setLegalConfirmed] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [rememberSession, setRememberSession] = useState(true);
+  const challenge = useRef<CaptchaChallengeHandle>(null);
+  const [captchaReady, setCaptchaReady] = useState(false);
   const isSignup = mode === "signup";
   const hasSocialProvider = enabledProviders.google || enabledProviders.apple;
+  const captchaConfig = isSignup ? captcha.registration : captcha.login;
 
   function selectMode(nextMode: LoginMode) {
     setMode(nextMode);
     setMessage("");
     setLegalConfirmed(false);
     setShowPassword(false);
+    setCaptchaReady(false);
   }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -63,35 +71,30 @@ export function LoginClient({
 
     try {
       const requestedNext = new URLSearchParams(window.location.search).get("next");
-      const nextPath = requestedNext?.startsWith("/") && !requestedNext.startsWith("//") ? requestedNext : "/dashboard";
+      const nextPath = requestedNext?.startsWith("/") && !requestedNext.startsWith("//") ? requestedNext : "";
       if (mode === "signup" && !legalConfirmed) {
         setMessage(messages.legalRequired);
         return;
       }
 
-      const supabase = createClient();
-      const { data, error } = mode === "signup"
-          ? await supabase.auth.signUp({
-              email,
-              password,
-              options: {
-                data: { locale, account_type: isBusinessSignup ? "business" : "customer" },
-                emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(nextPath)}`,
-              },
-            })
-          : await supabase.auth.signInWithPassword({ email, password });
-
-      if (error) {
-        setMessage(mode === "signup" ? messages.signupFailed : messages.signInFailed);
+      const captchaToken = await challenge.current?.getToken(isSignup ? "registration" : "login") ?? "";
+      const response = await fetch("/api/auth/password", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ mode, email, password, locale, business: isBusinessSignup, captchaToken, next: nextPath || null }) });
+      const result = await response.json() as { error?: string; session?: boolean; next?: string };
+      if (!response.ok) {
+        challenge.current?.reset();
+        if (result.error === "captcha") setMessage(locale === "de" ? "Die Sicherheitsprüfung ist fehlgeschlagen. Bitte erneut versuchen." : "The security check failed. Please try again.");
+        else if (result.error === "limit") setMessage(locale === "de" ? "Zu viele Versuche. Bitte später erneut versuchen." : "Too many attempts. Please try again later.");
+        else setMessage(mode === "signup" ? messages.signupFailed : messages.signInFailed);
         return;
       }
-      if (data.session) await supabase.auth.updateUser({ data: { locale } });
-      setAuthPersistence(isSignup || rememberSession);
-      if (mode === "signup" && !data.session) {
+      if (!result.session) {
+        setAuthPersistence(true);
         setMessage(messages.accountCreated);
         return;
       }
-      router.push(`/rechtliches?next=${encodeURIComponent(nextPath)}`);
+      setAuthPersistence(isSignup || rememberSession);
+      const destination = result.next || nextPath || "/dashboard";
+      router.push(`/rechtliches?next=${encodeURIComponent(destination)}`);
       router.refresh();
     } catch {
       setMessage(messages.unavailable);
@@ -198,7 +201,9 @@ export function LoginClient({
                 </span>
               </label>
 
-              <button disabled={isLoading} className={styles.submit}>
+              <CaptchaChallenge key={`${mode}-${captchaConfig.mode}-${captchaConfig.siteKey}`} ref={challenge} {...captchaConfig} locale={locale} onReadyChange={setCaptchaReady} onError={() => setMessage(locale === "de" ? "Die Sicherheitsprüfung konnte nicht geladen werden." : "The security check could not be loaded.")} />
+
+              <button disabled={isLoading || (captchaConfig.enabled && !captchaReady)} className={styles.submit}>
                 {isLoading ? messages.waiting : isSignup ? messages.createAccount : messages.signIn}
               </button>
               <div className={`${styles.secondaryActions} ${isSignup ? styles.signupActions : ""}`}>
