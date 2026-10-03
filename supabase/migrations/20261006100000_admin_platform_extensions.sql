@@ -92,7 +92,7 @@ create or replace function public.detect_stamp_abuse() returns trigger language 
 declare recent_count integer;
 begin
   if new.event_type <> 'award' then return new; end if;
-  select count(*) into recent_count from public.stamp_events where user_id=new.user_id and organization_id=new.organization_id and created_at > now()-interval '10 minutes';
+  select count(*) into recent_count from public.stamp_events where user_id=new.user_id and organization_id=new.organization_id and id<>new.id and created_at > now()-interval '10 minutes';
   if recent_count >= 8 then
     insert into public.abuse_signals(organization_id,user_id,signal_type,severity,source_entity_type,source_entity_id,summary,evidence)
     values(new.organization_id,new.user_id,'stamp_velocity',case when recent_count >= 15 then 'critical' else 'high' end,'stamp_event',new.id::text,'Ungewöhnlich viele Stempel in kurzer Zeit',jsonb_build_object('events_in_10_minutes',recent_count+1))
@@ -105,7 +105,7 @@ create trigger stamp_events_detect_abuse after insert on public.stamp_events for
 
 -- Keep the database permission function aligned with the application matrix.
 create or replace function public.platform_admin_has_permission(required_permission text) returns boolean language sql stable security definer set search_path=public as $$
-select exists(select 1 from public.platform_admins pa where pa.user_id=auth.uid() and pa.is_active=true and (
+select public.is_platform_admin() and exists(select 1 from public.platform_admins pa where pa.user_id=auth.uid() and pa.is_active=true and (
  pa.role='super_admin' or
  (pa.role='operations' and required_permission=any(array['dashboard.view','organizations.view','organizations.manage','customers.view','customers.manage','marketing.view','marketing.manage','support.view','support.manage','email_templates.view','email_templates.manage','captcha.manage','operations.manage','errors.manage','audit.view','trust.view','trust.manage','feature_flags.manage','campaigns.manage','impersonation.manage'])) or
  (pa.role='support' and required_permission=any(array['dashboard.view','organizations.view','customers.view','customers.manage','marketing.view','support.view','support.manage','trust.view','trust.manage','impersonation.manage'])) or
