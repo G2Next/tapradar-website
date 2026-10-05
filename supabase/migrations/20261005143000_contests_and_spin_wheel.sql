@@ -85,6 +85,36 @@ create table if not exists public.contest_plays (
   unique (participation_id)
 );
 
+-- The customer app normally creates this wallet table. Keep the contest
+-- migration self-contained so a fresh website database can still be built.
+create table if not exists public.customer_redeemables (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  kind text not null check (kind in ('stamp_reward','coupon','promotion')),
+  offer_id uuid references public.offers(id) on delete set null,
+  organization_id uuid,
+  location_id uuid,
+  title text not null,
+  description text,
+  conditions text,
+  discount_type text,
+  discount_value numeric(10,2),
+  starts_at timestamptz,
+  expires_at timestamptz,
+  status text not null default 'ready' check (status in ('ready','used','expired')),
+  redeemed_at timestamptz,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  unique (user_id,offer_id)
+);
+alter table public.customer_redeemables enable row level security;
+revoke all on public.customer_redeemables from anon;
+revoke insert,update,delete on public.customer_redeemables from authenticated;
+grant select on public.customer_redeemables to authenticated;
+drop policy if exists "Customers read own redeemables" on public.customer_redeemables;
+create policy "Customers read own redeemables" on public.customer_redeemables
+  for select to authenticated using (user_id=auth.uid());
+
 alter table public.customer_redeemables
   add column if not exists contest_id uuid references public.contests(id) on delete set null,
   add column if not exists contest_prize_id uuid references public.contest_prizes(id) on delete set null;
