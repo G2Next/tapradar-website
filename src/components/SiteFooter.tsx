@@ -42,6 +42,7 @@ export async function SiteFooter() {
             <Link href={localizedPath(locale, "/#app")} className="hover:text-cyan-300">App entdecken</Link>
             <Link href={localizedPath(locale, "/#so-funktionierts")} className="hover:text-cyan-300">So funktioniert&apos;s</Link>
             <Link href={localizedPath(locale, "/fuer-geschaefte")} className="hover:text-cyan-300">Für Geschäfte</Link>
+            <Link href={localizedPath(locale, "/gewinnspiele")} className="hover:text-cyan-300">Gewinnspiele</Link>
             <Link href={localizedPath(locale, "/kontakt#faq")} className="hover:text-cyan-300">FAQ</Link>
             <Link href={accountHref} className="hover:text-cyan-300">{accountLabel}</Link>
           </div>
