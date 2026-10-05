@@ -18,6 +18,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 const features = [
   ["🏷️", "Digitale Stempelkarte", "Ersetzen Sie Papierkarten durch ein modernes, fälschungssicheres System."],
+  ["🎡", "Gewinnspiele & Glücksrad", "Erstellen Sie Aufgaben-Challenges oder ein Glücksrad mit automatischer Bestands- und Quotensteuerung."],
   ["📊", "Echtzeit-Analytik", "Sehen Sie, wann Kunden kommen, wie oft sie wiederkehren und welche Kampagnen wirken."],
   ["⭐", "Verifizierte Bewertungen", "Nur echte Kunden können Bewertungen hinterlassen."],
   ["🪟", "QR-Schaufenster-Plakat", "Passanten sehen Bewertungen, Öffnungszeiten und Angebote ohne App."],

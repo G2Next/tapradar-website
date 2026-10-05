@@ -3,7 +3,7 @@ import { localeAlternates, locales, localizedPath } from "@/i18n/config";
 import { PUBLIC_SITE_URL } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const routes = ["/", "/fuer-geschaefte", "/kontakt", "/impressum", "/datenschutz", "/agb", "/agb-geschaeftskunden", "/agb-verbraucher", "/widerrufsbelehrung"];
+  const routes = ["/", "/gewinnspiele", "/fuer-geschaefte", "/kontakt", "/impressum", "/datenschutz", "/agb", "/agb-geschaeftskunden", "/agb-verbraucher", "/widerrufsbelehrung"];
   return routes.flatMap((route) => locales.map((locale) => ({
     url: `${PUBLIC_SITE_URL}${localizedPath(locale, route)}`,
     changeFrequency: route === "/" ? "weekly" as const : "monthly" as const,

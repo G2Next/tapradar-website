@@ -12,6 +12,7 @@ export async function SiteHeader() {
   const messages = chromeMessages[locale] ?? chromeMessages.de;
   const navItems = [
     { href: "/", label: messages.nav.home },
+    { href: "/gewinnspiele", label: "Gewinnspiele" },
     { href: "/fuer-geschaefte", label: messages.nav.business },
     { href: "/kontakt", label: messages.nav.contact },
   ];
