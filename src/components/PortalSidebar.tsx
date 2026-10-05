@@ -49,6 +49,7 @@ const dashboardItems: Item[] = [
   { href: "/dashboard/loyalty-cards", label: "Treuekarten", icon: "★" },
   { href: "/dashboard/actions", label: "Aktionen", icon: "🔥" },
   { href: "/dashboard/vouchers", label: "Gutscheine", icon: "🎟" },
+  { href: "/dashboard/contests", label: "Gewinnspiele", icon: "◉" },
   { href: "/dashboard/push", label: "Push-Nachrichten", icon: "🔔" },
   { href: "/dashboard/devices", label: "QR- / NFC-Geräte", icon: "⌁" },
   { href: "/dashboard/redeem", label: "Belohnung einlösen", icon: "✓" },
