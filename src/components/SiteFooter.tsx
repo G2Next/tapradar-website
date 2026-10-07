@@ -29,7 +29,7 @@ export async function SiteFooter() {
     <footer className="border-t border-white/10 bg-[#010d1a] px-5 py-12 text-slate-400 sm:px-8">
       <div className="mx-auto grid max-w-7xl gap-10 md:grid-cols-[1.5fr_1fr_1fr]">
         <div>
-          <div className="mb-3 text-2xl font-black text-white">
+          <div translate="no" data-no-translate="true" className="mb-3 text-2xl font-black text-white">
             Tap<span className="text-cyan-300">Radar</span>
           </div>
           <p className="max-w-sm text-sm leading-6">
