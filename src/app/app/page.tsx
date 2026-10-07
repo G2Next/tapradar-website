@@ -13,8 +13,21 @@ export default async function CustomerAppPage({ searchParams }: { searchParams: 
   if (!authData.user) redirect("/login?next=/app");
   if (!(await hasCurrentLegalAcceptance(authData.user.id, "account"))) redirect("/rechtliches?next=/app");
 
-  const [{ data: profile }, { data: cards }, { data: rewards }] = await Promise.all([
-    supabase.from("customer_profiles").select("display_name, marketing_consent").eq("user_id", authData.user.id).maybeSingle(),
+  const { data: profile } = await supabase.from("customer_profiles").select("display_name,marketing_consent,customer_number,approval_status,is_active,rejection_reason").eq("user_id", authData.user.id).maybeSingle();
+  if (!profile || profile.approval_status !== "approved" || !profile.is_active) {
+    const rejected = profile?.approval_status === "rejected";
+    const suspended = profile?.approval_status === "suspended";
+    return <main className="min-h-screen bg-[radial-gradient(circle_at_top_right,#0b4f63_0%,#061827_35%,#020617_100%)] px-5 py-12 text-white sm:px-8"><section className="mx-auto max-w-2xl rounded-[32px] border border-white/10 bg-white/[0.07] p-8 text-center sm:p-12">
+      <p className="text-sm font-black uppercase tracking-[.2em] text-cyan-300">TapRadar Kundenkonto</p>
+      <h1 className="mt-5 text-4xl font-black">{rejected ? "Registrierung nicht freigegeben" : suspended ? "Konto vorübergehend gesperrt" : "Freigabe wird geprüft"}</h1>
+      <p className="mt-5 leading-7 text-slate-300">{rejected ? "Die Administration konnte deine Registrierung nicht freigeben." : suspended ? "Bitte kontaktiere den TapRadar-Support, wenn du Fragen zur Sperre hast." : "Dein Konto wurde erstellt. Die TapRadar-Administration prüft die Registrierung, bevor Wallet, Stempel und Belohnungen freigeschaltet werden."}</p>
+      {profile?.customer_number ? <p className="mt-6 rounded-2xl bg-slate-950/50 p-4 font-mono text-cyan-200">Kundennummer: {profile.customer_number}</p> : null}
+      {profile?.rejection_reason ? <p className="mt-4 rounded-2xl bg-red-300/10 p-4 text-red-100">Hinweis: {profile.rejection_reason}</p> : null}
+      <div className="mt-7 flex flex-wrap justify-center gap-3"><Link href="/" className="rounded-xl bg-cyan-300 px-5 py-3 font-black text-slate-950">Zur Website</Link><a href="mailto:support@tapradar.app" className="rounded-xl bg-white/10 px-5 py-3 font-black">Support kontaktieren</a></div>
+    </section></main>;
+  }
+
+  const [{ data: cards }, { data: rewards }] = await Promise.all([
     supabase.from("customer_loyalty_cards").select("id, stamps_balance, lifetime_stamps, loyalty_cards(title, reward_title, stamps_required, organizations(name, logo_emoji), locations(name, city))").eq("user_id", authData.user.id).order("updated_at", { ascending: false }),
     supabase.from("reward_entitlements").select("id, reward_title, redemption_code, status, expires_at, organizations(name), locations(name)").eq("user_id", authData.user.id).order("created_at", { ascending: false }),
   ]);

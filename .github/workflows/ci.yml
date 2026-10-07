@@ -17,8 +17,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
           node-version: 24
           cache: npm
@@ -26,11 +26,11 @@ jobs:
       - run: npm test
       - run: npm run lint
       - run: npm run build
-      - name: Audit dependencies
+      - name: Audit production dependencies
         run: |
           audit_output=/tmp/tapradar-npm-audit.json
           for attempt in 1 2 3; do
-            if npm audit --audit-level=high --json \
+            if npm audit --omit=dev --audit-level=high --json \
               --fetch-retries=2 \
               --fetch-retry-mintimeout=2000 \
               --fetch-retry-maxtimeout=10000 \
@@ -45,19 +45,22 @@ jobs:
             fi
             if [ "$attempt" -eq 3 ]; then
               cat "$audit_output"
-              echo "::warning::npm audit service unavailable after 3 attempts; tests, lint and build passed."
-              exit 0
+              echo "npm audit service unavailable after 3 attempts; failing closed."
+              exit 1
             fi
             echo "npm audit service unavailable; retrying ($attempt/3)..."
             sleep $((attempt * 5))
           done
+      - name: Report development dependency advisories
+        continue-on-error: true
+        run: npm audit --include=dev --audit-level=high
 
   database:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
           node-version: 24
           cache: npm
@@ -72,4 +75,4 @@ jobs:
         run: npm run test:email
       - name: Stop local Supabase
         if: always()
-        run: npx --yes supabase@latest stop --no-backup
+        run: timeout 60s npx --yes supabase@latest stop --no-backup || true

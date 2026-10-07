@@ -46,7 +46,7 @@ export async function deliverApprovedMerchantPush(messageId: string) {
     return (card.lifetime_stamps ?? 0) > 0;
   });
   const userIds = [...new Set(targeted.map((card) => card.user_id))];
-  const { data: profiles } = userIds.length ? await admin.from("customer_profiles").select("user_id").in("user_id", userIds).eq("marketing_consent", true).eq("is_active", true) : { data: [] };
+  const { data: profiles } = userIds.length ? await admin.from("customer_profiles").select("user_id").in("user_id", userIds).eq("marketing_consent", true).eq("is_active", true).eq("approval_status", "approved") : { data: [] };
   const optedIn = (profiles ?? []).map((row) => row.user_id);
   const { data: tokens } = optedIn.length ? await admin.from("user_push_tokens").select("expo_push_token").in("user_id", optedIn).eq("is_active", true).eq("app_variant", "customer") : { data: [] };
   const uniqueTokens = [...new Set((tokens ?? []).map((row) => row.expo_push_token).filter(Boolean))];

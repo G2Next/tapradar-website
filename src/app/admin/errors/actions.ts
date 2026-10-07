@@ -3,10 +3,11 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requirePlatformAdmin } from "@/lib/admin";
+import { recordAdminAudit } from "@/lib/admin-audit";
 import { isUuid, requiredText } from "@/lib/validation";
 
 export async function updateErrorStatus(formData: FormData) {
-  const { supabase, user } = await requirePlatformAdmin();
+  const { supabase, user } = await requirePlatformAdmin("errors.manage");
   const id = requiredText(formData.get("error_id"), 40);
   const status = requiredText(formData.get("status"), 20);
   const returnTo = requiredText(formData.get("return_to"), 500);
@@ -18,6 +19,7 @@ export async function updateErrorStatus(formData: FormData) {
     resolved_by: status === "resolved" ? user.id : null,
   }).eq("id", id);
   if (error) redirect("/admin/errors?error=save");
+  await recordAdminAudit(supabase,{actorUserId:user.id,action:`admin.system.error.${status}`,entityType:"error_event",entityId:id,metadata:{status}});
   revalidatePath("/admin/errors");
   redirect(returnTo.startsWith("/admin/errors") ? returnTo : "/admin/errors");
 }

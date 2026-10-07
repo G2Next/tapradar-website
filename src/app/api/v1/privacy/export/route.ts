@@ -13,7 +13,7 @@ export async function GET(request: Request) {
   const userId = auth.user.id;
   const [profile, customerProfile, wallet, stamps, rewards, redemptions, memberships, locationMemberships, pushDevices, privacyRequests, legalAcceptances] = await Promise.all([
     supabase.from("profiles").select("email, full_name, created_at, updated_at").eq("id", userId).maybeSingle(),
-    supabase.from("customer_profiles").select("display_name, marketing_consent, marketing_consent_at, created_at, updated_at").eq("user_id", userId).maybeSingle(),
+    supabase.from("customer_profiles").select("customer_number, display_name, approval_status, approved_at, rejection_reason, marketing_consent, marketing_consent_at, created_at, updated_at").eq("user_id", userId).maybeSingle(),
     supabase.from("customer_loyalty_cards").select("id, loyalty_card_id, stamps_balance, lifetime_stamps, created_at, updated_at").eq("user_id", userId),
     supabase.from("stamp_events").select("id, organization_id, location_id, loyalty_card_id, event_type, amount, metadata, created_at").eq("user_id", userId),
     supabase.from("reward_entitlements").select("id, organization_id, location_id, reward_title, status, expires_at, redeemed_at, created_at").eq("user_id", userId),

@@ -14,6 +14,11 @@ export async function createClient() {
   }
 
   return createServerClient(supabaseUrl, supabaseAnonKey, {
+    cookieOptions: {
+      path: "/",
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+    },
     global: { fetch: createMonitoredFetch("supabase-server", requestHeaders.get("x-tapradar-pathname")) },
     cookies: {
       getAll() {

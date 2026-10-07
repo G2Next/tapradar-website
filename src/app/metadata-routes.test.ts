@@ -54,7 +54,7 @@ describe("crawlable canonical URLs", () => {
 
   it("does not submit redirects, duplicate URLs or invented modification dates", () => {
     const entries = sitemap();
-    expect(entries).toHaveLength(135);
+    expect(entries).toHaveLength(150);
     expect(new Set(entries.map((entry) => entry.url)).size).toBe(entries.length);
     for (const entry of entries) {
       const paths = [entry.url, ...Object.values(entry.alternates?.languages ?? {})];

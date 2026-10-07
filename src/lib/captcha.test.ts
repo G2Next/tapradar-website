@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { verifyContactCaptcha } from "./captcha";
+import { verifyCaptcha, verifyContactCaptcha } from "./captcha";
 
 afterEach(() => { vi.unstubAllEnvs(); vi.unstubAllGlobals(); });
 function configured(result: unknown) {
@@ -10,17 +10,19 @@ function configured(result: unknown) {
   return fetch;
 }
 describe("contact CAPTCHA", () => {
-  it("accepts a successful checkbox challenge for the configured hostname", async () => {
-    const fetch = configured({ success: true, hostname: "www.tapradar.app" });
+  it("accepts only a high-enough contact score for the configured hostname", async () => {
+    const fetch = configured({ success: true, score: 0.9, action: "contact", hostname: "www.tapradar.app" });
     expect(await verifyContactCaptcha("valid-token", "192.0.2.10")).toBe(true);
     expect(fetch.mock.calls[0][0]).toBe("https://www.google.com/recaptcha/api/siteverify");
     expect(Object.fromEntries(new URLSearchParams(String(fetch.mock.calls[0][1].body)))).toEqual({ secret: "test-secret", response: "valid-token", remoteip: "192.0.2.10" });
   });
   it.each([
-    { success: false, hostname: "www.tapradar.app" },
-    { success: true, hostname: "attacker.example" },
+    { success: false, score: 0.9, action: "contact", hostname: "www.tapradar.app" },
+    { success: true, score: 0.49, action: "contact", hostname: "www.tapradar.app" },
+    { success: true, score: 0.9, action: "login", hostname: "www.tapradar.app" },
+    { success: true, score: 0.9, action: "contact", hostname: "attacker.example" },
     { success: true },
-  ])("rejects failed or wrong-host checkbox tokens", async (result) => {
+  ])("rejects failed, low-score, wrong-action or wrong-host tokens", async (result) => {
     configured(result);
     expect(await verifyContactCaptcha("token")).toBe(false);
   });
@@ -34,5 +36,28 @@ describe("contact CAPTCHA", () => {
     vi.stubEnv("RECAPTCHA_SECRET_KEY", "secret");
     fetch.mockRejectedValue(new Error("network"));
     expect(await verifyContactCaptcha("token")).toBe(false);
+  });
+  it("accepts a valid visible v2 challenge without a score or action", async () => {
+    vi.stubEnv("RECAPTCHA_MODE", "v2");
+    vi.stubEnv("RECAPTCHA_V2_SECRET_KEY", "v2-secret");
+    vi.stubEnv("RECAPTCHA_PROTECT_LOGIN", "true");
+    vi.stubEnv("NEXT_PUBLIC_SITE_URL", "https://www.tapradar.app");
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, json: async () => ({ success: true, hostname: "tapradar.app" }) }));
+    expect(await verifyCaptcha("v2-token", "login")).toBe(true);
+  });
+  it.each([
+    [{ success: true, hostname: "www.tapradar.app" }, true],
+    [{ success: false, hostname: "www.tapradar.app" }, false],
+    [{ success: true, hostname: "attacker.example" }, false],
+  ])("validates contact v2 challenges and hostnames", async (result, accepted) => {
+    vi.stubEnv("RECAPTCHA_MODE", "v2");
+    vi.stubEnv("RECAPTCHA_V2_SECRET_KEY", "v2-secret");
+    const fetch = configured(result);
+    expect(await verifyContactCaptcha("checkbox-token")).toBe(accepted);
+    expect(new URLSearchParams(String(fetch.mock.calls[0][1].body)).get("secret")).toBe("v2-secret");
+  });
+  it("does not demand a token for a disabled protection scope", async () => {
+    vi.stubEnv("RECAPTCHA_PROTECT_LOGIN", "false");
+    expect(await verifyCaptcha(null, "login")).toBe(true);
   });
 });

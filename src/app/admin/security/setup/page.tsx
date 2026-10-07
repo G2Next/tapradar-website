@@ -1,0 +1,5 @@
+import { redirect } from "next/navigation";
+import { requirePlatformAdminSession } from "@/lib/admin";
+import { MfaSetupClient } from "../MfaSetupClient";
+
+export default async function AdminMfaSetupPage(){const{mfaEnrolled,mfaVerified}=await requirePlatformAdminSession();if(mfaVerified)redirect("/admin/security");if(mfaEnrolled)redirect("/admin/security/verify");return <main className="min-h-screen bg-slate-950 px-5 py-14 text-white sm:px-8"><section className="mx-auto max-w-2xl rounded-[32px] border border-white/10 bg-white/[0.05] p-8"><p className="text-sm font-black uppercase tracking-[.2em] text-purple-200">Pflichtschutz für Administratoren</p><h1 className="mt-3 text-4xl font-black">Zwei-Faktor-Anmeldung einrichten</h1><p className="mt-4 leading-7 text-slate-300">Für den Admin-Bereich reicht das Passwort allein nicht. Verbinde jetzt eine Authenticator-App. Danach wird bei neuen Admin-Anmeldungen ein zusätzlicher sechsstelliger Code verlangt.</p><MfaSetupClient/></section></main>}

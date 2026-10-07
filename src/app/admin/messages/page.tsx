@@ -7,7 +7,7 @@ type SearchParams = Promise<{ q?: string; status?: string; saved?: string; error
 
 export default async function AdminMessagesPage({ searchParams }: { searchParams: SearchParams }) {
   const params = await searchParams;
-  const { supabase } = await requirePlatformAdmin();
+  const { supabase } = await requirePlatformAdmin("support.view");
   const search = (params.q ?? "").trim().replace(/[,().%]/g, "").slice(0, 80);
   let query = supabase.from("contact_messages").select("id,name,email,subject,message,status,admin_response,replied_at,created_at").order("created_at", { ascending: false }).limit(250);
   if (search) query = query.or(`name.ilike.%${search}%,email.ilike.%${search}%,subject.ilike.%${search}%,message.ilike.%${search}%`);
