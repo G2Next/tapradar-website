@@ -6,7 +6,10 @@ import { getLocale } from "@/i18n/server";
 import { translateTree } from "@/i18n/translate";
 import { CookieSettingsLink } from "@/components/CookieSettingsLink";
 
-export async function SiteFooter() {
+import { ThemeToggle } from "@/components/ThemeToggle";
+import type { Theme } from "@/lib/theme";
+
+export async function SiteFooter({ initialTheme }: { initialTheme: Theme }) {
   const locale = await getLocale();
   const messages = chromeMessages[locale] ?? chromeMessages.de;
   let accountHref = "/login";
@@ -64,6 +67,9 @@ export async function SiteFooter() {
           <Link href={localizedPath(locale, "/widerrufsbelehrung")} className="hover:text-cyan-300">Widerruf</Link>
           <CookieSettingsLink>Cookie-Einstellungen</CookieSettingsLink>
         </div>
+      </div>
+      <div className="mx-auto mt-8 flex max-w-7xl justify-center border-t border-white/10 pt-6">
+        <ThemeToggle initialTheme={initialTheme} locale={locale} />
       </div>
     </footer>,
     locale,
