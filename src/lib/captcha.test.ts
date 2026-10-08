@@ -45,6 +45,17 @@ describe("contact CAPTCHA", () => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, json: async () => ({ success: true, hostname: "tapradar.app" }) }));
     expect(await verifyCaptcha("v2-token", "login")).toBe(true);
   });
+  it.each([
+    [{ success: true, hostname: "www.tapradar.app" }, true],
+    [{ success: false, hostname: "www.tapradar.app" }, false],
+    [{ success: true, hostname: "attacker.example" }, false],
+  ])("validates contact v2 challenges and hostnames", async (result, accepted) => {
+    vi.stubEnv("RECAPTCHA_MODE", "v2");
+    vi.stubEnv("RECAPTCHA_V2_SECRET_KEY", "v2-secret");
+    const fetch = configured(result);
+    expect(await verifyContactCaptcha("checkbox-token")).toBe(accepted);
+    expect(new URLSearchParams(String(fetch.mock.calls[0][1].body)).get("secret")).toBe("v2-secret");
+  });
   it("does not demand a token for a disabled protection scope", async () => {
     vi.stubEnv("RECAPTCHA_PROTECT_LOGIN", "false");
     expect(await verifyCaptcha(null, "login")).toBe(true);

@@ -117,3 +117,33 @@
 @media (prefers-reduced-motion: reduce) {
   .formPanel, .brand, .formContent, .radar span { transition: none; animation: none; }
 }
+
+/* Authentication uses CSS modules, so it shares the theme roles explicitly. */
+:global(html[data-theme="light"]) .page {
+  color: var(--foreground);
+  background: radial-gradient(circle at 82% 9%, #cffafe, #f0f9ff 31%, #f8fafc 70%);
+}
+:global(html[data-theme="light"]) .stage {
+  border-color: var(--line);
+  background: radial-gradient(circle at 78% 24%, #cffafe, transparent 45%), #f8fafc;
+  box-shadow: 0 24px 70px rgb(15 23 42 / .12);
+}
+:global(html[data-theme="light"]) .formPanel {
+  background: linear-gradient(145deg, #ffffff, #f0f9ff);
+  box-shadow: 20px 0 60px rgb(15 23 42 / .06);
+}
+:global(html[data-theme="light"]) :is(.formContent h1, .brand h2) { color: var(--foreground); }
+:global(html[data-theme="light"]) :is(.intro, .brand, .remember, .forgot, .consent, .message, .divider) { color: var(--text-secondary); }
+:global(html[data-theme="light"]) :is(.kicker, .eyebrow, .brand h2 span, .passwordField button, .consent a, .chips span, .forgot:hover) { color: var(--text-cyan); }
+:global(html[data-theme="light"]) .form > label:not(.consent):not(.remember) { color: var(--text-secondary); }
+:global(html[data-theme="light"]) .form input:is([type="email"], [type="password"], [type="text"]) {
+  color: var(--foreground);
+  background: var(--surface);
+  border-color: var(--line);
+}
+:global(html[data-theme="light"]) .form input:focus { border-color: var(--text-cyan); }
+:global(html[data-theme="light"]) .form input::placeholder { color: var(--text-muted); }
+:global(html[data-theme="light"]) .consent { border-color: var(--line); background: var(--surface-tint); }
+:global(html[data-theme="light"]) .divider::before,
+:global(html[data-theme="light"]) .divider::after { background: var(--line); }
+:global(html[data-theme="light"]) .googleButton { border-color: var(--line); }

@@ -1,0 +1,285 @@
+/* Theme roles. Light is the default; the server sets the saved cookie before paint. */
+:root {
+  color-scheme: light;
+  --surface: #ffffff;
+  --surface-tint: rgb(15 23 42 / 0.04);
+  --text-secondary: #334155;
+  --text-muted: #526176;
+  --text-cyan: #0e7490;
+  --text-purple: #7e22ce;
+  --text-emerald: #047857;
+  --text-amber: #92400e;
+  --text-red: #b91c1c;
+  --text-orange: #9a3412;
+  --text-indigo: #4338ca;
+  --text-blue: #1d4ed8;
+  --line: #cbd5e1;
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --background: #020617;
+  --foreground: #ffffff;
+  --surface: #07182a;
+  --surface-tint: rgb(255 255 255 / 0.06);
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --text-cyan: #67e8f9;
+  --line: rgb(255 255 255 / 0.15);
+}
+
+/* Contextual counterparts for existing dark-first utilities. Solid action colors,
+   white QR backgrounds, illustrations and uploaded images retain their colors. */
+:root[data-theme="light"] .active\:text-cyan-200:active,
+:root[data-theme="light"] .hover\:text-cyan-100:hover,
+:root[data-theme="light"] .hover\:text-cyan-200:hover,
+:root[data-theme="light"] .hover\:text-cyan-300:hover,
+:root[data-theme="light"] .text-cyan-100,
+:root[data-theme="light"] .text-cyan-200,
+:root[data-theme="light"] .text-cyan-300 {
+  color: var(--text-cyan);
+}
+
+:root[data-theme="light"] .bg-\[\#010d1a\],
+:root[data-theme="light"] .bg-slate-950 {
+  background-color: var(--background);
+}
+
+:root[data-theme="light"] .bg-\[\#020617\]\/85 {
+  background-color: rgb(255 255 255 / 0.9);
+}
+
+:root[data-theme="light"] .bg-\[\#050d18\],
+:root[data-theme="light"] .bg-\[\#07111f\],
+:root[data-theme="light"] .bg-\[\#071321\],
+:root[data-theme="light"] .bg-\[\#071827\],
+:root[data-theme="light"] .bg-\[\#07182a\],
+:root[data-theme="light"] .bg-\[\#0b1f33\],
+:root[data-theme="light"] .bg-\[\#102235\],
+:root[data-theme="light"] .bg-slate-900,
+:root[data-theme="light"] .bg-slate-900\/40,
+:root[data-theme="light"] .bg-slate-900\/70,
+:root[data-theme="light"] .bg-slate-900\/75,
+:root[data-theme="light"] .bg-slate-950\/30,
+:root[data-theme="light"] .bg-slate-950\/35,
+:root[data-theme="light"] .bg-slate-950\/40,
+:root[data-theme="light"] .bg-slate-950\/45,
+:root[data-theme="light"] .bg-slate-950\/50,
+:root[data-theme="light"] .bg-slate-950\/55,
+:root[data-theme="light"] .bg-slate-950\/60 {
+  background-color: var(--surface);
+}
+
+:root[data-theme="light"] .bg-\[radial-gradient\(circle_at_top_right\,\#0b4f63_0\%\,\#061827_35\%\,\#020617_100\%\)\],
+:root[data-theme="light"] .bg-\[radial-gradient\(circle_at_top_right\,\#164e63_0\%\,\#082032_34\%\,\#020617_100\%\)\] {
+  background-image: radial-gradient(circle at top right, #cffafe 0%, #f0f9ff 35%, #f8fafc 100%);
+}
+
+:root[data-theme="light"] .bg-\[radial-gradient\(circle_at_top_right\,\#312e81_0\%\,\#082032_34\%\,\#020617_100\%\)\],
+:root[data-theme="light"] .bg-\[radial-gradient\(circle_at_top_right\,\#4c1d95_0\%\,\#10203b_38\%\,\#020617_100\%\)\],
+:root[data-theme="light"] .bg-\[radial-gradient\(circle_at_top_right\,\#581c87_0\%\,\#10203b_40\%\,\#020617_100\%\)\] {
+  background-image: radial-gradient(circle at top right, #ede9fe 0%, #f5f3ff 35%, #f8fafc 100%);
+}
+
+:root[data-theme="light"] .bg-\[radial-gradient\(circle_at_top_right\,\#7c2d12_0\%\,\#082032_34\%\,\#020617_100\%\)\] {
+  background-image: radial-gradient(circle at top right, #ffedd5 0%, #fff7ed 35%, #f8fafc 100%);
+}
+
+:root[data-theme="light"] .bg-slate-300\/10,
+:root[data-theme="light"] .bg-white\/10,
+:root[data-theme="light"] .bg-white\/15,
+:root[data-theme="light"] .bg-white\/30,
+:root[data-theme="light"] .bg-white\/5,
+:root[data-theme="light"] .bg-white\/85,
+:root[data-theme="light"] .bg-white\/\[\.04\],
+:root[data-theme="light"] .bg-white\/\[\.05\],
+:root[data-theme="light"] .bg-white\/\[0\.025\],
+:root[data-theme="light"] .bg-white\/\[0\.035\],
+:root[data-theme="light"] .bg-white\/\[0\.03\],
+:root[data-theme="light"] .bg-white\/\[0\.045\],
+:root[data-theme="light"] .bg-white\/\[0\.04\],
+:root[data-theme="light"] .bg-white\/\[0\.055\],
+:root[data-theme="light"] .bg-white\/\[0\.05\],
+:root[data-theme="light"] .bg-white\/\[0\.06\],
+:root[data-theme="light"] .bg-white\/\[0\.07\],
+:root[data-theme="light"] .bg-white\/\[0\.08\],
+:root[data-theme="light"] .hover\:bg-white\/10:hover,
+:root[data-theme="light"] .hover\:bg-white\/15:hover,
+:root[data-theme="light"] .hover\:bg-white\/\[0\.03\]:hover,
+:root[data-theme="light"] .hover\:bg-white\/\[0\.04\]:hover,
+:root[data-theme="light"] .hover\:bg-white\/\[0\.075\]:hover,
+:root[data-theme="light"] .hover\:bg-white\/\[0\.07\]:hover {
+  background-color: var(--surface-tint);
+}
+
+:root[data-theme="light"] .bg-slate-950\/70 {
+  background-color: rgb(15 23 42 / 0.35);
+}
+
+:root[data-theme="light"] .border-amber-200,
+:root[data-theme="light"] .border-amber-300,
+:root[data-theme="light"] .border-amber-300\/15,
+:root[data-theme="light"] .border-amber-300\/20,
+:root[data-theme="light"] .border-amber-300\/25,
+:root[data-theme="light"] .border-amber-300\/30 {
+  border-color: color-mix(in srgb, #92400e 35%, transparent);
+}
+
+:root[data-theme="light"] .border-cyan-300,
+:root[data-theme="light"] .border-cyan-300\/20,
+:root[data-theme="light"] .border-cyan-300\/25,
+:root[data-theme="light"] .border-cyan-300\/30,
+:root[data-theme="light"] .border-cyan-300\/35,
+:root[data-theme="light"] .border-cyan-300\/40,
+:root[data-theme="light"] .border-cyan-300\/50,
+:root[data-theme="light"] .border-cyan-500,
+:root[data-theme="light"] .focus\:border-cyan-300:focus,
+:root[data-theme="light"] .hover\:border-cyan-300:hover,
+:root[data-theme="light"] .hover\:border-cyan-300\/30:hover,
+:root[data-theme="light"] .hover\:border-cyan-300\/35:hover,
+:root[data-theme="light"] .hover\:border-cyan-300\/40:hover,
+:root[data-theme="light"] .hover\:border-cyan-300\/50:hover {
+  border-color: color-mix(in srgb, #0e7490 35%, transparent);
+}
+
+:root[data-theme="light"] .border-emerald-300\/20,
+:root[data-theme="light"] .border-emerald-300\/30 {
+  border-color: color-mix(in srgb, #047857 35%, transparent);
+}
+
+:root[data-theme="light"] .border-orange-300\/30,
+:root[data-theme="light"] .border-orange-300\/35 {
+  border-color: color-mix(in srgb, #9a3412 35%, transparent);
+}
+
+:root[data-theme="light"] .border-purple-300,
+:root[data-theme="light"] .border-purple-300\/20,
+:root[data-theme="light"] .border-purple-300\/25,
+:root[data-theme="light"] .border-purple-300\/30,
+:root[data-theme="light"] .border-purple-300\/35,
+:root[data-theme="light"] .border-purple-300\/40,
+:root[data-theme="light"] .focus\:border-purple-300:focus,
+:root[data-theme="light"] .hover\:border-purple-300\/35:hover {
+  border-color: color-mix(in srgb, #7e22ce 35%, transparent);
+}
+
+:root[data-theme="light"] .border-red-300\/20,
+:root[data-theme="light"] .border-red-300\/30 {
+  border-color: color-mix(in srgb, #b91c1c 35%, transparent);
+}
+
+:root[data-theme="light"] .border-white\/10,
+:root[data-theme="light"] .border-white\/15,
+:root[data-theme="light"] .border-white\/20,
+:root[data-theme="light"] .divide-white\/10 > :not(:last-child) {
+  border-color: var(--line);
+}
+
+:root[data-theme="light"] .disabled\:text-white:disabled,
+:root[data-theme="light"] .hover\:text-white:hover,
+:root[data-theme="light"] .text-slate-200,
+:root[data-theme="light"] .text-white {
+  color: var(--foreground);
+}
+
+:root[data-theme="light"] .group:hover .group-hover\:text-purple-200,
+:root[data-theme="light"] .hover\:text-purple-200:hover,
+:root[data-theme="light"] .hover\:text-purple-300:hover,
+:root[data-theme="light"] .text-purple-100,
+:root[data-theme="light"] .text-purple-100\/70,
+:root[data-theme="light"] .text-purple-200,
+:root[data-theme="light"] .text-purple-300 {
+  color: var(--text-purple);
+}
+
+:root[data-theme="light"] .hover\:text-red-100:hover,
+:root[data-theme="light"] .text-red-100,
+:root[data-theme="light"] .text-red-200 {
+  color: var(--text-red);
+}
+
+:root[data-theme="light"] .text-amber-100,
+:root[data-theme="light"] .text-amber-100\/85,
+:root[data-theme="light"] .text-amber-200,
+:root[data-theme="light"] .text-amber-50,
+:root[data-theme="light"] .text-amber-50\/70 {
+  color: var(--text-amber);
+}
+
+:root[data-theme="light"] .text-blue-100 {
+  color: var(--text-blue);
+}
+
+:root[data-theme="light"] .text-emerald-100,
+:root[data-theme="light"] .text-emerald-100\/80,
+:root[data-theme="light"] .text-emerald-200,
+:root[data-theme="light"] .text-emerald-50 {
+  color: var(--text-emerald);
+}
+
+:root[data-theme="light"] .text-indigo-100 {
+  color: var(--text-indigo);
+}
+
+:root[data-theme="light"] .text-orange-100,
+:root[data-theme="light"] .text-orange-200 {
+  color: var(--text-orange);
+}
+
+:root[data-theme="light"] .text-slate-300,
+:root[data-theme="light"] .text-slate-400 {
+  color: var(--text-secondary);
+}
+
+:root[data-theme="light"] .text-slate-500,
+:root[data-theme="light"] .text-slate-600 {
+  color: var(--text-muted);
+}
+
+:root[data-theme="light"] :focus-visible { outline-color: #0e7490; }
+:root[data-theme="light"] input::placeholder,
+:root[data-theme="light"] textarea::placeholder { color: #64748b; }
+:root[data-theme="light"] .legal-content { color: var(--text-secondary); }
+:root[data-theme="light"] .legal-content :is(h2, a),
+:root[data-theme="light"] .legal-callout strong { color: var(--text-cyan); }
+:root[data-theme="light"] .legal-content :is(strong, th) { color: var(--foreground); }
+:root[data-theme="light"] .legal-subtitle { color: var(--text-muted); }
+:root[data-theme="light"] .legal-content :is(td, th),
+:root[data-theme="light"] .legal-table-wrap { border-color: var(--line); }
+:root[data-theme="light"] .shadow-2xl { --tw-shadow: 0 20px 45px -15px rgb(15 23 42 / 0.18); }
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface-tint);
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+.theme-toggle-option {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 8px 16px;
+  border-radius: 999px;
+}
+.theme-toggle-option[data-active="true"] {
+  background: var(--surface);
+  color: var(--text-cyan);
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.12);
+}
+.theme-toggle svg { width: 18px; height: 18px; }
+.theme-toggle:hover { border-color: var(--text-cyan); }
+@media print { .theme-toggle { display: none; } }
+
+/* Keep fine print readable in the dark palette too. */
+:root[data-theme="dark"] .text-slate-500,
+:root[data-theme="dark"] .text-slate-600 { color: var(--text-muted); }
+:root[data-theme="light"] .focus\:border-cyan-300:focus { border-color: var(--text-cyan); }
+:root[data-theme="light"] .focus\:border-purple-300:focus { border-color: var(--text-purple); }
