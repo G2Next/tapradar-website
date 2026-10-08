@@ -6,7 +6,10 @@ import { getLocale } from "@/i18n/server";
 import { translateTree } from "@/i18n/translate";
 import { CookieSettingsLink } from "@/components/CookieSettingsLink";
 
-export async function SiteFooter() {
+import { ThemeToggle } from "@/components/ThemeToggle";
+import type { Theme } from "@/lib/theme";
+
+export async function SiteFooter({ initialTheme }: { initialTheme: Theme }) {
   const locale = await getLocale();
   const messages = chromeMessages[locale] ?? chromeMessages.de;
   let accountHref = "/login";
@@ -29,7 +32,7 @@ export async function SiteFooter() {
     <footer className="border-t border-white/10 bg-[#010d1a] px-5 py-12 text-slate-400 sm:px-8">
       <div className="mx-auto grid max-w-7xl gap-10 md:grid-cols-[1.5fr_1fr_1fr]">
         <div>
-          <div className="mb-3 text-2xl font-black text-white">
+          <div translate="no" data-no-translate="true" className="mb-3 text-2xl font-black text-white">
             Tap<span className="text-cyan-300">Radar</span>
           </div>
           <p className="max-w-sm text-sm leading-6">
@@ -64,6 +67,9 @@ export async function SiteFooter() {
           <Link href={localizedPath(locale, "/widerrufsbelehrung")} className="hover:text-cyan-300">Widerruf</Link>
           <CookieSettingsLink>Cookie-Einstellungen</CookieSettingsLink>
         </div>
+      </div>
+      <div className="mx-auto mt-8 flex max-w-7xl justify-center border-t border-white/10 pt-6">
+        <ThemeToggle initialTheme={initialTheme} locale={locale} />
       </div>
     </footer>,
     locale,

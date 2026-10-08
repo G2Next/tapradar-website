@@ -151,6 +151,7 @@ export function translateTree(node: ReactNode, locale: Locale): ReactNode {
   if (!isValidElement(node)) return node;
 
   const element = node as ReactElement<Record<string, unknown>>;
+  if (element.props["data-no-translate"] !== undefined || element.props.translate === "no") return node;
   const nextProps: Record<string, unknown> = {};
   for (const [key, value] of Object.entries(element.props)) {
     if (key === "children") nextProps.children = translateTree(value as ReactNode, locale);

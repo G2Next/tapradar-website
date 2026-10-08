@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { headers } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
@@ -34,8 +35,9 @@ export async function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-white/10 bg-[#020617]/85 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-5 py-4 sm:px-8">
-        <Link href={localizedPath(locale, "/")} aria-label="TapRadar Startseite" className="text-xl font-black tracking-tight text-white">
-          Tap<span className="text-cyan-300">Radar</span>
+        <Link href={localizedPath(locale, "/")} aria-label="TapRadar Startseite" className="inline-flex shrink-0 items-center gap-2 text-xl font-black tracking-tight text-white">
+          <Image src="/tapradar-logo.png" alt="" width={457} height={466} className="h-[1cap] w-auto shrink-0" />
+          <span translate="no" data-no-translate="true">Tap<span className="text-cyan-300">Radar</span></span>
         </Link>
         <nav aria-label="Hauptnavigation" className="hidden items-center gap-7 text-sm font-bold text-slate-300 md:flex">
           {navItems.map((item) => (

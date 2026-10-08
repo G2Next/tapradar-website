@@ -9,6 +9,7 @@ import { getLocale } from "@/i18n/server";
 import { translateText } from "@/i18n/translate";
 import { COOKIE_CONSENT_NAME, parseConsent } from "@/lib/cookie-consent";
 import { PUBLIC_SITE_URL } from "@/lib/site";
+import { parseTheme, THEME_COOKIE } from "@/lib/theme";
 import "./globals.css";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -40,15 +41,16 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const [locale, cookieStore] = await Promise.all([getLocale(), cookies()]);
+  const theme = parseTheme(cookieStore.get(THEME_COOKIE)?.value);
   const cookieConsent = parseConsent(cookieStore.get(COOKIE_CONSENT_NAME)?.value);
   return (
-    <html lang={getHtmlLang(locale)} className="h-full antialiased">
+    <html data-theme={theme} lang={getHtmlLang(locale)} className="h-full antialiased">
       <body className="min-h-full bg-slate-950 font-sans">
         <ClientTranslator locale={locale} />
         <a href="#main-content" className="skip-link">Zum Inhalt springen</a>
         <SiteHeader />
         <div id="main-content" tabIndex={-1}>{children}</div>
-        <SiteFooter />
+        <SiteFooter initialTheme={theme} />
         <CookieConsentBanner initialConsent={cookieConsent} locale={locale} />
       </body>
     </html>
