@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
+import { isPreApprovalDashboardPath } from "@/lib/dashboard-access";
 import { usePathname } from "next/navigation";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import type { Locale } from "@/i18n/config";
@@ -42,22 +44,34 @@ const adminGroups: Group[] = [
   ] },
 ];
 
-const dashboardItems: Item[] = [
-  { href: "/dashboard", label: "Übersicht", icon: "⌂", exact: true },
-  { href: "/dashboard/business", label: "Unternehmen", icon: "▣" },
-  { href: "/dashboard/locations", label: "Filialen", icon: "⌖" },
-  { href: "/dashboard/loyalty-cards", label: "Treuekarten", icon: "★" },
-  { href: "/dashboard/actions", label: "Aktionen", icon: "🔥" },
-  { href: "/dashboard/vouchers", label: "Gutscheine", icon: "🎟" },
-  { href: "/dashboard/contests", label: "Gewinnspiele", icon: "◉" },
-  { href: "/dashboard/push", label: "Push-Nachrichten", icon: "🔔" },
-  { href: "/dashboard/devices", label: "QR- / NFC-Geräte", icon: "⌁" },
-  { href: "/dashboard/redeem", label: "Belohnung einlösen", icon: "✓" },
-  { href: "/dashboard/analytics", label: "Statistik", icon: "↗" },
-  { href: "/dashboard/team", label: "Team & Rechte", icon: "♙" },
-  { href: "/dashboard/media", label: "Medien & Dateien", icon: "▧" },
-  { href: "/dashboard/billing", label: "Tarif & Rechnungen", icon: "€" },
-  { href: "/dashboard/privacy", label: "Datenschutz & Konto", icon: "◈" },
+const dashboardOverview: Item = { href: "/dashboard", label: "Dashboard", icon: "⌂", exact: true };
+const dashboardAnalytics: Item = { href: "/dashboard/analytics", label: "Statistik & Berichte", icon: "↗" };
+const dashboardGroups: (Group & { icon: string })[] = [
+  { label: "Unternehmen", icon: "▣", items: [
+    { href: "/dashboard/business", label: "Unternehmensprofil", icon: "" },
+    { href: "/dashboard/locations", label: "Filialen", icon: "" },
+    { href: "/dashboard/team", label: "Team & Rechte", icon: "" },
+    { href: "/dashboard/media", label: "Medien & Dateien", icon: "" },
+  ] },
+  { label: "Marketing", icon: "◎", items: [
+    { href: "/dashboard/actions", label: "Aktionen", icon: "" },
+    { href: "/dashboard/vouchers", label: "Gutscheine", icon: "" },
+    { href: "/dashboard/contests", label: "Gewinnspiele", icon: "" },
+    { href: "/dashboard/push", label: "Push-Nachrichten", icon: "" },
+  ] },
+  { label: "Treue & Belohnungen", icon: "★", items: [
+    { href: "/dashboard/loyalty-cards", label: "Treuekarten", icon: "" },
+    { href: "/dashboard/redeem", label: "Einlösungen", icon: "" },
+  ] },
+  { label: "Verkauf & Kanäle", icon: "◇", items: [
+    { href: "/dashboard/online-shop", label: "Onlineshop", icon: "" },
+    { href: "/dashboard/devices", label: "QR-/NFC-Geräte", icon: "" },
+  ] },
+  { label: "Einstellungen", icon: "⚙", items: [
+    { href: "/dashboard/billing", label: "Tarif & Rechnungen", icon: "" },
+    { href: "/dashboard/account", label: "Konto", icon: "" },
+    { href: "/dashboard/privacy", label: "Datenschutz", icon: "" },
+  ] },
 ];
 
 type Props = {
@@ -91,14 +105,41 @@ function AdminSidebar({locale,languageChoose,adminProfile}:{locale:Locale;langua
   </>;
 }
 
-function DashboardSidebar({locale,languageLabel,languageChoose,dashboardApproved=true}:Props) {
+function DashboardSidebar({locale,languageChoose,dashboardApproved=true}:Props) {
   const pathname = usePathname();
-  const items=dashboardApproved?dashboardItems:dashboardItems.slice(0,3);
-  const language=<div className="mb-5 border-b border-white/10 px-3 pb-5"><p className="mb-2 text-xs font-black uppercase tracking-[.18em] text-slate-500">{languageLabel}</p><LanguageSwitcher locale={locale} label={languageChoose} fullWidth/></div>;
-  const links=<nav className="grid gap-1.5">{items.map(item=><NavLink key={item.href} item={item} pathname={pathname} tone="cyan"/>)}<form action="/logout" method="post"><button type="submit" className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-bold text-slate-300 transition hover:bg-white/[0.07] hover:text-white"><span className="w-5 text-center text-base" aria-hidden>⇥</span><span>Abmelden</span></button></form></nav>;
-  return <><aside className="sticky top-[73px] hidden h-[calc(100vh-73px)] w-64 shrink-0 overflow-y-auto border-r border-white/10 bg-[#07111f] p-5 lg:block"><p className="mb-5 px-3 text-xs font-black uppercase tracking-[.18em] text-slate-500">Geschäftsbereich</p>{language}{links}</aside><details className="border-b border-white/10 bg-[#07111f] px-5 py-3 text-white lg:hidden"><summary className="cursor-pointer font-black">Menü · Geschäftsbereich</summary><div className="mt-3">{language}{links}</div></details></>;
+  const groups = dashboardGroups.map(group => ({ ...group, items: group.items.filter(item => dashboardApproved || isPreApprovalDashboardPath(item.href)) })).filter(group => group.items.length);
+  const navigation = <nav aria-label="Geschäftsadmin-Navigation" className="grid gap-1.5">
+    <NavLink item={dashboardOverview} pathname={pathname} tone="cyan"/>
+    {groups.map(group => <div key={group.label}>
+      {group.label === "Einstellungen" && dashboardApproved ? <div className="mb-1.5"><NavLink item={dashboardAnalytics} pathname={pathname} tone="cyan"/></div> : null}
+      <DashboardGroup key={`${group.label}:${pathname}`} group={group} pathname={pathname}/>
+    </div>)}
+  </nav>;
+  const footer = <div className="border-t border-white/10 p-4">
+    <LanguageSwitcher locale={locale} label={languageChoose} fullWidth/>
+    <form action="/logout" method="post" className="mt-3"><button type="submit" className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-bold text-slate-300 transition hover:bg-red-300/10 hover:text-red-100"><span aria-hidden>⇥</span>Abmelden</button></form>
+  </div>;
+  return <>
+    <aside className="sticky top-[73px] hidden h-[calc(100vh-73px)] w-72 shrink-0 flex-col border-r border-white/10 bg-[#07111f] text-white lg:flex">
+      <Link href="/dashboard" className="border-b border-white/10 px-6 py-5"><strong className="block text-lg">TapRadar</strong><span className="text-xs font-bold uppercase tracking-[.18em] text-cyan-200">Geschäftsbereich</span></Link>
+      <div className="min-h-0 flex-1 overflow-y-auto p-4">{navigation}</div>{footer}
+    </aside>
+    <details key={pathname} className="border-b border-white/10 bg-[#07111f] text-white lg:hidden"><summary className="cursor-pointer px-5 py-4 font-black">Menü · Geschäftsbereich</summary><div className="max-h-[calc(100dvh-140px)] overflow-y-auto"><div className="p-4">{navigation}</div>{footer}</div></details>
+  </>;
 }
 
-function NavLink({item,pathname,tone="purple"}:{item:Item;pathname:string;tone?:"purple"|"cyan"}){const active=item.exact?pathname===item.href:pathname.startsWith(item.href);const selected=tone==="purple"?"bg-purple-300/15 text-purple-100 ring-1 ring-inset ring-purple-300/10":"bg-cyan-300/15 text-cyan-100";return <Link href={item.href} aria-current={active?"page":undefined} className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-bold transition ${active?selected:"text-slate-300 hover:bg-white/[0.07] hover:text-white"}`}><span className="w-5 text-center text-base" aria-hidden>{item.icon}</span><span>{item.label}</span></Link>}
+function DashboardGroup({group,pathname}:{group:Group & {icon:string};pathname:string}) {
+  const active = group.items.some(item => pathname === item.href || pathname.startsWith(`${item.href}/`));
+  const [expanded, setExpanded] = useState(active);
+  const open = active || expanded;
+  return <section>
+    <button type="button" aria-expanded={open} onClick={() => setExpanded(!expanded)} className={`flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-bold transition hover:bg-white/[0.07] ${active ? "text-cyan-200" : "text-slate-300"}`}>
+      <span aria-hidden className="w-5 text-center text-base">{group.icon}</span><span className="flex-1">{group.label}</span><span aria-hidden>{open ? "⌄" : "›"}</span>
+    </button>
+    {open ? <div className="mb-2 ml-5 grid gap-1 border-l border-white/10 pl-3">{group.items.map(item => <NavLink key={item.href} item={item} pathname={pathname} tone="cyan"/>)}</div> : null}
+  </section>;
+}
+
+function NavLink({item,pathname,tone="purple"}:{item:Item;pathname:string;tone?:"purple"|"cyan"}){const active=item.exact?pathname===item.href:(pathname === item.href || pathname.startsWith(`${item.href}/`));const selected=tone==="purple"?"bg-purple-300/15 text-purple-100 ring-1 ring-inset ring-purple-300/10":"bg-cyan-300/15 text-cyan-100";return <Link href={item.href} aria-current={active?"page":undefined} className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-bold transition ${active?selected:"text-slate-300 hover:bg-white/[0.07] hover:text-white"}`}>{item.icon ? <span className="w-5 text-center text-base" aria-hidden>{item.icon}</span> : null}<span>{item.label}</span></Link>}
 function initials(email?:string){const name=email?.split("@")[0]?.replace(/[^a-z0-9]+/gi," ").trim();if(!name)return "A";return name.split(/\s+/).slice(0,2).map(part=>part[0]?.toUpperCase()).join("")||"A"}
 function roleLabel(role?:string){return role==="super_admin"?"Super Admin":role==="operations"?"Betrieb":role==="finance"?"Finanzen":role==="support"?"Support":"Admin"}
