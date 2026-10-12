@@ -13,7 +13,7 @@ describe("dashboard approval access", () => {
     expect(isPreApprovalDashboardPath(path)).toBe(true);
   });
 
-  it.each(["/dashboard/loyalty-cards", "/dashboard/actions", "/dashboard/billing", "/dashboard/team"])("blocks %s before approval", (path) => {
+  it.each(["/dashboard/loyalty-cards", "/dashboard/actions", "/dashboard/billing", "/dashboard/team", "/dashboard/online-shop", "/dashboard/account"])("blocks %s before approval", (path) => {
     expect(isPreApprovalDashboardPath(path)).toBe(false);
   });
 });
