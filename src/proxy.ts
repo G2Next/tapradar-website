@@ -1,19 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
-import { defaultLocale, isLocale, type Locale } from "@/i18n/config";
+import { defaultLocale, hasTranslation, isLocale, type Locale } from "@/i18n/config";
 import { AUTH_PERSISTENCE_COOKIE, withoutCookiePersistence } from "@/lib/auth-session";
-
-const PUBLIC_PATHS = new Set([
-  "/",
-  "/fuer-geschaefte",
-  "/kontakt",
-  "/impressum",
-  "/datenschutz",
-  "/agb",
-  "/agb-geschaeftskunden",
-  "/agb-verbraucher",
-  "/widerrufsbelehrung",
-]);
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -30,7 +18,7 @@ export async function proxy(request: NextRequest) {
     return redirect;
   }
 
-  if (!prefixedLocale && PUBLIC_PATHS.has(pathname)) {
+  if (!prefixedLocale && hasTranslation(pathname)) {
     const cookieLocale = request.cookies.get("tapradar_locale")?.value;
     if (isLocale(cookieLocale) && cookieLocale !== defaultLocale) {
       const redirectUrl = request.nextUrl.clone();
@@ -39,12 +27,12 @@ export async function proxy(request: NextRequest) {
     }
   }
 
-  const locale = prefixedLocale && PUBLIC_PATHS.has(normalizedPath)
+  const locale = prefixedLocale && hasTranslation(normalizedPath)
     ? prefixedLocale
-    : !prefixedLocale && PUBLIC_PATHS.has(pathname)
+    : !prefixedLocale && hasTranslation(pathname)
       ? defaultLocale
       : null;
-  const rewriteUrl = prefixedLocale && PUBLIC_PATHS.has(normalizedPath)
+  const rewriteUrl = prefixedLocale && hasTranslation(normalizedPath)
     ? new URL(normalizedPath, request.url)
     : undefined;
   const requestHeaders = new Headers(request.headers);

@@ -51,7 +51,20 @@ export function localizedPath(locale: Locale, href: string) {
   return `${locale === defaultLocale ? "" : `/${locale}`}${base || (locale === defaultLocale ? "/" : "")}${suffix}`;
 }
 
-const translatedPaths = new Set(["/", "/fuer-geschaefte", "/kontakt", "/impressum", "/datenschutz", "/agb", "/agb-geschaeftskunden", "/agb-verbraucher", "/widerrufsbelehrung"]);
+export const translatedRoutes = [
+  "/",
+  "/gewinnspiele",
+  "/fuer-geschaefte",
+  "/kontakt",
+  "/impressum",
+  "/datenschutz",
+  "/agb",
+  "/agb-geschaeftskunden",
+  "/agb-verbraucher",
+  "/widerrufsbelehrung",
+] as const;
+
+const translatedPaths = new Set<string>(translatedRoutes);
 
 export function stripLocalePrefix(pathname: string) {
   const segments = pathname.split("/").filter(Boolean);
